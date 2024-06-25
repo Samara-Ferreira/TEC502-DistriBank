@@ -11,17 +11,16 @@ class QueueBank:
         self.queue = []
         self.queue_exec = []
 
-    def insere_ordenado(self, elemento):
-        """Função para inserir um novo elemento no array ordenado na posição correta"""
-        pos = self.busca_binaria(elemento)
-        self.queue.insert(pos, elemento)
+    def insert_order(self, operation):
+        pos = self.binary_search(operation)
+        self.queue.insert(pos, operation)
+        self.lenght += 1
 
-    def busca_binaria(self, target):
-        """Função para encontrar a posição correta de inserção usando busca binária"""
+    def binary_search(self, operation):
         left, right = 0, len(self.queue) - 1
         while left <= right:
             mid = (left + right) // 2
-            if self.queue[mid] < target:
+            if self.queue[mid] < operation:
                 left = mid + 1
             else:
                 right = mid - 1
