@@ -1,5 +1,5 @@
 '''
-Descrição: Arquivo referente a classe Consortium e seus métodos, onde são definidas as funções principais do banco,
+Descrição: Arquivo referente a classe consortium e seus métodos, onde são definidas as funções principais do banco,
 como criar conta, deletar conta, criar chave pix, depositar e sacar dinheiro, realizar transações, entre outras.
 '''
 
@@ -8,11 +8,12 @@ import __init__
 import ast
 import json
 import requests
-import Exceptions.Exceptions as Exceptions
-import Clients.JointAccount as JointAccount
-import Clients.JuridicAccount as JuridicAccount
-import Clients.PhysicalAccount as PhysicalAccount
+import exceptions.Exceptions as Exceptions
+import clients.JointAccount as JointAccount
+import clients.JuridicAccount as JuridicAccount
+import clients.PhysicalAccount as PhysicalAccount
 
+from threading import Lock
 from QueueBank import QueueBank
 from VectorialClock import VectorClock
 from UniqueTwoDigitID import UniqueTwoDigitID
@@ -42,35 +43,41 @@ class Bank:
         self.dict_acks = {}
         self.list_operations = QueueBank()
         self.unique_id = UniqueTwoDigitID()
-        self.list_banks = [{"port": 5551},  # adicionar os IPs e portas dos bancos
+        self.list_banks = [{"port": 5551},    # adicionar os IPs e portas dos bancos
                            {"port": 5552},
                            {"port": 5553},
                            {"port": 5554}]
         self.vector_clock = VectorClock(len(self.list_banks), self.list_banks.index({"port": self.port}))
+        self.waiting_operations = []
+        self.lock = Lock()
 
     # ------------------------------------ Novas funções ------------------------------------ #
 
     # Método para adicionar uma nova operação na fila de prioridade
     def add_new_operation(self, operation):
-        self.vector_clock.increment()
-        time = self.vector_clock.get_time()
-        port = str(self.port)
+        with self.lock:
+            self.vector_clock.increment()
+            time = self.vector_clock.get_time()
+            port = str(self.port)
 
-        id = port[-2:] + self.unique_id.generate()
+            id = port[-2:] + self.unique_id.generate()
 
-        key = [time, operation, id]
+            key = [time, operation, id]
 
-        self.list_operations.insere_ordenado(key)
+            self.list_operations.insere_ordenado(key)
 
-        self.send_new_operation(key)
+            self.send_new_operation(key)
 
-        check_ack = self.check_acks()
-        check_operation = self.check_list_operations(key)
+            check_ack = self.check_acks()
+            check_operation = self.check_list_operations(key)
 
-        if check_ack and check_operation:
-            self.execute_operation()
+            if check_ack and check_operation:
+                self.execute_operation()
 
-        return f"Operacao {operation} adicionada com sucesso!", check_ack, check_operation
+                if len(self.list_operations.queue) > 0:
+                    self.execute_operation()
+
+            return f"Operacao {operation} adicionada com sucesso!", check_ack, check_operation
 
     # Método para executar uma operação da fila de prioridade
     def execute_operation(self):
@@ -95,8 +102,9 @@ class Bank:
 
     # Método para deletar a primeira operação da fila de prioridade
     def delete_first_operation(self):
-        pop_op = self.list_operations.queue.pop(0)
-        return pop_op
+        if len(self.list_operations.queue) > 0:
+            pop_op = self.list_operations.queue.pop(0)
+            return pop_op
 
     # Método para retornar a primeira operação da fila de prioridade
     def get_first_operation(self):
@@ -123,23 +131,21 @@ class Bank:
 
     # Método para receber uma nova operação de outro banco
     def receive_new_operation(self, operation):
-        try:
-            list_operation = ast.literal_eval(operation)
-            time = list_operation[0]
-            message = list_operation[1]
-            id_message = list_operation[2]
+        #with self.lock:
+        list_operation = ast.literal_eval(operation)
+        time = list_operation[0]
+        message = list_operation[1]
+        id_message = list_operation[2]
 
-            self.vector_clock.update(time)
-            op = [time, message, id_message]
-            # self.list_operations.insert_element(op)
-            self.list_operations.insere_ordenado(op)
+        self.vector_clock.update(time)
+        op = [time, message, id_message]
+        # self.list_operations.insert_element(op)
+        self.list_operations.insere_ordenado(op)
 
-            # enviar os acks para os outros bancos
-            self.send_ack(message, id_message)
+        # enviar os acks para os outros bancos
+        self.send_ack(message, id_message)
 
-            return f"Operação {operation} adicionada com sucesso!"
-        except Exception:
-            raise Exceptions.ErrorAddingOperation
+        return f"Operação {operation} adicionada com sucesso!"
 
     # Método para enviar um ack para os demais bancos
     def send_ack(self, message, id_message):

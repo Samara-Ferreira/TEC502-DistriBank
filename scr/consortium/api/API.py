@@ -7,15 +7,15 @@ como criar conta, deletar conta, criar chave pix, depositar e sacar dinheiro, re
 import __init__
 import Bank
 import FloatConverter
-import Utils.Utils as Utils
-import Exceptions.Exceptions as Exceptions
+import utils.Utils as Utils
+import exceptions.Exceptions as Exceptions
 
 from os import getenv
 from flask import Flask, jsonify
 
 # Definir o tipo e a porta do banco
 TYPE = "1"
-PORT = 5554
+PORT = 5551
 #TYPE = getenv("TYPE")
 #PORT = getenv("PORT")
 
@@ -27,6 +27,7 @@ app.url_map.converters['float'] = FloatConverter.FloatConverter
 
 def get_cnpj():
     return bank.cnpj
+
 
 # ------------------------------------ Novas Rotas ------------------------------------#
 
