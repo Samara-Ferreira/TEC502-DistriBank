@@ -48,6 +48,24 @@ class ClientNotFound(MyException):
         super().__init__("Cliente não encontrado.")
 
 
+# ------------------------------------ Exceções para as transações ------------------------------------ #
+
+
+class InvalidEmail(MyException):
+    def __init__(self):
+        super().__init__("Email inválido.")
+
+
+class InvalidPhone(MyException):
+    def __init__(self):
+        super().__init__("Telefone inválido.")
+
+
+class TypeKeyNotFound(MyException):
+    def __init__(self):
+        super().__init__("Tipo de chave não encontrado.")
+
+
 # ------------------------------------ Exceções para as operações ------------------------------------ #
 class ErrorAddingOperation(MyException):
     def __init__(self):

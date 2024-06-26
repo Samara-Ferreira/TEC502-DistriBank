@@ -14,7 +14,7 @@ class PhysicalClient:
         self.account = account
         self.type_account = "physical"
         self.pix = {
-            "cpf-cnpj": None,
+            "cpf_cnpj": None,
             "email": None,
             "phone": None,
             "random": None
@@ -39,7 +39,7 @@ class JointClient:
         self.type_account = "physical_joint"
         self.accounts = {}
         self.pix = {
-            "cpf-cnpj": None,
+            "cpf_cnpj": None,
             "email": None,
             "phone": None,
             "random": None

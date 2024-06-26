@@ -153,52 +153,43 @@ class Bank:
         text_return = ""
         for client in self.clients:
             if self.clients[client].type_account == "juridic":
-                text_aux = ""
-                text_return += (f"{client}, {self.clients[client].name}, "
-                                f"{self.clients[client].balance}, \n")
-
-                for c in self.clients[client].accounts:
-                    text_aux += f"\t{self.clients[client].accounts[c].name}, {self.clients[client].accounts[c].cpf}\n"
-                text_return += f"{text_aux}\n"
-
-            elif self.clients[client].type_account == "physical_joint":
-                text_aux = ""
-                text_return += (f"{client}, {self.clients[client].name} {self.clients[client].unity.balance}, "
-                                f"{self.clients[client].cpf} \n")
-                for c in self.clients[client].accounts:
-                    text_aux += f"\t{self.clients[c].name}, {self.clients[c].cpf} \n"
-                text_return += f"{text_aux}\n"
-
-            elif self.clients[client].type_account == "physical":
-                text_return += (f"{self.clients[client].name}, {self.clients[client].cpf}, "
-                                f"{self.clients[client].balance}\n")
+                text_return += (f"\t{self.clients[client].name}, {self.clients[client].cnpj}, "
+                                f"{self.clients[client].type_account}\n")
+            else:
+                text_return += (f"\t{self.clients[client].name}, {self.clients[client].cpf}, "
+                                f"{self.clients[client].type_account}\n")
         return text_return
 
-    # ------------------------------------ Funções para as transações ------------------------------------ #
+# ------------------------------------ Funções para as transações ------------------------------------ #
 
-'''    # Método para a criação de uma chave PIX
+    # Método para a criação de uma chave PIX
     def create_pix_key(self, cpf_cnpj, type_account, type_key, key):
-        if type_account == "juridic":
-            cpf, cnpj = cpf_cnpj.split("_")
-            if cnpj not in self.clients:
+        with self.lock:
+            if type_account == "juridic":
+                cpf, cnpj = cpf_cnpj.split("_")
+                if cnpj not in self.clients:
+                    raise Exceptions.ClientNotFound
+                for c in self.clients[cnpj].accounts:
+                    if self.clients[cnpj].accounts[c].cpf == cpf:
+                        key_pix = self.generate_key(type_key, key)
+                        self.clients[cnpj].accounts[c].pix[type_key] = key_pix
+                        return f"Chave PIX {type_key} para {self.clients[cnpj].accounts[c].name} criada com sucesso!"
+
+            elif cpf_cnpj not in self.clients:
                 raise Exceptions.ClientNotFound
-            else:
-                for client in self.clients[cnpj].accounts:
-                    if self.clients[cnpj].accounts[client].cpf == cpf:
-                        self.clients[cnpj].accounts[client].pix[type_key] = key
-                        # chamar função para criar
+            key_pix = self.generate_key(type_key, key)
+            self.clients[cpf_cnpj].pix[type_key] = key_pix
+            return f"Chave PIX {type_key} para {self.clients[cpf_cnpj].name} criada com sucesso!"
 
-        elif type_account == "physical":
-
-
-
-        elif type == "cpf-cnpj":
+    # Método para gerar ou verificar se a chave está correta
+    def generate_key(self, type, key):
+        if type == "random":
+            key = Utils.generate_random_key()
+        elif type == "cpf_cnpj":
             if len(key) != 11:
                 raise Exceptions.InvalidCPF
             elif len(key) != 14:
                 raise Exceptions.InvalidCNPJ
-            else:
-                self.clients[cpf_cnpj].pix["cpf-cnpj"] = key
         elif type == "email":
             if "@" not in key:
                 raise Exceptions.InvalidEmail
@@ -206,6 +197,16 @@ class Bank:
             if len(key) != 11:
                 raise Exceptions.InvalidPhone
         else:
-            key = Utils.generate_random_key()
-        return key'''
+            raise Exceptions.TypeKeyNotFound
+        return key
+
+    # Método para obter os dicionários com as chaves cadastradas
+    def return_keys(self):
+        text = ""
+        for client in self.clients:
+            if self.clients[client].type_account == "juridic":
+                continue
+            else:
+                text += f"\t{self.clients[client].name}, {self.clients[client].cpf}, {self.clients[client].pix}\n"
+        return text
 

@@ -24,7 +24,7 @@ class JuridicClient:
         self.is_admin = None
         self.type_account = "juridic_person"
         self.pix = {
-            "cpf-cnpj": None,
+            "cpf_cnpj": None,
             "email": None,
             "phone": None,
             "random": None

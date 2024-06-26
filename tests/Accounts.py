@@ -72,7 +72,7 @@ def print_lists(one, two, three, four):
         print(resp1, f"Lista do banco {port4}: ", resp1.json())
 
 
-asyncio.run(main(3))
+asyncio.run(main(2))
 
 sleep(1)
 

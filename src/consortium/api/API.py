@@ -203,3 +203,33 @@ def create_juridic_employee(cnpj, name, user, cpf, password):
 @app.route("/return_clients", methods=["GET"])
 def return_clients():
     return jsonify(bank.return_clients())
+
+
+# ------------------------------------ Rotas para as transações ------------------------------------ #
+
+# Rota para criação de uma chave pix
+@app.route("/<string:cpf_cnpj>/<string:type_account>/<string:type_pix_key>/<string:pix_key>/create_pix_key",
+           methods=["GET"])
+def create_pix_key(cpf_cnpj, type_account, type_pix_key, pix_key):
+    try:
+        return bank.create_pix_key(cpf_cnpj, type_account, type_pix_key, pix_key)
+    except Exceptions.ClientNotFound as e:
+        response = Utils.make_response(e)
+        return response, 400
+    except Exceptions.InvalidCPF as e:
+        response = Utils.make_response(e)
+        return response, 400
+    except Exceptions.InvalidCNPJ as e:
+        response = Utils.make_response(e)
+        return response, 400
+    except Exceptions.InvalidEmail as e:
+        response = Utils.make_response(e)
+        return response, 400
+    except Exceptions.InvalidPhone as e:
+        response = Utils.make_response(e)
+        return response, 400
+
+# Rota para retornar as chaves pix cadastradas
+@app.route("/return_keys", methods=["GET"])
+def return_keys():
+    return jsonify(bank.return_keys())
