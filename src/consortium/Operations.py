@@ -10,6 +10,7 @@ import requests
 from threading import Lock
 from QueueBank import QueueBank
 from VectorialClock import VectorClock
+import exceptions.Exceptions as Exceptions
 from UniqueTwoDigitID import UniqueTwoDigitID
 
 # Máquinas do larsid
@@ -34,14 +35,15 @@ class Operations:
         self.operations = QueueBank()
         self.receive_acks = {}
         self.banks = [
-            {"host": "192.168.0.111", "port": 5551},
-            {"host": "192.168.0.111", "port": 5552},
-            {"host": "192.168.0.111", "port": 5553},
-            {"host": "192.168.0.111", "port": 5554}
+            {"host": "192.168.0.111", "port": 5551}
+            #{"host": "192.168.0.111", "port": 5552},
+            #{"host": "192.168.0.111", "port": 5553},
+            #{"host": "192.168.0.111", "port": 5554}
         ]
         self.lock = Lock()
         self.unique_id = UniqueTwoDigitID()
         self.vector_clock = VectorClock(len(self.banks), self.banks.index({"host": self.cnpj, "port": self.port}))
+        self.clients_accounts = {}
 
     # Método para adicionar uma nova operação na fila de prioridade
     def add_new_operation(self, operation):
@@ -66,28 +68,66 @@ class Operations:
                 if len(self.operations.queue) > 0:
                     self.execute_operation()
 
-            return f"Operacao {operation} adicionada com sucesso!", check_ack, check_operation
+            return f"Operacao adicionada com sucesso!"
+
+    # Método para verificar se a conta existe no banco
+    def exist_account(self, cpf):
+        with self.lock:
+            if cpf in self.clients_accounts:
+                return True
+            return False
 
     # Método para executar uma operação da fila de prioridade
     def execute_operation(self):
-        for i in range(len(self.operations.queue)):
-            time, message = self.operations.queue[0][0], self.operations.queue[0][1]
-            # Código para executar as operações... aqui que eu coloco em uma thread?
-            if message == "deposit":
-                print("Executando um depósito....")
-            else:
-                print("Outra operação...")
-            # Quando retornar depois da execução...
-            # Excluir a operação da fila de prioridade
-            for bank in self.banks:
-                response = requests.get(f"http://{bank['host']}:{bank['port']}/delete_first_operation")
-                requests.get(f"http://{bank['host']}:{bank['port']}/{response.json()}/add_first_operation")
-        return "Operações executadas com sucesso!"
+        with self.lock:
+            for i in range(len(self.operations.queue)):
+                time, operations = self.operations.queue[0][0], self.operations.queue[0][1]
+
+                for op in operations:
+                    if op["operation"] == "deposit":
+                        response = requests.get(f"http://{self.cnpj}:{op['bank']}/{op['cpf']}/{op['type']}/{op['key']}"
+                                                f"/{op['value']}/deposit")
+                        if response.status_code != 200:
+                            break
+
+                    elif op["operation"] == "withdraw":
+                        response = requests.get(f"http://{self.cnpj}:{op['bank']}/{op['cpf']}/{op['type']}/{op['key']}"
+                                                f"/{op['value']}/withdraw")
+                        if response.status_code != 200:
+                            break
+
+                    elif op["operation"] == "transfer":
+                        # Primeiramente, faz o depósito na conta do destinatário
+                        response = requests.get(f"http://{self.cnpj}:{op['recipient']}/{op['cpf_recipient']}/"
+                                                f"{op['type_recipient']}/{op['key']}"
+                                                f"/{op['value']}/deposit")
+
+                        if response.status_code == 200:
+                            # Em seguida, faz o saque na conta do remetente
+                            response = requests.get(f"http://{self.cnpj}:{op['sender']}/{op['cpf_sender']}/"
+                                                    f"{op['type_sender']}/{op['key']}"
+                                                    f"/{op['value']}/withdraw")
+                            if response.status_code != 200:
+                                break
+                        else:
+                            break
+
+                self.delete_operations()
+
+            return "Operações executadas com sucesso!"
 
     # Método para adicionar as operações executadas em cada banco
     def add_first_operation(self, operation):
         self.operations.queue_exec.append(operation)
         return "Operação adicionada com sucesso!"
+
+    def delete_operations(self):
+        # Quando retornar depois da execução...
+        # Excluir a operação da fila de prioridade
+        for bank in self.banks:
+            response = requests.get(f"http://{bank['host']}:{bank['port']}/delete_first_operation")
+            requests.get(f"http://{bank['host']}:{bank['port']}/{response.json()}/add_first_operation")
+
 
     # Método para deletar a primeira operação da fila de prioridade
     def delete_first_operation(self):
@@ -171,14 +211,15 @@ class Operations:
         return True
 
     # Método para retornar os acks do banco
-    def return_acks(self):
-        return self.receive_acks
+    '''def return_acks(self):
+        return self.receive_acks'''
 
     # Método para retornar a fila de prioridade do banco
     def return_queues(self):
         return f"Fila do banco {self.port}: {self.operations.queue}"
 
-    # Método para retornar as operações executadas
+'''    # Método para retornar as operações executadas
     def return_executed(self):
         return f"Operações executadas do banco {self.port}: {self.operations.queue_exec}"
 
+'''
