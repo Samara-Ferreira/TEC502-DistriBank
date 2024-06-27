@@ -9,7 +9,7 @@ class JuridicAccount:
         self.cnpj = cnpj
         self.balance = balance
         self.accounts = {}
-        self.type_account = "juridic"
+        self.type_account = "juridic_company"
 
 
 class JuridicClient:
@@ -22,10 +22,16 @@ class JuridicClient:
         self.agency = agency
         self.account = account
         self.is_admin = None
-        self.type_account = "juridic_person"
+        self.type_account = "juridic"
         self.pix = {
             "cpf_cnpj": None,
             "email": None,
             "phone": None,
             "random": None
+        }
+        self.accounts_bank = {
+            5551: False,
+            5552: False,
+            5553: False,
+            5554: False,
         }
