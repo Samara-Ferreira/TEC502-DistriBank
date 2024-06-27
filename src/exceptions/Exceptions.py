@@ -66,6 +66,14 @@ class TypeKeyNotFound(MyException):
         super().__init__("Tipo de chave não encontrado.")
 
 
+class KeyNotFound(MyException):
+    def __init__(self):
+        super().__init__("Chave não encontrada.")
+
+class InsufficientBalance(MyException):
+    def __init__(self):
+        super().__init__("Saldo insuficiente.")
+
 # ------------------------------------ Exceções para as operações ------------------------------------ #
 class ErrorAddingOperation(MyException):
     def __init__(self):
