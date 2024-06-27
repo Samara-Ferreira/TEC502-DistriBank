@@ -35,7 +35,7 @@ def get_cnpj():
 @app.route("/<string:operation>/add_new_operation", methods=["GET"])
 def add_element_in(operation):
     try:
-        return jsonify(bank.operations.add_new_operation(operation))
+        return jsonify(bank.add_new_operation(operation))
     except Exceptions as e:
         response = Utils.make_response(e)
         return response, 400
@@ -44,7 +44,7 @@ def add_element_in(operation):
 # Rota para adicionar a primeira operação
 @app.route("/<string:operation>/add_first_operation", methods=["GET"])
 def add_first_operation(operation):
-    return jsonify(bank.operations.add_first_operation(operation))
+    return jsonify(bank.add_first_operation(operation))
 
 
 # Rota para deletar a primeira operação
@@ -229,7 +229,114 @@ def create_pix_key(cpf_cnpj, type_account, type_pix_key, pix_key):
         response = Utils.make_response(e)
         return response, 400
 
+
+
+
 # Rota para retornar as chaves pix cadastradas
 @app.route("/return_keys", methods=["GET"])
 def return_keys():
     return jsonify(bank.return_keys())
+
+
+# Rota para realizar um depósito
+@app.route("/<string:cpf_cnpj>/<string:type_account>/<string:pix_key>/<float:value>/deposit", methods=["POST"])
+def deposit(cpf_cnpj, type_account, pix_key, value):
+    try:
+        return jsonify(bank.deposit(cpf_cnpj, type_account, pix_key, value))
+    except Exceptions.ClientNotFound as e:
+        response = Utils.make_response(e)
+        return response, 400
+    except Exceptions.KeyNotFound as e:
+        response = Utils.make_response(e)
+        return response, 400
+
+
+# Rota para realizar um saque
+@app.route("/<string:cpf_cnpj>/<string:type_account>/<string:pix_key>/<float:value>/withdraw", methods=["POST"])
+def withdraw(cpf_cnpj, type_account, pix_key, value):
+    try:
+        return jsonify(bank.withdraw(cpf_cnpj, type_account, pix_key, value))
+    except Exceptions.ClientNotFound as e:
+        response = Utils.make_response(e)
+        return response, 400
+    except Exceptions.KeyNotFound as e:
+        response = Utils.make_response(e)
+        return response, 400
+    except Exceptions.InsufficientBalance as e:
+        response = Utils.make_response(e)
+        return response, 400
+
+
+# Rota para retornar o saldo de uma conta
+@app.route("/return_balances", methods=["GET"])
+def return_balances():
+    try:
+        return jsonify(bank.return_balances())
+    except Exceptions.ClientNotFound as e:
+        response = Utils.make_response(e)
+        return response, 400
+
+
+# Rota para verificar se uma conta existe em outro banco ou não
+@app.route("/<string:cpf_cnpj>/<string:pix_key>/check_account", methods=["GET"])
+def check_account(cpf_cnpj, pix_key):
+    try:
+        return jsonify(bank.check_account(cpf_cnpj, pix_key))
+    except Exceptions.ClientNotFound as e:
+        response = Utils.make_response(e)
+        return response, 400
+    except Exceptions.KeyNotFound as e:
+        response = Utils.make_response(e)
+        return response, 400
+
+
+'''@app.route("/<string:cpf>/exist_account", methods=["GET"])
+def exist_account(cpf):
+    return jsonify(bank.exist_account(cpf))'''
+
+
+
+@app.route("/<int:port>/<string:cpf>/<string:type>/<string:key>/<float:value>/<string:id>/create_deposit",
+           methods=["GET"])
+def create_deposit(port, cpf, type, key, value, id):
+    try:
+        return bank.create_deposit(port, cpf, type, key, value, id)
+    except Exceptions.ClientNotFound as e:
+        response = Utils.make_response(e)
+        return response, 400
+    except Exceptions.KeyNotFound as e:
+        response = Utils.make_response(e)
+        return response, 400
+
+
+@app.route("/<int:port>/<string:cpf>/<string:type>/<string:key>/<float:value>/<string:id>/create_withdraw",
+           methods=["GET"])
+def create_withdraw(port, cpf, type, key, value, id):
+    try:
+        return bank.create_withdraw(port, cpf, type, key, value, id)
+    except Exceptions.ClientNotFound as e:
+        response = Utils.make_response(e)
+        return response, 400
+    except Exceptions.KeyNotFound as e:
+        response = Utils.make_response(e)
+        return response, 400
+    except Exceptions.InsufficientBalance as e:
+        response = Utils.make_response(e)
+        return response, 400
+
+
+@app.route("/<string:port_recp>/<string:port_send>/<string:cpf_recp>/<string:cpf_send>/<string:type_recp>/"
+           "<string:type_send>/<string:key>/<float:value>/<string:id>/create_transfer", methods=["GET"])
+def create_transaction(port_recp, port_send, cpf_recp, cpf_send, type_recp, type_send, key, value, id):
+    try:
+        return bank.create_transaction(port_recp, port_send, cpf_recp, cpf_send, type_recp, type_send, key, value, id)
+    except Exceptions.ClientNotFound as e:
+        response = Utils.make_response(e)
+        return response, 400
+    except Exceptions.KeyNotFound as e:
+        response = Utils.make_response(e)
+        return response, 400
+    except Exceptions.InsufficientBalance as e:
+        response = Utils.make_response(e)
+        return response, 400
+
