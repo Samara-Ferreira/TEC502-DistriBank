@@ -25,16 +25,26 @@ async def main(num):
     # testes no mesmo banco e criação de contas paralelas
     if num == 1:
         urls = [
-            f"http://{host1}:{port1}/08300000000/physical_joint/phone/77555555555/create_pix_key",
-            f"http://{host1}:{port1}/08300000000/physical_joint/random/null/create_pix_key",
-            f"http://{host1}:{port1}/08500000000/physical_joint/random/null/create_pix_key",
-            f"http://{host1}:{port1}/08400000000/physical_joint/email/sival@uefs/create_pix_key",
+            f"http://{host1}:{port1}/08300000000/physical/thi@uefs/50.0/deposit",
+            f"http://{host1}:{port1}/08300000000/physical/thi@uefs/100.0/withdraw", # deve ficar com 450
+            f"http://{host1}:{port1}/08500000000/physical/77555555555/600.0/withdraw", # não deve executar
+            f"http://{host1}:{port1}/08500000000/physical/to9jhgpn577tr55vzhhku55yjz55pkm4/500.0/deposit", # deve ficar com 1000
 
-            f"http://{host1}:{port1}/09100000000/physical/cpf_cnpj/09100000000/create_pix_key",
+            f"http://{host1}:{port1}/08300000000/physical_joint/thi@uefs/50.0/deposit",
+            f"http://{host1}:{port1}/08500000000/physical_joint/silvio@uefs/100.0/withdraw", # deve ficar com 400
+            #
+            f"http://{host1}:{port1}/08500000000/juridic/silvio@uefs/50.0/withdraw",
+            f"http://{host1}:{port1}/08400000000/juridic/sival@uefs/100.0/deposit", # deve ficar com 550
         ]
     # testes em bancos diferentes
     elif num == 2:
         urls = [
+            # bank, cpf, type, key, value, same
+            # port_recp, port_send, cpf_recp, cpf_send, type_recp, type_send, key, value, operation,
+            # Tentativa de um depósito simples e um saque simples
+            f"http://{host1}:{port1}/5551/08300000000/physical/thi@uefs/50.0/1/create_deposit",
+            f"http://{host1}:{port1}/5551/08500000000/physical/77555555555/150.0/1/create_deposit",
+            f"http://{host1}:{port1}/5551/08300000000/physical/thi@uefs/100.0/2/create_deposit",
 
         ]
     # testes conta conjunta
@@ -57,8 +67,9 @@ async def main(num):
 
 def print_lists(one, two, three, four):
     if one == 1:
-        resp1 = requests.get(f"http://{host1}:{port1}/return_keys")
+        resp1 = requests.get(f"http://{host1}:{port1}/return_balances")
         print(resp1, f"Lista do banco {port1}: ", resp1.json())
+
     if two == 1:
         resp1 = requests.get(f"http://{host1}:{port2}/return_keys")
         print(resp1, f"Lista do banco {port2}: ", resp1.json())
@@ -70,27 +81,53 @@ def print_lists(one, two, three, four):
         print(resp1, f"Lista do banco {port4}: ", resp1.json())
 
 
-requests.get(f"http://{host1}:{port1}/thiago/08300000000/thi03/thiago123/110.0/create_physical_joint")
-requests.get(f"http://{host1}:{port1}/08300000000/silvio/08500000000/sil11/silvio123/create_joint_complementary")
-requests.get(f"http://{host1}:{port1}/08300000000/sival/08400000000/val11/sival123/create_joint_complementary")
+def create_key():
+    requests.get(f"http://{host1}:{port1}/08300000000/physical/email/thi@uefs/create_pix_key")
+    requests.get(f"http://{host1}:{port1}/08500000000/physical/phone/77555555555/create_pix_key")
+    requests.get(f"http://{host1}:{port1}/08400000000/physical/random/null/create_pix_key")
 
-requests.get(f"http://{host1}:{port1}/gustavo/09100000000/guga01/guga123/300.0/create_physical_particular")
-requests.get(f"http://{host1}:{port1}/guilherme/09200000000/gui03/gui123/200.0/create_physical_particular")
+    requests.get(f"http://{host1}:{port1}/08300000000/physical_joint/email/thi@uefs/create_pix_key")
+    requests.get(f"http://{host1}:{port1}/08500000000/physical_joint/email/silvio@uefs/create_pix_key")
 
-requests.get(f"http://{host1}:{port1}/netbank/14000000000000/thiago/thi03/08300000000/thiago123/500.0/create_juridic_account")
-requests.get(f"http://{host1}:{port1}/14000000000000/silvio/sil11/08700000000/silvio123/create_juridic_employee")
+    requests.get(f"http://{host1}:{port1}/08500000000/juridic/email/silvio@uefs/create_pix_key")
+    requests.get(f"http://{host1}:{port1}/08400000000/juridic/email/sival@uefs/create_pix_key")
 
-asyncio.run(main(1))
+    print("\nListas de pix:")
+    resp1 = requests.get(f"http://{host1}:{port1}/return_keys")
+    print(resp1, f"Lista do banco {port1}: ", resp1.json())
+
+
+def print_exec(one, two, three, four):
+    if one == 1:
+        resp1 = requests.get(f"http://{host1}:{port1}/return_executed")
+        print(resp1, f"Lista de executadas banco {port1} ", resp1.json())
+    if two == 1:
+        resp1 = requests.get(f"http://{host1}:{port2}/return_executed")
+        print(resp1, resp1.json())
+    if three == 1:
+        resp1 = requests.get(f"http://{host1}:{port3}/return_executed")
+        print(resp1, resp1.json())
+    if four == 1:
+        resp1 = requests.get(f"http://{host1}:{port4}/return_executed")
+        print(resp1, resp1.json())
+
+
+print("\nSaldos antes das transferências: ")
+print_lists(1, 0, 0, 0)
 
 sleep(1)
 
-print("\nListas dos clientes:")
-resp1 = requests.get(f"http://{host1}:{port1}/return_clients")
-print(resp1, f"Lista do banco {port1}: ", resp1.json())
+create_key()
 
-print("\nListas dos bancos:")
+sleep(1)
+
+asyncio.run(main(2))
+
+sleep(1)
+
+print("\nLista dos executados: ")
+print_exec(1, 0, 0, 0)
+
+print("\nSaldos após as transferências: ")
 print_lists(1, 0, 0, 0)
-
-
-
 
