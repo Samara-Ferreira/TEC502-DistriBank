@@ -11,7 +11,7 @@ import utils.Utils as Utils
 import exceptions.Exceptions as Exceptions
 
 from os import getenv
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
 # Definir o tipo e a porta do banco
 TYPE = "1"
@@ -28,8 +28,8 @@ app.url_map.converters['float'] = FloatConverter.FloatConverter
 def get_cnpj():
     return bank.cnpj
 
-
 # ------------------------------------ Rotas para as operações ------------------------------------ #
+
 
 # Rota para adicionar uma nova operação
 @app.route("/<string:operation>/add_new_operation", methods=["GET"])
@@ -100,18 +100,42 @@ def return_queues():
 
 
 # Rota para obter a fila das operações executadas
-@app.route("/return_executed", methods=["GET"])
-def return_executed():
-    return jsonify(bank.return_executed())
+@app.route("/get_queue_executed", methods=["GET"])
+def get_queue_executed():
+    return jsonify(bank.get_queue_executed())
 
 
 # ------------------------------------ Rotas para a criação de contas ------------------------------------ #
 
+# Rota para fazer o login de um cliente
+@app.route("/<string:user>/<string:password>/login", methods=["GET"])
+def login(user, password):
+    try:
+        return jsonify(bank.login(user, password))
+    except Exceptions.ClientNotFound as e:
+        response = Utils.make_response(e)
+        return response, 400
+    except Exceptions.InvalidPassword as e:
+        response = Utils.make_response(e)
+        return response, 400
+
+
+# Rota para fazer o logout de um cliente
+@app.route("/<string:user>/logout", methods=["GET"])
+def logout(user):
+    try:
+        return jsonify(bank.logout(user))
+    except Exceptions.ClientNotFound as e:
+        response = Utils.make_response(e)
+        return response, 400
+
+
+# Rota para criar uma conta física particular
 @app.route("/<string:name>/<string:cpf>/<string:user>/<string:password>/<float:balance>/create_physical_particular",
            methods=["GET"])
 def create_physical_particular(name, cpf, user, password, balance):
     try:
-        return bank.create_physical_particular(name, cpf, user, password, balance)
+        return jsonify(bank.create_physical_particular(name, cpf, user, password, balance))
     except Exceptions.ClientAlreadyExists as e:
         response = Utils.make_response(e)
         return response, 400
@@ -126,11 +150,12 @@ def create_physical_particular(name, cpf, user, password, balance):
         return response, 400
 
 
+# Rota para criar uma conta física conjunta
 @app.route("/<string:name>/<string:cpf>/<string:user>/<string:password>/<float:balance>/create_physical_joint",
            methods=["GET"])
 def create_physical_joint(name, cpf, user, password, balance):
     try:
-        return bank.create_physical_joint(name, cpf, user, password, balance)
+        return jsonify(bank.create_physical_joint(name, cpf, user, password, balance))
     except Exceptions.ClientAlreadyExists as e:
         response = Utils.make_response(e)
         return response, 400
@@ -145,11 +170,12 @@ def create_physical_joint(name, cpf, user, password, balance):
         return response, 400
 
 
+# Rota para criar uma conta física complementar
 @app.route("/<string:cpf_holder>/<string:name>/<string:cpf>/<string:user>/<string:password>/create_joint_complementary",
            methods=["GET"])
 def create_joint_complementary(cpf_holder, name, cpf, user, password):
     try:
-        return bank.create_joint_complementary(cpf_holder, name, cpf, user, password)
+        return jsonify(bank.create_joint_complementary(cpf_holder, name, cpf, user, password))
     except Exceptions.ClientAlreadyExists as e:
         response = Utils.make_response(e)
         return response, 400
@@ -164,11 +190,12 @@ def create_joint_complementary(cpf_holder, name, cpf, user, password):
         return response, 400
 
 
+# Rota para criar uma conta jurídica
 @app.route("/<string:name_company>/<string:cnpj>/<string:name>/<string:user>/<string:cpf>/<string:password>/<float:balance>/"
            "create_juridic_account", methods=["GET"])
 def create_juridic_account(name_company, cnpj, name, user, cpf, password, balance):
     try:
-        return bank.create_juridic_account(name_company, cnpj, name, user, cpf, password, balance)
+        return jsonify(bank.create_juridic_account(name_company, cnpj, name, user, cpf, password, balance))
     except Exceptions.ClientAlreadyExists as e:
         response = Utils.make_response(e)
         return response, 400
@@ -183,11 +210,12 @@ def create_juridic_account(name_company, cnpj, name, user, cpf, password, balanc
         return response, 400
 
 
+# Rota para criar um funcionário de uma conta jurídica
 @app.route("/<string:cnpj>/<string:name>/<string:user>/<string:cpf>/<string:password>/create_juridic_employee",
            methods=["GET"])
 def create_juridic_employee(cnpj, name, user, cpf, password):
     try:
-        return bank.create_juridic_employee(cnpj, name, user, cpf, password)
+        return jsonify(bank.create_juridic_employee(cnpj, name, user, cpf, password))
     except Exceptions.ClientAlreadyExists as e:
         response = Utils.make_response(e)
         return response, 400
@@ -200,19 +228,19 @@ def create_juridic_employee(cnpj, name, user, cpf, password):
 
 
 # Rota para obter a lista de clientes
-@app.route("/return_clients", methods=["GET"])
-def return_clients():
-    return jsonify(bank.return_clients())
-
+@app.route("/get_accounts", methods=["GET"])
+def get_all_accounts():
+    return jsonify(bank.get_accounts())
 
 # ------------------------------------ Rotas para as transações ------------------------------------ #
 
+
 # Rota para criação de uma chave pix
-@app.route("/<string:cpf_cnpj>/<string:type_account>/<string:type_pix_key>/<string:pix_key>/create_pix_key",
+@app.route("/<string:cpf>/<string:type>/<string:type_key>/<string:key>/create_pix_key",
            methods=["GET"])
-def create_pix_key(cpf_cnpj, type_account, type_pix_key, pix_key):
+def create_pix_key(cpf, type, type_key, key):
     try:
-        return bank.create_pix_key(cpf_cnpj, type_account, type_pix_key, pix_key)
+        return jsonify(bank.create_pix_key(cpf, type, type_key, key))
     except Exceptions.ClientNotFound as e:
         response = Utils.make_response(e)
         return response, 400
@@ -230,12 +258,19 @@ def create_pix_key(cpf_cnpj, type_account, type_pix_key, pix_key):
         return response, 400
 
 
-
+# Rota para obter uma chave pix de um cliente
+@app.route("/<string:cpf>/get_keys", methods=["GET"])
+def get_keys(cpf):
+    try:
+        return jsonify(bank.get_keys(cpf))
+    except Exceptions.ClientNotFound as e:
+        response = Utils.make_response(e)
+        return response, 400
 
 # Rota para retornar as chaves pix cadastradas
-@app.route("/return_keys", methods=["GET"])
+'''@app.route("/return_keys", methods=["GET"])
 def return_keys():
-    return jsonify(bank.return_keys())
+    return jsonify(bank.return_keys())'''
 
 
 # Rota para realizar um depósito
@@ -267,18 +302,30 @@ def withdraw(cpf_cnpj, type_account, pix_key, value):
         return response, 400
 
 
-# Rota para retornar o saldo de uma conta
-@app.route("/return_balances", methods=["GET"])
+'''@app.route("/return_balance", methods=["GET"])
 def return_balances():
     try:
         return jsonify(bank.return_balances())
     except Exceptions.ClientNotFound as e:
         response = Utils.make_response(e)
+        return response, 400'''
+
+
+# Rota para retornar o saldo de uma conta
+@app.route("/<string:cpf>/<string:type>/get_balance", methods=["GET"])
+def get_balance(cpf, type):
+    try:
+        return jsonify(bank.get_balance(cpf, type))
+    except Exceptions.ClientNotFound as e:
+        response = Utils.make_response(e)
         return response, 400
 
 
+# Rota para obter o saldo específico de um cliente
+
+
 # Rota para verificar se uma conta existe em outro banco ou não
-@app.route("/<string:cpf_cnpj>/<string:pix_key>/check_account", methods=["GET"])
+'''@app.route("/<string:cpf_cnpj>/<string:pix_key>/check_account", methods=["GET"])
 def check_account(cpf_cnpj, pix_key):
     try:
         return jsonify(bank.check_account(cpf_cnpj, pix_key))
@@ -287,20 +334,15 @@ def check_account(cpf_cnpj, pix_key):
         return response, 400
     except Exceptions.KeyNotFound as e:
         response = Utils.make_response(e)
-        return response, 400
+        return response, 400'''
 
 
-'''@app.route("/<string:cpf>/exist_account", methods=["GET"])
-def exist_account(cpf):
-    return jsonify(bank.exist_account(cpf))'''
-
-
-
-@app.route("/<int:port>/<string:cpf>/<string:type>/<string:key>/<float:value>/<string:id>/create_deposit",
+# Rota para criar um depósito
+@app.route("/<int:port>/<string:cpf>/<string:type>/<string:key>/<float:value>/create_deposit",
            methods=["GET"])
-def create_deposit(port, cpf, type, key, value, id):
+def create_deposit(port, cpf, type, key, value):
     try:
-        return bank.create_deposit(port, cpf, type, key, value, id)
+        return jsonify(bank.create_deposit(port, cpf, type, key, value))
     except Exceptions.ClientNotFound as e:
         response = Utils.make_response(e)
         return response, 400
@@ -309,11 +351,12 @@ def create_deposit(port, cpf, type, key, value, id):
         return response, 400
 
 
-@app.route("/<int:port>/<string:cpf>/<string:type>/<string:key>/<float:value>/<string:id>/create_withdraw",
+# Método para criar um saque
+@app.route("/<int:port>/<string:cpf>/<string:type>/<string:key>/<float:value>/create_withdraw",
            methods=["GET"])
-def create_withdraw(port, cpf, type, key, value, id):
+def create_withdraw(port, cpf, type, key, value):
     try:
-        return bank.create_withdraw(port, cpf, type, key, value, id)
+        return jsonify(bank.create_withdraw(port, cpf, type, key, value))
     except Exceptions.ClientNotFound as e:
         response = Utils.make_response(e)
         return response, 400
@@ -325,11 +368,27 @@ def create_withdraw(port, cpf, type, key, value, id):
         return response, 400
 
 
-@app.route("/<string:port_recp>/<string:port_send>/<string:cpf_recp>/<string:cpf_send>/<string:type_recp>/"
-           "<string:type_send>/<string:key>/<float:value>/<string:id>/create_transfer", methods=["GET"])
-def create_transaction(port_recp, port_send, cpf_recp, cpf_send, type_recp, type_send, key, value, id):
+'''@app.route("/<string:port_recp>/<string:port_send>/<string:cpf_recp>/<string:cpf_send>/<string:type_recp>/"
+           "<string:type_send>/<string:key>/<float:value>/<string:same>/create_transfer", methods=["GET"])
+def create_transfer(port_recp, port_send, cpf_recp, cpf_send, type_recp, type_send, key, value, same):
     try:
-        return bank.create_transaction(port_recp, port_send, cpf_recp, cpf_send, type_recp, type_send, key, value, id)
+        return bank.create_transaction(port_recp, port_send, cpf_recp, cpf_send, type_recp, type_send, key, value, same)
+    except Exceptions.ClientNotFound as e:
+        response = Utils.make_response(e)
+        return response, 400
+    except Exceptions.KeyNotFound as e:
+        response = Utils.make_response(e)
+        return response, 400
+    except Exceptions.InsufficientBalance as e:
+        response = Utils.make_response(e)
+        return response, 400'''
+
+
+# crie uma rota para essa requisição: requests.post(f"http://{self.host}:{self.port}/create_transfer", json=self.queue_transfer)
+@app.route("/<string:operations>/create_transfer", methods=["POST"])
+def create_transfer(operations):
+    try:
+        return jsonify(bank.create_transfer(operations))
     except Exceptions.ClientNotFound as e:
         response = Utils.make_response(e)
         return response, 400
