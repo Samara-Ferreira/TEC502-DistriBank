@@ -1,175 +1,118 @@
 '''
-Descrição: Arquivo referente a classe consortium e seus métodos, onde são definidas as funções principais do banco,
-como criar conta, deletar conta, criar chave pix, depositar e sacar dinheiro, realizar transações, entre outras.
-
-PARA ADICIONAR:
-- senha de transacao
+Descrição: este código contém a classe Bank, que é responsável por gerenciar as contas dos clientes no sistema bancário.
 '''
 
 # Importar as bibliotecas necessárias
-import __init__
-import ast
-import json
-import requests
 import utils.Utils as Utils
+import clients.JointClient as JointClient
 import exceptions.Exceptions as Exceptions
 import clients.JuridicAccount as JuridicAccount
 import clients.PhysicalClient as PhysicalClient
-import clients.JointClient as JointClient
 
 from threading import Lock
-#from Operations import Operations
 from socket import gethostbyname, gethostname
 
-from QueueBank import QueueBank
-from VectorialClock import VectorClock
+from Queue import QueueBank
 from UniqueTwoDigitID import UniqueTwoDigitID
+from VectorialClock import VectorialClock
+
+import ast
+import requests
+import json
 
 
-# Máquinas do larsid
-'''
-[{"host": "172.16.103.1", "port": 5551},
- {"host": "172.16.103.2", "port": 5552},
- {"host": "172.16.103.3", "port": 5553},
- {"host": "172.16.103.4", "port": 5554}]
-'''
-
-# Rede local (casa)
-'''
-192.168.0.111
-'''
-
-
+# Classe que gerencia as contas dos clientes no sistema bancário
 class Bank:
-    def __init__(self, name, port):
-        self.cnpj = gethostbyname(gethostname())
-        self.name = name
+    def __init__(self, port):
         self.port = port
-        self.clients = {}
-        #self.operations = Operations(self.port, self.cnpj)
+        self.cnpj = gethostbyname(gethostname())
+        self.clients_accounts = {}
         self.lock = Lock()
 
-        self.operations_package = []
-
-        self.operations = QueueBank()
-        self.receive_acks = {}
-        self.banks = [
-            {"host": "192.168.0.111", "port": 5551}
-            #{"host": "192.168.0.111", "port": 5552},
-            #{"host": "192.168.0.111", "port": 5553},
-            #{"host": "192.168.0.111", "port": 5554}
-        ]
-        #self.lock = Lock()
+        self.queue_operations = QueueBank()
         self.unique_id = UniqueTwoDigitID()
-        self.vector_clock = VectorClock(len(self.banks), self.banks.index({"host": self.cnpj, "port": self.port}))
-        self.clients_accounts = {}
-        self.lock_add = Lock()
+        self.banks = [
+            {"host": "192.168.0.111", "port": 5551},
+            {"host": "192.168.0.111", "port": 5552},
+            {"host": "192.168.0.111", "port": 5553},
+            {"host": "192.168.0.111", "port": 5554}
+        ]
+        self.vector_clock = VectorialClock(len(self.banks),
+                                            self.banks.index({"host": self.cnpj, "port": self.port}))
+        self.lock = Lock()
         self.lock_exec = Lock()
+        self.receive_acks = {}
 
     # Método para fazer login na conta
     def login(self, user, password):
-        for client in self.clients:
-            if self.clients[client].user == user:
-                if self.clients[client].password == password:
-                    return f"{self.clients[client].name};{self.clients[client].cpf};{self.clients[client].type_account}"
+        for client in self.clients_accounts:
+            if self.clients_accounts[client].user == user:
+                if self.clients_accounts[client].password == password:
+                    return (f"{self.clients_accounts[client].name};{self.clients_accounts[client].cpf};"
+                            f"{self.clients_accounts[client].type_account}")
                 raise Exceptions.InvalidPassword
         raise Exceptions.ClientNotFound
 
     # Método para deslogar da conta
     def logout(self, user):
-        for client in self.clients:
-            if self.clients[client].user == user:
-                return f"Deslogado com sucesso da conta de {self.clients[client].name}!"
+        for client in self.clients_accounts:
+            if self.clients_accounts[client].user == user:
+                return f"Deslogado com sucesso da conta de {self.clients_accounts[client].name}!"
         raise Exceptions.ClientNotFound
-
-    # ------------------------------------ Funções para a criação das contas ------------------------------------ #
 
     # Método para criar uma conta física particular
     def create_physical_particular(self, name, cpf, user, password, balance):
         with self.lock:
-            if cpf+"phys" in self.clients:
+            if cpf+"phys" in self.clients_accounts:
                 raise Exceptions.ClientAlreadyExists
 
-            agency, account = Utils.generate_agency_account(self.cnpj, len(self.clients))
-
-            if len(password) < 6:
-                raise Exceptions.InvalidPassword
-            elif len(cpf) != 11:
-                raise Exceptions.InvalidCPF
-            elif balance < 100:
-                raise Exceptions.InvalidBalance
+            agency, account = self.generate_agency_account()
 
             new_client = PhysicalClient.PhysicalClient(name, cpf, user, password, balance, agency, account)
-            self.clients[cpf+"phys"] = new_client
-
-            # Verificar se a conta existe em outros bancos
-            #self.check_account(cpf+"phys")
-
+            self.clients_accounts[cpf+"phys"] = new_client
             return f"Conta particular para {name} criada com sucesso!"
 
     # Método para criar uma conta física conjunta
     def create_physical_joint(self, name, cpf, user, password, balance):
         with self.lock:
-            if cpf+"join" in self.clients:
+            if cpf+"join" in self.clients_accounts:
                 raise Exceptions.ClientAlreadyExists
 
-            agency, account = Utils.generate_agency_account(self.cnpj, len(self.clients))
-
-            if len(password) < 6:
-                raise Exceptions.InvalidPassword
-            elif len(cpf) != 11:
-                raise Exceptions.InvalidCPF
-            elif balance < 100:
-                raise Exceptions.InvalidBalance
+            agency, account = self.generate_agency_account()
 
             new_client = JointClient.JointClient(name, cpf, user, password, agency, account)
             new_account = JointClient.JointAccount(balance)
             new_client.is_holder = True
             new_client.unity = new_account
-            self.clients[cpf+"join"] = new_client
-
-            #self.check_account(cpf+"join")
-
+            self.clients_accounts[cpf+"join"] = new_client
             return f"Conta conjunta para {name} criada com sucesso!"
 
     # Método para criar uma conta física conjunta complementar
     def create_joint_complementary(self, cpf_holder, name, cpf, user, password):
         with self.lock:
-            if cpf+"join" in self.clients or cpf in self.clients[cpf_holder+"join"].accounts:
-                raise Exceptions.ClientAlreadyExists
-            elif cpf_holder+"join" not in self.clients:
+            if cpf_holder+"join" not in self.clients_accounts:
                 raise Exceptions.ClientNotFound
+            if cpf+"join" in self.clients_accounts[cpf_holder+"join"].accounts:
+                raise Exceptions.ClientAlreadyExists
 
-            if len(password) < 6:
-                raise Exceptions.InvalidPassword
-            elif len(cpf) != 11:
-                raise Exceptions.InvalidCPF
-
-            agency, account = Utils.generate_agency_account(self.cnpj, len(self.clients))
+            agency, account = self.generate_agency_account()
 
             new_client = JointClient.JointClient(name, cpf, user, password, agency, account)
             new_client.is_holder = False
-            account_holder = self.clients[cpf_holder+"join"].unity
+            account_holder = self.clients_accounts[cpf_holder+"join"].unity
             new_client.unity = account_holder
 
-            self.clients[cpf_holder+"join"].accounts[cpf+"join"] = new_client
-            self.clients[cpf+"join"] = new_client
-
-            #self.check_account(cpf+"join")
-
+            self.clients_accounts[cpf_holder+"join"].accounts[cpf+"join"] = new_client
+            self.clients_accounts[cpf+"join"] = new_client
             return f"Conta complementar para {name} criada com sucesso!"
 
     # Método para criar uma conta jurídica admin
     def create_juridic_account(self, name_company, cnpj, name, user, cpf, password, balance):
         with self.lock:
-            if cnpj in self.clients:
+            if cnpj in self.clients_accounts:
                 raise Exceptions.ClientAlreadyExists
-            elif len(password) < 6:
-                raise Exceptions.InvalidPassword
-            elif len(cnpj) != 14:
-                raise Exceptions.InvalidCNPJ
 
-            agency, account = Utils.generate_agency_account(self.cnpj, len(self.clients))
+            agency, account = self.generate_agency_account()
 
             new_client = JuridicAccount.JuridicClient(name, cpf, user, password, agency, account)
             new_account = JuridicAccount.JuridicAccount(name_company, cnpj, balance)
@@ -177,129 +120,68 @@ class Bank:
             new_client.unity = new_account
 
             new_account.accounts[cpf+"juri"] = new_client
-            self.clients[cnpj] = new_account
-
-            #self.check_account(cpf+"juri")
-
+            self.clients_accounts[cnpj] = new_account
             return f"Conta jurídica admin para {name_company} criada com sucesso!"
 
     # Método para criar uma conta jurídica empregado
     def create_juridic_employee(self, cnpj, name, user, cpf, password):
         with self.lock:
-            if cnpj not in self.clients or cpf in self.clients[cnpj].accounts:
+            if cnpj not in self.clients_accounts:
                 raise Exceptions.ClientNotFound
-            elif len(password) < 6:
-                raise Exceptions.InvalidPassword
-            elif len(cpf) != 11:
-                raise Exceptions.InvalidCPF
+            elif cpf+"juri" in self.clients_accounts:
+                raise Exceptions.ClientAlreadyExists
 
-            agency, account = Utils.generate_agency_account(self.cnpj, len(self.clients))
+            agency, account = self.generate_agency_account()
 
             new_client = JuridicAccount.JuridicClient(name, cpf, user, password, agency, account)
-            object_admin = self.clients[cnpj]
+            object_admin = self.clients_accounts[cnpj]
             new_client.is_admin = False
             new_client.unity = object_admin
 
-            self.clients[cnpj].accounts[cpf+"juri"] = new_client
-            self.clients[cpf+"juri"] = new_client
-
-            #self.check_account(cpf+"juri")
-
+            self.clients_accounts[cnpj].accounts[cpf+"juri"] = new_client
+            self.clients_accounts[cpf+"juri"] = new_client
             return f"Conta jurídica empregado para {name} criada com sucesso!"
 
-    # Método para retornar a lista de contas
-    # Lembrete: não é possível retornar a lista pura, pois ela é um objeto, então é necessário retornar um texto
-    def get_accounts(self):
-        text_return = ""
-        for client in self.clients:
-            if self.clients[client].type_account == "juridic_company":
-                text_return += (f" | {self.clients[client].name}, {self.clients[client].cnpj}, "
-                                f"{self.clients[client].type_account}, R$ {self.clients[client].balance} | ")
-            elif (self.clients[client].type_account == "juridic"
-                  or self.clients[client].type_account == "physical_joint"):
-                text_return += (f" | {self.clients[client].name}, {self.clients[client].cpf}, {self.clients[client].unity.balance}, "
-                                f"{self.clients[client].type_account} | ")
-            else:
-                text_return += (f" | {self.clients[client].name}, {self.clients[client].cpf}, "
-                                f"{self.clients[client].type_account}, R$ {self.clients[client].balance} | ")
-        return text_return
-
-
-    '''# Método para fazer a request de verificação se a conta existe
-    def check_account(self, cpf):
-        for bank in self.operations.banks:
-            # Verificar se o banco é o mesmo
-            if bank["port"] == self.port:
-                self.clients[cpf].accounts_bank[self.port] = True
-            else:
-                # Verificar se o banco está ativo
-                try:
-                    response = requests.get(f"http://{bank['host']}:{bank['port']}/{cpf}/exist_account")
-                    if response.json():
-                        self.clients[cpf].accounts_bank[bank["port"]] = True
-                    else:
-                        self.clients[cpf].accounts_bank[bank["port"]] = False
-                # Caso o banco não esteja ativo?
-                except requests.exceptions.ConnectionError:
-                    self.clients[cpf].accounts_bank[bank["port"]] = False
-
-    # Método para verificar se a conta existe no banco
-    def exist_account(self, cpf):
-        with self.lock:
-            if cpf in self.clients:
-                return True
-            return False
-'''
-    # ------------------------------------ Funções para as transações ------------------------------------ #
+    # Método para gerar a agência e o número da conta de um cliente
+    def generate_agency_account(self):
+        return Utils.generate_agency_account(self.cnpj, len(self.clients_accounts))
 
     # Método para a criação de uma chave PIX
     def create_pix_key(self, cpf, type, type_key, key):
-        print("TYPE ", type)
         with self.lock:
             if type == "physical":
-                if cpf+"phys" not in self.clients:
+                if cpf+"phys" not in self.clients_accounts:
                     raise Exceptions.ClientNotFound
+
+                elif self.clients_accounts[cpf+"phys"].pix[type_key] is not None:
+                    raise Exceptions.KeyAlreadyExists
+
                 key_pix = self.generate_key(type_key, key)
-                self.clients[cpf+"phys"].pix[type_key] = key_pix
-                return f"Chave PIX {type_key} para {self.clients[cpf+"phys"].name} criada com sucesso!"
+                self.clients_accounts[cpf+"phys"].pix[type_key] = key_pix
+                return f"Chave PIX {type_key} para {self.clients_accounts[cpf+"phys"].name} criada com sucesso!"
 
             elif type == "physical_joint":
-                if cpf+"join" not in self.clients:
+                if cpf+"join" not in self.clients_accounts:
                     raise Exceptions.ClientNotFound
+
+                elif self.clients_accounts[cpf+"join"].pix[type_key] is not None:
+                    raise Exceptions.KeyAlreadyExists
+
                 key_pix = self.generate_key(type_key, key)
-                self.clients[cpf+"join"].pix[type_key] = key_pix
-                return f"Chave PIX {type_key} para {self.clients[cpf+"join"].name} criada com sucesso!"
+                self.clients_accounts[cpf+"join"].pix[type_key] = key_pix
+                return f"Chave PIX {type_key} para {self.clients_accounts[cpf+"join"].name} criada com sucesso!"
 
             elif type == "juridic":
-                if cpf+"juri" not in self.clients:
+                if cpf+"juri" not in self.clients_accounts:
                     raise Exceptions.ClientNotFound
+
+                elif self.clients_accounts[cpf+"juri"].pix[type_key] is not None:
+                    raise Exceptions.KeyAlreadyExists
+
                 key_pix = self.generate_key(type_key, key)
-                self.clients[cpf+"juri"].pix[type_key] = key_pix
-                return f"Chave PIX {type_key} para {self.clients[cpf+"juri"].name} criada com sucesso!"
-
-            return f"Não foi possível criar a chave PIX para contas de empresa!"
-
-    # Método para retornar as chaves pix de um usuário específico
-    def get_keys(self, cpf):
-        with self.lock:
-            if cpf+"phys" in self.clients:
-                return self.clients[cpf+"phys"].pix
-            elif cpf+"join" in self.clients:
-                return self.clients[cpf+"join"].pix
-            elif cpf+"juri" in self.clients:
-                return self.clients[cpf+"juri"].pix
-            return f"Não foi possível encontrar as chaves PIX para o CPF {cpf}!"
-
-    '''def return_keys(self):
-        text = ""
-        for client in self.clients:
-            if self.clients[client].type_account == "juridic_company":
-                continue
-            else:
-                text += (f"\t{self.clients[client].name}, {self.clients[client].cpf}, {self.clients[client].pix},"
-                         f"{self.clients[client].type_account}\n")
-        return text'''
-
+                self.clients_accounts[cpf+"juri"].pix[type_key] = key_pix
+                return f"Chave PIX {type_key} para {self.clients_accounts[cpf+"juri"].name} criada com sucesso!"
+            raise Exceptions.ClientNotFound
 
     # Método para gerar ou verificar se a chave está correta
     def generate_key(self, type, key):
@@ -307,250 +189,362 @@ class Bank:
             key = Utils.generate_random_key()
         elif type == "cpf_cnpj":
             if len(key) != 11:
-                raise Exceptions.InvalidCPF
+                raise Exceptions.InvalidKey
             elif len(key) != 14:
-                raise Exceptions.InvalidCNPJ
+                raise Exceptions.InvalidKey
         elif type == "email":
             if "@" not in key:
-                raise Exceptions.InvalidEmail
+                raise Exceptions.InvalidKey
         elif type == "phone":
             if len(key) != 11:
-                raise Exceptions.InvalidPhone
+                raise Exceptions.InvalidKey
         else:
-            raise Exceptions.TypeKeyNotFound
+            raise Exceptions.InvalidKey
         return key
+
+    # Método para retornar as chaves pix de um usuário específico
+    def get_keys(self, cpf, type):
+        if type == "physical":
+            if cpf+"phys" in self.clients_accounts:
+                return self.clients_accounts[cpf+"phys"].pix
+
+        elif type == "physical_joint":
+            if cpf+"join" in self.clients_accounts:
+                return self.clients_accounts[cpf+"join"].pix
+
+        elif type == "juridic":
+            if cpf+"juri" in self.clients_accounts:
+                return self.clients_accounts[cpf+"juri"].pix
+        raise Exceptions.ClientNotFound
+
+    # Método para retornar o saldo de uma conta específica
+    def get_balance(self, cpf, type):
+        if type == "physical":
+            if cpf+"phys" in self.clients_accounts:
+                return self.clients_accounts[cpf+"phys"].balance
+
+        elif type == "physical_joint":
+            if cpf+"join" in self.clients_accounts:
+                return self.clients_accounts[cpf+"join"].unity.balance
+
+        elif type == "juridic":
+            if cpf+"juri" in self.clients_accounts:
+                return self.clients_accounts[cpf+"juri"].unity.balance
+        raise Exceptions.ClientNotFound
+
+    # Método para retornar a lista de clientes
+    def get_clients(self):
+        if len(self.clients_accounts) == 0:
+            raise Exceptions.ClientNotFound
+        clients = []
+        for client in self.clients_accounts:
+            clients.append([self.clients_accounts[client].name, self.clients_accounts[client].cpf,
+                            self.clients_accounts[client].type_account])
+        return str(clients)
+
+    # ------------------------------------------------------------------------------------------------------------ #
+
+    # Método para criar uma transferência
+    def create_transfer(self, operations):
+        return_transfer = self.add_new_operation(operations)
+        return return_transfer
+
+    # Método para criar um depósito
+    def create_deposit(self, host, port, cpf, type, value):
+        op = {"host": host, "port": port, "cpf": cpf, "type": type, "value": value, "operation": "deposit"}
+        retorno = self.add_new_operation(str([op]))
+        return retorno
+
+    # Método para criar um saque
+    def create_withdraw(self, host, port, cpf, type, value):
+        op = {"host": host, "port": port, "cpf": cpf, "type": type, "value": value, "operation": "withdraw"}
+        retorno = self.add_new_operation(str([op]))
+        return retorno
 
     # Método para realizar um depósito
     def deposit(self, cpf_cnpj, type_account, key, value):
         if type_account == "physical":
-            if cpf_cnpj+"phys" not in self.clients:
+            if cpf_cnpj+"phys" not in self.clients_accounts:
                 raise Exceptions.ClientNotFound
-            elif key not in self.clients[cpf_cnpj+"phys"].pix.values():
+
+            elif key not in self.clients_accounts[cpf_cnpj+"phys"].pix.values():
                 raise Exceptions.KeyNotFound
-            self.clients[cpf_cnpj+"phys"].balance += value
-            return (f"Deposito de R${value} realizado com sucesso para uma conta {self.clients[cpf_cnpj+"phys"].name} "
-                    f"do tipo {self.clients[cpf_cnpj+"phys"].type_account}!")
+
+            self.clients_accounts[cpf_cnpj+"phys"].balance += value
+            return (f"Deposito de R$ {value} realizado com sucesso para uma conta "
+                    f"{self.clients_accounts[cpf_cnpj+"phys"].name} "
+                    f"do tipo {self.clients_accounts[cpf_cnpj+"phys"].type_account}!")
 
         elif type_account == "physical_joint":
-            if cpf_cnpj+"join" not in self.clients:
+            if cpf_cnpj+"join" not in self.clients_accounts:
                 raise Exceptions.ClientNotFound
-            elif key not in self.clients[cpf_cnpj+"join"].pix.values():
+
+            elif key not in self.clients_accounts[cpf_cnpj+"join"].pix.values():
                 raise Exceptions.KeyNotFound
-            self.clients[cpf_cnpj+"join"].unity.balance += value
-            return (f"Deposito de R${value} realizado com sucesso para uma conta {self.clients[cpf_cnpj+"join"].name} "
-                    f"do tipo {self.clients[cpf_cnpj+"join"].type_account}!")
+
+            self.clients_accounts[cpf_cnpj+"join"].unity.balance += value
+            return (f"Deposito de R${value} realizado com sucesso para uma conta "
+                    f"{self.clients_accounts[cpf_cnpj+"join"].name} "
+                    f"do tipo {self.clients_accounts[cpf_cnpj+"join"].type_account}!")
 
         elif type_account == "juridic":
-            if cpf_cnpj+"juri" not in self.clients:
+            if cpf_cnpj+"juri" not in self.clients_accounts:
                 raise Exceptions.ClientNotFound
-            elif key not in self.clients[cpf_cnpj+"juri"].pix.values():
+
+            elif key not in self.clients_accounts[cpf_cnpj+"juri"].pix.values():
                 raise Exceptions.KeyNotFound
-            self.clients[cpf_cnpj+"juri"].unity.balance += value
-            return (f"Deposito de R${value} realizado com sucesso para uma conta do tipo "
-                    f"{self.clients[cpf_cnpj+"juri"].type_account}!")
+
+            self.clients_accounts[cpf_cnpj+"juri"].unity.balance += value
+            return (f"Deposito de R${value} realizado com sucesso para uma conta "
+                    f"{self.clients_accounts[cpf_cnpj+"juri"].name} "
+                    f"do tipo {self.clients_accounts[cpf_cnpj+"juri"].type_account}!")
 
         elif type_account == "juridic_company":
-            if cpf_cnpj not in self.clients:
+            if cpf_cnpj not in self.clients_accounts:
                 raise Exceptions.ClientNotFound
-            elif key not in self.clients[cpf_cnpj].pix.values():
+
+            elif key not in self.clients_accounts[cpf_cnpj].pix.values():
                 raise Exceptions.KeyNotFound
-            self.clients[cpf_cnpj].balance += value
-            return (f"Deposito de R${value} realizado com sucesso para uma conta {self.clients[cpf_cnpj].name} do tipo "
-                    f"{self.clients[cpf_cnpj].type_account}")
+
+            self.clients_accounts[cpf_cnpj].balance += value
+            return (f"Deposito de R${value} realizado com sucesso para uma conta "
+                    f"{self.clients_accounts[cpf_cnpj].name} "
+                    f"do tipo {self.clients_accounts[cpf_cnpj].type_account}")
+        raise Exceptions.ClientNotFound
+
+    '''def deposit(self, cpf_cnpj, type_account, key, value):
+        if type_account == "physical":
+            if cpf_cnpj+"phys" not in self.clients_accounts:
+                raise Exceptions.ClientNotFound
+            elif key not in self.clients_accounts[cpf_cnpj+"phys"].pix.values():
+                raise Exceptions.KeyNotFound
+            self.clients_accounts[cpf_cnpj+"phys"].balance += value
+            return (f"Deposito de R${value} realizado com sucesso para uma conta {self.clients_accounts[cpf_cnpj+"phys"].name} "
+                    f"do tipo {self.clients_accounts[cpf_cnpj+"phys"].type_account}!")
+
+        elif type_account == "physical_joint":
+            if cpf_cnpj+"join" not in self.clients_accounts:
+                raise Exceptions.ClientNotFound
+            elif key not in self.clients_accounts[cpf_cnpj+"join"].pix.values():
+                raise Exceptions.KeyNotFound
+            self.clients_accounts[cpf_cnpj+"join"].unity.balance += value
+            return (f"Deposito de R${value} realizado com sucesso para uma conta {self.clients_accounts[cpf_cnpj+"join"].name} "
+                    f"do tipo {self.clients_accounts[cpf_cnpj+"join"].type_account}!")
+
+        elif type_account == "juridic":
+            if cpf_cnpj+"juri" not in self.clients_accounts:
+                raise Exceptions.ClientNotFound
+            elif key not in self.clients_accounts[cpf_cnpj+"juri"].pix.values():
+                raise Exceptions.KeyNotFound
+            self.clients_accounts[cpf_cnpj+"juri"].unity.balance += value
+            return (f"Deposito de R${value} realizado com sucesso para uma conta do tipo "
+                    f"{self.clients_accounts[cpf_cnpj+"juri"].type_account}!")
+
+        elif type_account == "juridic_company":
+            if cpf_cnpj not in self.clients_accounts:
+                raise Exceptions.ClientNotFound
+            elif key not in self.clients_accounts[cpf_cnpj].pix.values():
+                raise Exceptions.KeyNotFound
+            self.clients_accounts[cpf_cnpj].balance += value
+            return (f"Deposito de R${value} realizado com sucesso para uma conta {self.clients_accounts[cpf_cnpj].name} do tipo "
+                    f"{self.clients_accounts[cpf_cnpj].type_account}")
 
         return (f"Não foi possível realizar o d"
-                f"eposito!")
+                f"eposito!")'''
+
+    # Método para realizar um depósito interno
+    def in_deposit(self, cpf, type, value):
+        if type == "physical":
+            if cpf+"phys" not in self.clients_accounts:
+                raise Exceptions.ClientNotFound
+            self.clients_accounts[cpf+"phys"].balance += value
+            return f"Depósito de R$ {value} realizado com sucesso!"
+
+        elif type == "physical_joint":
+            if cpf+"join" not in self.clients_accounts:
+                raise Exceptions.ClientNotFound
+            self.clients_accounts[cpf+"join"].unity.balance += value
+            return f"Depósito de R$ {value} realizado com sucesso!"
+
+        elif type == "juridic":
+            if cpf+"juri" not in self.clients_accounts:
+                raise Exceptions.ClientNotFound
+            self.clients_accounts[cpf+"juri"].unity.balance += value
+            return f"Depósito de R$ {value} realizado com sucesso!"
+
+        elif type == "juridic_company":
+            if cpf not in self.clients_accounts:
+                raise Exceptions.ClientNotFound
+            self.clients_accounts[cpf].balance += value
+            return f"Depósito de R$ {value} realizado com sucesso!"
+        return "Nulo"
 
     # Método para realizar um saque
     def withdraw(self, cpf_cnpj, type_account, key, value):
+        # Verificar se tem saldo suficiente
+        actual_balance = self.get_balance(cpf_cnpj, type_account)
+        if actual_balance < value:
+            raise Exceptions.InsufficientBalance
+
         if type_account == "physical":
-            if cpf_cnpj+"phys" not in self.clients:
+            if cpf_cnpj+"phys" not in self.clients_accounts:
                 raise Exceptions.ClientNotFound
-            elif key not in self.clients[cpf_cnpj+"phys"].pix.values():
+
+            elif key not in self.clients_accounts[cpf_cnpj+"phys"].pix.values():
                 raise Exceptions.KeyNotFound
-            elif self.clients[cpf_cnpj+"phys"].balance < value:
+
+            elif self.clients_accounts[cpf_cnpj+"phys"].balance < value:
                 raise Exceptions.InsufficientBalance
-            self.clients[cpf_cnpj+"phys"].balance -= value
-            return (f"Saque de R${value} realizado com sucesso para uma conta {self.clients[cpf_cnpj+"phys"].name} "
-                    f"do tipo {self.clients[cpf_cnpj+"phys"].type_account}!")
+
+            self.clients_accounts[cpf_cnpj+"phys"].balance -= value
+            return (f"Saque de R${value} realizado com sucesso para uma conta "
+                    f"{self.clients_accounts[cpf_cnpj+"phys"].name} "
+                    f"do tipo {self.clients_accounts[cpf_cnpj+"phys"].type_account}!")
 
         elif type_account == "physical_joint":
-            if cpf_cnpj+"join" not in self.clients:
+            if cpf_cnpj+"join" not in self.clients_accounts:
                 raise Exceptions.ClientNotFound
-            elif key not in self.clients[cpf_cnpj+"join"].pix.values():
+
+            elif key not in self.clients_accounts[cpf_cnpj+"join"].pix.values():
                 raise Exceptions.KeyNotFound
-            elif self.clients[cpf_cnpj+"join"].unity.balance < value:
+
+            elif self.clients_accounts[cpf_cnpj+"join"].unity.balance < value:
                 raise Exceptions.InsufficientBalance
-            self.clients[cpf_cnpj+"join"].unity.balance -= value
-            return (f"Saque de R${value} realizado com sucesso para uma conta {self.clients[cpf_cnpj+"join"].name} "
-                    f"do tipo {self.clients[cpf_cnpj+"join"].type_account}!")
+
+            self.clients_accounts[cpf_cnpj+"join"].unity.balance -= value
+            return (f"Saque de R${value} realizado com sucesso para uma conta "
+                    f"{self.clients_accounts[cpf_cnpj+"join"].name} "
+                    f"do tipo {self.clients_accounts[cpf_cnpj+"join"].type_account}!")
 
         elif type_account == "juridic":
-            if cpf_cnpj+"juri" not in self.clients:
+            if cpf_cnpj+"juri" not in self.clients_accounts:
                 raise Exceptions.ClientNotFound
-            elif key not in self.clients[cpf_cnpj+"juri"].pix.values():
+
+            elif key not in self.clients_accounts[cpf_cnpj+"juri"].pix.values():
                 raise Exceptions.KeyNotFound
-            elif self.clients[cpf_cnpj+"juri"].unity.balance < value:
+
+            elif self.clients_accounts[cpf_cnpj+"juri"].unity.balance < value:
                 raise Exceptions.InsufficientBalance
-            self.clients[cpf_cnpj+"juri"].unity.balance -= value
-            return (f"Saque de R${value} realizado com sucesso para uma conta {self.clients[cpf_cnpj+"juri"].name} do tipo "
-                    f"{self.clients[cpf_cnpj+"juri"].type_account}!")
+
+            self.clients_accounts[cpf_cnpj+"juri"].unity.balance -= value
+            return (f"Saque de R${value} realizado com sucesso para uma conta "
+                    f"{self.clients_accounts[cpf_cnpj+"juri"].name} do tipo "
+                    f"{self.clients_accounts[cpf_cnpj+"juri"].type_account}!")
 
         elif type_account == "juridic_company":
-            if cpf_cnpj not in self.clients:
+            if cpf_cnpj not in self.clients_accounts:
                 raise Exceptions.ClientNotFound
-            elif key not in self.clients[cpf_cnpj].pix.values():
+
+            elif key not in self.clients_accounts[cpf_cnpj].pix.values():
                 raise Exceptions.KeyNotFound
-            elif self.clients[cpf_cnpj].balance < value:
+
+            elif self.clients_accounts[cpf_cnpj].balance < value:
                 raise Exceptions.InsufficientBalance
-            self.clients[cpf_cnpj].balance -= value
-            return (f"Saque de R${value} realizado com sucesso para uma conta {self.clients[cpf_cnpj].name} do tipo "
-                    f"{self.clients[cpf_cnpj].type_account}")
 
-        return (f"Não foi possível realizar o saque!")
+            self.clients_accounts[cpf_cnpj].balance -= value
+            return (f"Saque de R${value} realizado com sucesso para uma conta "
+                    f"{self.clients_accounts[cpf_cnpj].name} do tipo "
+                    f"{self.clients_accounts[cpf_cnpj].type_account}")
+        raise Exceptions.ClientNotFound
 
-    # Método para retornar o saldo
-    '''def return_balances(self):
-        text = ""
-        for client in self.clients:
-            if self.clients[client].type_account == "physical_joint" or self.clients[client].type_account == "juridic":
-                text += (f"\t{self.clients[client].name}, {self.clients[client].unity.balance}, "
-                         f"{self.clients[client].type_account}\n")
-            else:
-                text += f"\t{self.clients[client].name}, {self.clients[client].balance}, {self.clients[client].type_account}\n"
-        return text'''
+    # Método para realizar um depósito interno
+    def in_withdraw(self, cpf, type, value):
+        actual_balance = self.get_balance(cpf, type)
+        if actual_balance < value:
+            raise Exceptions.InsufficientBalance
 
-    # Método para retornar o saldo de uma conta específica
-    def get_balance(self, cpf, type):
-        if type == "physical" or "juridic_company":
-            if cpf+"phys" in self.clients:
-                return self.clients[cpf+"phys"].balance
-        elif type == "physical_joint" or type == "juridic":
-            if cpf+"join" in self.clients:
-                return self.clients[cpf+"join"].unity.balance
-        return f"Não foi possível encontrar o saldo da conta!"
+        if type == "physical":
+            if cpf+"phys" not in self.clients_accounts:
+                raise Exceptions.ClientNotFound
+            self.clients_accounts[cpf+"phys"].balance -= value
+            return f"Saque de R$ {value} realizado com sucesso!"
 
-    # ------------------------------------ Funções para as transações de fato------------------------------------ #
+        elif type == "physical_joint":
+            if cpf+"join" not in self.clients_accounts:
+                raise Exceptions.ClientNotFound
+            self.clients_accounts[cpf+"join"].unity.balance -= value
+            return f"Saque de R$ {value} realizado com sucesso!"
 
-    # Método para criar um depósito e enviar para a fila
-    def create_deposit(self, bank, cpf, type, key, value):
-        op = {"bank": bank, "cpf": cpf, "type": type, "key": key, "value": value, "operation": "deposit"}
-        retorno = self.add_new_operation(str([op]))
-        return retorno
+        elif type == "juridic":
+            if cpf+"juri" not in self.clients_accounts:
+                raise Exceptions.ClientNotFound
+            self.clients_accounts[cpf+"juri"].unity.balance -= value
+            return f"Saque de R$ {value} realizado com sucesso!"
 
-    # Método para criar um saque e enviar para a fila
-    def create_withdraw(self, bank, cpf, type, key, value):
-        op = {"bank": bank, "cpf": cpf, "type": type, "key": key, "value": value, "operation": "withdraw"}
-        retorno = self.add_new_operation(str([op]))
-        return retorno
+        elif type == "juridic_company":
+            if cpf not in self.clients_accounts:
+                raise Exceptions.ClientNotFound
+            self.clients_accounts[cpf].balance -= value
+            return f"Saque de R$ {value} realizado com sucesso!"
+        raise Exceptions.ClientNotFound
 
-    def create_transfer(self, operations):
-        #list_operations = ast.literal_eval(operations)
-        #print("\n\n\tNA CRIACAO TRANSFERENCIA ", list_operations, type(list_operations), "\n\n")
-        retorno = self.add_new_operation(operations)
-        return retorno
-
-    # Método para criação das operações de transações
-    '''def create_transfer(self, port_recp, port_send, cpf_recp, cpf_send, type_recp, type_send, key, value, same):
-        op = {"recipient": port_recp, "sender": port_send, "cpf_recipient": cpf_recp, "cpf_sender": cpf_send,
-            "type_recipient": type_recp, "type_sender": type_send, "key": key, "value": value,
-            "operation": "transfer"}
-
-        if same == "True":
-            self.operations_package.append(op)
-        else:
-            self.operations_package.append(op)
-            retorno = self.add_new_operation(self.operations_package)
-            return retorno'''
-
-    #def add_operations_in_packet(self, operation):
-        # with self.lock_add:
-        #     if self.operations_package == []:
-        #         self.operations_package.append(operation)
-        #         # USAR O TIMEOUT
-        #         return "Operação adicionada com sucesso! Esperando por mais..."
-        #     else:
-        #         if operation["id"] in self.operations_package:
-        #             self.operations_package.append(operation)
-        #             # colocar um timeout para saber se não chega nova
-        #             return "Operação nova adicionada com sucesso! Esperando por mais..."
-        #         else:
-        #             print("ENTROU AQUI CM QUAL OP ", operation)
-        #             self.add_new_operation(self.operations_package)
-        #             self.operations_package = []
-        #             self.operations_package.append(operation)
-        #             # COLOCAR TIMEOUT
-        #             return "Operação nova adicionada!"
-
-    # ------------------------------------ OPERAÇÕES ------------------------------------ #
+    # ------------------------------------------------------------------------#
 
     # Método para adicionar uma nova operação na fila de prioridade
     def add_new_operation(self, operation):
         with self.lock:
-
+            # Transformar a string em uma lista (pode possuir mais de uma operação)
             list_operations = ast.literal_eval(operation)
 
+            # Incrementar o relógio vetorial e obter o tempo atual
             self.vector_clock.increment()
             time = self.vector_clock.get_time()
             port = str(self.port)
 
+            # Gerar um id único para a operação
             id = port[-2:] + self.unique_id.generate()
-            #op = [time, operation, id]
             op = [time, list_operations, id]
 
-            self.operations.insert_order(op)
+            # Adicionar a operação na fila de prioridade
+            self.queue_operations.insert_order(op)
+
+            # Enviar a operação para os demais bancos
             self.send_new_operation(op)
 
+            # Verificar se o número de acks está correto e se a operação é a primeira da fila em todos os bancos
             check_ack = self.check_acks()
             check_operation = self.check_list_operations(op)
 
+            # Se os acks estiverem corretos e a operação for a primeira da fila em todos os bancos, executar a operação
             if check_ack and check_operation:
-                self.execute_operation()
+                self.execute_operations()
 
-                if len(self.operations.queue) > 0:
-                    self.execute_operation()
+                # Executar enquanto houver operações na fila de prioridade
+                if len(self.queue_operations.queue) > 0:
+                    self.execute_operations()
 
-            return f"Operacao adicionada com sucesso!"
-
-    # Método para verificar se a conta existe no banco
-    '''def exist_account(self, cpf):
-        with self.lock:
-            if cpf in self.clients_accounts:
-                return True
-            return False
-    '''
+            return f"Operação executada com sucesso!"
 
     # Método para executar uma operação da fila de prioridade
-    def execute_operation(self):
+    def execute_operations(self):
         with self.lock_exec:
-            for i in range(len(self.operations.queue)):
+            for i in range(len(self.queue_operations.queue)):
 
-                time, operations = self.operations.queue[0][0], self.operations.queue[0][1]
+                time, operations = self.queue_operations.queue[0][0], self.queue_operations.queue[0][1]
 
                 for op in operations:
                     if op["operation"] == "deposit":
                         # por que no deposito ta dando o erro 405?
-                        response = requests.post(f"http://{self.cnpj}:{op['bank']}/{op['cpf']}/{op['type']}/{op['key']}"
-                                                f"/{op['value']}/deposit")
+                        response = requests.post(f"http://{op['host']}:{op['port']}/{op['cpf']}/{op['type']}"
+                                                 f"/{op['value']}/in_deposit")
                         if response.status_code != 200:
                             break
 
                     elif op["operation"] == "withdraw":
-                        response = requests.post(f"http://{self.cnpj}:{op['bank']}/{op['cpf']}/{op['type']}/{op['key']}"
-                                                f"/{op['value']}/withdraw")
+                        response = requests.post(f"http://{op['host']}:{op['port']}/{op['cpf']}/{op['type']}"
+                                                 f"/{op['value']}/withdraw")
                         if response.status_code != 200:
                             break
 
                     elif op["operation"] == "transfer":
-                        # Primeiramente, faz o depósito na conta do destinatário
-                        response = requests.post(f"http://{self.cnpj}:{op['recipient']}/{op['cpf_recipient']}/"
-                                                f"{op['type_recipient']}/{op['key_recp']}"
-                                                f"/{op['value']}/deposit")
+                        response = requests.post(f"http://{op['host_send']}:{op['port_send']}/{op['cpf_send']}"
+                                                 f"/{op['type_send']}"
+                                                 f"/{op['value']}/in_withdraw")
+
                         if response.status_code == 200:
-                            # Em seguida, faz o saque na conta do remetente
-                            response = requests.post(f"http://{self.cnpj}:{op['sender']}/{op['cpf_sender']}/"
-                                                    f"{op['type_sender']}/{op['key_send']}"
-                                                    f"/{op['value']}/withdraw")
+                            response = requests.post(f"http://{op['host_recp']}:{op['port_recp']}/{op['cpf_recp']}"
+                                                     f"/{op['type_recp']}/{op['key_recp']}"
+                                                     f"/{op['value']}/deposit")
 
                             if response.status_code != 200:
                                 break
@@ -561,11 +555,7 @@ class Bank:
 
             return "Operações executadas com sucesso!"
 
-    # Método para adicionar as operações executadas em cada banco
-    def add_first_operation(self, operation):
-        self.operations.queue_exec.append(operation)
-        return "Operação adicionada com sucesso!"
-
+    # Método para deletar as operações executadas em cada um dos bancos
     def delete_operations(self):
         # Quando retornar depois da execução...
         # Excluir a operação da fila de prioridade
@@ -573,15 +563,17 @@ class Bank:
             response = requests.get(f"http://{bank['host']}:{bank['port']}/delete_first_operation")
             requests.get(f"http://{bank['host']}:{bank['port']}/{response.json()}/add_first_operation")
 
+    # Método para adicionar as operações executadas em cada banco
+    def add_first_operation(self, operation):
+        self.queue_operations.queue_exec.append(operation)
+        return "Operação adicionada com sucesso!"
+
     # Método para deletar a primeira operação da fila de prioridade
     def delete_first_operation(self):
-        if len(self.operations.queue) > 0:
-            pop_op = self.operations.queue.pop(0)
+        if len(self.queue_operations.queue) > 0:
+            pop_op = self.queue_operations.queue.pop(0)
             return pop_op
-
-    # Método para retornar a primeira operação da fila de prioridade
-    def get_first_operation(self):
-        return self.operations.queue[0][0]
+        return "Fila de prioridade vazia!"
 
     # Método para verificar a lista de operações dos outros bancos
     def check_list_operations(self, operation):
@@ -593,6 +585,10 @@ class Bank:
             if response.json() != time:
                 return False
         return True
+
+    # Método para retornar a primeira operação da fila de prioridade
+    def get_first_operation(self):
+        return self.queue_operations.queue[0][0]
 
     # Método para enviar uma nova operação para os demais bancos
     def send_new_operation(self, operation):
@@ -611,10 +607,9 @@ class Bank:
 
         self.vector_clock.update(time)
         op = [time, message, id_message]
-        # self.list_operations.insert_element(op)
-        self.operations.insert_order(op)
+        self.queue_operations.insert_order(op)
 
-        # enviar os acks para os outros bancos
+        # Enviar os acks para os outros bancos
         self.send_ack(message, id_message)
 
         return f"Operação {operation} adicionada com sucesso!"
@@ -644,7 +639,7 @@ class Bank:
             port = bank["port"]
             id_bank = str(port)
             id_bank = id_bank[-2:]
-            response = requests.get(f"http://{bank['host']}:{port}/return_ack")
+            response = requests.get(f"http://{bank['host']}:{port}/get_acks")
             dict_acks = json.loads(response.text)
             for id in dict_acks:
                 if id[:2] == id_bank:
@@ -656,14 +651,29 @@ class Bank:
         return True
 
     # Método para retornar os acks do banco
-    def return_acks(self):
+    def get_acks(self):
         return self.receive_acks
 
     # Método para retornar a fila de prioridade do banco
-    def return_queues(self):
-        return f"Fila do banco {self.port}: {self.operations.queue}"
+    def get_queue(self):
+        return f"Fila do banco {self.port}: {self.queue_operations.queue}"
 
     # Método para retornar as operações executadas
     def get_queue_executed(self):
-        return f"Operações executadas do banco {self.port}: {self.operations.queue_exec}"
+        if len(self.queue_operations.queue_exec) == 0:
+            raise Exceptions.QueueIsEmpty
+        return self.queue_operations.queue_exec
+
+
+    def check_client(self, cpf, type):
+        if type == "physical":
+            if cpf+"phys" in self.clients_accounts:
+                return True
+        elif type == "physical_joint":
+            if cpf+"join" in self.clients_accounts:
+                return True
+        elif type == "juridic":
+            if cpf+"juri" in self.clients_accounts:
+                return True
+        raise Exceptions.ClientNotFound
 
