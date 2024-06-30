@@ -16,19 +16,6 @@ def generate_random_key():
     return ''.join(choices("0123456789abcdefghijklmnopqrstuvwxyz", k=32))
 
 
-def get_agency_port(key_receiver, cnpj):
-    port = key_receiver[:4]
-    agency = key_receiver[6:7] + "." + key_receiver[7:8]
-    cnpj_aux = cnpj[:len(cnpj) - 3] + agency
-    return agency, port, cnpj_aux
-
-
-def clear():
-    from os import system, name
-    # no windows e no linux
-    system('cls' if name == 'nt' else 'clear')
-
-
 def make_response(e):
     from flask import make_response
     import json
