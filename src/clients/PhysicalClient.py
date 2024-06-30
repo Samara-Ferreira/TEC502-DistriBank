@@ -1,4 +1,9 @@
+'''
+Descrição: este código contém a classe PhysicalClient, que é uma classe que representa um cliente com conta física.
+'''
 
+
+# Classe que representa um cliente com conta física
 class PhysicalClient:
     def __init__(self, name, cpf, user, password, balance, agency, account):
         self.name = name
@@ -14,10 +19,4 @@ class PhysicalClient:
             "email": None,
             "phone": None,
             "random": None
-        }
-        self.accounts_bank = {
-            5551: False,
-            5552: False,
-            5553: False,
-            5554: False,
         }

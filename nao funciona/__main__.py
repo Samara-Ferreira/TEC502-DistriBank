@@ -22,10 +22,10 @@ if __name__ == "__main__":
     try:
         clear()
         cnpj = API.get_cnpj()
-        print(f"api do banco financeiro rodando na porta {API.PORT}, com IP {cnpj}")
+        print(f"API do banco financeiro rodando na porta {API.PORT}, com IP {cnpj}")
         API.app.run(host="0.0.0.0", port=API.PORT, debug=False, threaded=True)
 
     except KeyboardInterrupt as e:
-        print("api encerrada!")
+        print("API encerrada!")
         sleep(0.5)
         exit(0)
