@@ -11,26 +11,9 @@ class MyException(Exception):
         return f"Exceção: {self.message}"
 
 
-# ------------------------------------ Exceções para a criação de contas ------------------------------------ #
-
-class ClientAlreadyExists(MyException):
+class ClientNotFound(MyException):
     def __init__(self):
-        super().__init__("Cliente já existe.")
-
-
-class InvalidType(MyException):
-    def __init__(self):
-        super().__init__("Tipo inválido.")
-
-
-class InvalidCPF(MyException):
-    def __init__(self):
-        super().__init__("CPF inválido.")
-
-
-class InvalidBalance(MyException):
-    def __init__(self):
-        super().__init__("Saldo inválido.")
+        super().__init__("Cliente não encontrado.")
 
 
 class InvalidPassword(MyException):
@@ -38,71 +21,31 @@ class InvalidPassword(MyException):
         super().__init__("Senha inválida.")
 
 
-class InvalidCNPJ(MyException):
+class ClientAlreadyExists(MyException):
     def __init__(self):
-        super().__init__("CNPJ inválido.")
+        super().__init__("Cliente já existe.")
 
 
-class ClientNotFound(MyException):
+class KeyAlreadyExists(MyException):
     def __init__(self):
-        super().__init__("Cliente não encontrado.")
+        super().__init__("Chave já existe.")
 
 
-# ------------------------------------ Exceções para as transações ------------------------------------ #
-
-
-class InvalidEmail(MyException):
+class InvalidKey(MyException):
     def __init__(self):
-        super().__init__("Email inválido.")
-
-
-class InvalidPhone(MyException):
-    def __init__(self):
-        super().__init__("Telefone inválido.")
-
-
-class TypeKeyNotFound(MyException):
-    def __init__(self):
-        super().__init__("Tipo de chave não encontrado.")
+        super().__init__("Chave inválida.")
 
 
 class KeyNotFound(MyException):
     def __init__(self):
         super().__init__("Chave não encontrada.")
 
+
+class QueueIsEmpty(MyException):
+    def __init__(self):
+        super().__init__("A fila está vazia.")
+
+
 class InsufficientBalance(MyException):
     def __init__(self):
         super().__init__("Saldo insuficiente.")
-
-# ------------------------------------ Exceções para as operações ------------------------------------ #
-class ErrorAddingOperation(MyException):
-    def __init__(self):
-        super().__init__("Erro ao adicionar operação.")
-
-
-class ErrorDeletingOperation(MyException):
-    def __init__(self):
-        super().__init__("Erro ao deletar operação.")
-
-
-class ErrorSendingOperation(MyException):
-    def __init__(self):
-        super().__init__("Erro ao enviar operação.")
-
-
-class ErrorSendingACK(MyException):
-    def __init__(self):
-        super().__init__("Erro ao enviar ACK.")
-
-
-class ErrorReceiveACK(MyException):
-    def __init__(self):
-        super().__init__("Erro ao receber ACK.")
-
-
-class CountACKs(MyException):
-    def __init__(self):
-        super().__init__("Erro ao contar os ACKs.")
-
-
-# ------------------------------------------------------------------------------------------------------------ #
