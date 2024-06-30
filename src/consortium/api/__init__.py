@@ -1,3 +1,7 @@
+'''
+Descrição: Arquivo referente a importação de módulos do projeto.
+'''
+
 import os
 import sys
 
