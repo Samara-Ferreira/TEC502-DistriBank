@@ -1,12 +1,11 @@
-
-
+'''
+Descrição: este código é o principal da aplicação do sistema bancário e contém as funções de menu.
+'''
 
 # Importar as bibliotecas necessárias
-import __init__
-from os import system, name
-from app import Application
 from time import sleep
-
+from os import system, name
+from Application import Application
 
 banks = [
     {"host": "192.168.0.111", "port": 5551, "active": False},
@@ -15,166 +14,212 @@ banks = [
     {"host": "192.168.0.111", "port": 5554, "active": False}
 ]
 
+
 # Limpar o terminal antes de iniciar
 def clear():
     # no windows e no linux
     system('cls' if name == 'nt' else 'clear')
 
 
+# Menu do banco financeiro
 def menu_bank():
     operation = 10
-    while operation != 1:
+    while operation != 0:
         clear()
-        print(f"\n\t- Menu do banco financeiro {banks[bank - 1]['host']}:{banks[bank - 1]['port']} -\n")
-        print("\t\t", app.get_balance(), "\n")
+        print("\t", "-"*60)
+        print(f"\t\tMenu do banco financeiro {banks[bank - 1]['host']}:{banks[bank - 1]['port']}")
+        print("\t", "-"*60)
 
-        print("\t1 - Deslogar") # feito
-        print("\t2 - Criação chave pix")    # feito
-        print("\t3 - Listar chaves pix")    # feito
-        print("\t4 - Depositar")
-        print("\t5 - Sacar")
-        print("\t6 - Transferir")
-        print("\t7 - Extrato [por enquanto, ta de tudo]")
-        print("\t0 - Sair\n")
+        print("\t| Bem-vindo(a), ", app.name, "!")
+        print("\t| CPF: ", app.cpf)
+        print("\t| Tipo de conta: ", app.type)
+        print("\t| Saldo atual: R$", app.account_management.get_balance(), "\n")
 
-        print("\n\tDigite o número correspondente à operação desejada:")
+
+        print("\t", "-"*60)
+        print("\t\t\tOperações dispníveis")
+        print("\t", "-"*60)
+
+        print("\t[1] Criar uma chave pix")
+        print("\t[2] Visualizar minhas chaves pix")
+        print("\t[3] Depositar na conta")
+        print("\t[4] Sacar da conta")
+        print("\t[5] Transferir para outra conta")
+        #print("\t[6] Extrato da conta")
+        print("\t[0] Sair\n")
+
+        print("\n\t Digite o número correspondente à operação desejada:")
         operation = int(input("\t> "))
 
-        if operation == 1:
-            clear()
+        if operation == 0:
+            print("\n\t| Saindo...")
+            sleep(1)
             app.logout()
+
+        elif operation == 1:
+            clear()
+            app.account_management.create_pix_key()
+            input("\n\tPressione qualquer tecla para continuar...")
 
         elif operation == 2:
             clear()
-            app.create_pix_key()
+            app.account_management.get_keys()
+            input("\n\tPressione qualquer tecla para continuar...")
 
         elif operation == 3:
             clear()
-            app.get_keys()
+            app.transactions.create_deposit()
+            input("\n\tPressione qualquer tecla para continuar...")
 
         elif operation == 4:
             clear()
-            app.create_deposit()
+            app.transactions.create_withdraw()
+            input("\n\tPressione qualquer tecla para continuar...")
 
         elif operation == 5:
             clear()
-            app.create_withdraw()
+            app.transactions.create_transfer()
+            input("\n\tPressione qualquer tecla para continuar...")
 
-        elif operation == 6:
-            clear()
-            app.create_transfer()
-
-        elif operation == 7:
-            clear()
-            app.get_statment_bank()
+            '''elif operation == 6:
+                clear()
+                app.account_management.get_statment()
+                input("\n\tPressione qualquer tecla para continuar...")'''
 
         else:
-            print("\n\tOperação inválida!")
-
-        input("\n\tPressione qualquer tecla para continuar...")
+            print("\n\t| Operação inválida!")
 
 
-def menu_initial():
+# Menu inicial do sistema bancário
+def initial_menu():
     while banks[bank - 1]["active"]:
         clear()
-        print("\n\t- Menu inicial -\n")
-        print("\t1 - Login")
-        print("\t2 - Criar conta")
-        print("\t3 - Listar contas")
-        print("\t4 - Obter o extrato bancário")
-        print("\t0 - Desativar banco")
 
-        print("\n\tDigite o número correspondente à operação desejada:")
+        print("\t", "-"*60)
+        print("\t\t\tMenu inicial do sistema bancário")
+        print("\t", "-"*60)
+
+        print("\t[1] Login em uma conta existente")
+        print("\t[2] Criar uma nova conta")
+        print("\t[3] Visualiar todos os clientes")
+        print("\t[4] Visualizar histórico de transações")
+        print("\t[0] Desativar esse banco")
+
+        print("\n\t Digite o número correspondente à operação desejada:")
         operation = int(input("\t> "))
 
-        if operation == 1:
+        if operation == 0:
+            banks[bank - 1]["active"] = False
+            exit(0)
+
+        elif operation == 1:
             response = app.login()
             if response.status_code == 200:
+                print("\t| Tentativa de login na conta...")
                 sleep(1)
                 menu_bank()
 
         elif operation == 2:
-            clear()
-            print("\n\tDigite o tipo de conta que deseja criar:")
-            print("\t1 - Conta física")
-            print("\t2 - Conta conjunta admin")
-            print("\t3 - Conta conjunta complementar")
-            print("\t4 - Conta jurídica admin")
-            print("\t5 - Conta jurídica funcionário")
+            print("\t", "-"*60)
+            print("\n\t| Qual tipo de conta deseja criar?\n")
+            print("\t[1] Conta física particular")
+            print("\t[2] Conta conjunta (titular)")
+            print("\t[3] Conta conjunta (complementar)")
+            print("\t[4] Conta jurídica (admin)")
+            print("\t[5] Conta jurídica (funcionário)")
 
-            type = int(input("\t> "))
+            type = 0
+            while type <= 0 or type > 5:
+                try:
+                    type = int(input("\t> "))
+                except ValueError:
+                    print("\n\t Tipo de conta inválido!")
+                except IndexError:
+                    print("\n\t Opção inválida! Digite um número entre 1 e 5.")
+                except KeyboardInterrupt:
+                    print("\n\tSaindo...")
+                    exit(0)
+
             if type == 1:
-                app.create_account_physics()
+                app.create_account.create_account_physics()
             elif type == 2:
-                app.create_account_joint()
+                app.create_account.create_account_joint()
             elif type == 3:
-                app.create_account_complementary()
+                app.create_account.create_account_complementary()
             elif type == 4:
-                app.create_account_juridic()
+                app.create_account.create_account_juridic()
             elif type == 5:
-                app.create_account_employee()
-            else:
-                print("\n\tTipo de conta inválido!")
+                app.create_account.create_account_employee()
+            input("\n\tPressione qualquer tecla para continuar...")
 
         elif operation == 3:
             clear()
-            app.get_all_accounts()
+            app.get_clients()
+            input("\n\tPressione qualquer tecla para continuar...")
 
         elif operation == 4:
             clear()
-            app.get_statment_bank()
-
-        elif operation == 0:
-            banks[bank - 1]["active"] = False
-            exit(0)
+            app.account_management.get_statment()
+            input("\n\tPressione qualquer tecla para continuar...")
 
         else:
-            clear()
-            print("\n\tOperação inválida!")
-
-        input("\n\tPressione qualquer tecla para continuar...")
+            print("\n\t| Operação inválida!")
 
 
+# Iniciar a aplicação
 if __name__ == "__main__":
     clear()
 
     try:
-        print("\tBem-vindo ao banco financeiro!\n")
-        print("\n\tCom qual banco deseja se conectar?\n")
+        print("\t", "-"*60)
+        print("\t\t\tBem-vindo ao banco financeiro!")
+        print("\t", "-"*60)
+
+        print("\n\t| Com qual banco deseja se conectar?\n")
         for bank in banks:
-            print(f"\tBanco: {banks.index(bank) + 1} - Host: {bank['host']} - Porta: {bank['port']}")
-        print("\t0 - Sair\n")
+            print(f"\tBanco {banks.index(bank) + 1}: Host: {bank['host']} - Porta: {bank['port']}")
+        print("\n\t[0] Sair\n")
 
-        print("\n\tDigite o número correspondente ao banco desejado:")
-        bank = int(input("\t> "))
+        # Escolher um banco; caso seja uma opção inválida, pede para que o usuário insera novamente
+        bank = 0
+        while bank <= 0 or bank > 4:
+            try:
+                print("\n\t Digite o número correspondente ao banco desejado:")
+                bank = int(input("\t> "))
+                banks[bank - 1]["active"] = True
+            except ValueError:
+                print("\n\t| Opção inválida! Digite um número inteiro.")
+            except IndexError:
+                print("\n\t| Opção inválida! Digite um número entre 1 e 4.")
+            except KeyboardInterrupt:
+                print("\n\t| Saindo...")
+                exit(0)
 
-        # Ativando o banco escolhido
-        banks[bank - 1]["active"] = True
-
+        # Conectar ao banco escolhido
         if bank == 1:
             app = Application(banks[0]["host"], banks[0]["port"])
             app.host = banks[0]["host"]
             app.port = str(banks[0]["port"])
         elif bank == 2:
             app = Application(banks[1]["host"], banks[1]["port"])
-            app.host = banks[0]["host"]
-            app.port = str(banks[0]["port"])
+            app.host = banks[1]["host"]
+            app.port = str(banks[1]["port"])
         elif bank == 3:
             app = Application(banks[2]["host"], banks[2]["port"])
-            app.host = banks[0]["host"]
-            app.port = str(banks[0]["port"])
+            app.host = banks[2]["host"]
+            app.port = str(banks[2]["port"])
         elif bank == 4:
             app = Application(banks[3]["host"], banks[3]["port"])
-            app.host = banks[0]["host"]
-            app.port = str(banks[0]["port"])
+            app.host = banks[3]["host"]
+            app.port = str(banks[3]["port"])
         elif bank == 0:
-            print("\n\tSaindo...")
+            print("\n\t| Saindo...")
             exit(0)
 
-        menu_initial()
+        initial_menu()
 
     except KeyboardInterrupt:
-        print("Api encerrada!")
+        print("\n\t| API encerrada!")
         sleep(0.5)
         exit(0)
 
