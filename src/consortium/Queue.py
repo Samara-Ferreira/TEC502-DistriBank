@@ -5,7 +5,7 @@ da fila, como inserir um elemento na fila, ordenar a fila, e comparar elementos 
 
 
 # Classe para a fila de prioridade
-class QueueBank:
+class Queue:
     def __init__(self):
         self.lenght = 0
         self.queue = []
