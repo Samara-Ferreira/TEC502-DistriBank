@@ -1,6 +1,7 @@
 '''
 Descrição: este código contém a classe Bank, que é responsável por gerenciar as contas dos clientes no sistema bancário.
 '''
+import socket
 
 # Importar as bibliotecas necessárias
 import utils.Utils as Utils
@@ -9,16 +10,19 @@ import exceptions.Exceptions as Exceptions
 import clients.JuridicAccount as JuridicAccount
 import clients.PhysicalClient as PhysicalClient
 
-from threading import Lock
+from threading import Lock, Thread
 from socket import gethostbyname, gethostname
 
-from Queue import QueueBank
+from Queue import Queue
+
 from UniqueTwoDigitID import UniqueTwoDigitID
 from VectorialClock import VectorialClock
 
 import ast
 import requests
 import json
+import time
+import socket
 
 
 # Classe que gerencia as contas dos clientes no sistema bancário
@@ -29,19 +33,20 @@ class Bank:
         self.clients_accounts = {}
         self.lock = Lock()
 
-        self.queue_operations = QueueBank()
+        self.queue_operations = Queue()
         self.unique_id = UniqueTwoDigitID()
         self.banks = [
-            {"host": "192.168.0.111", "port": 5551},
-            {"host": "192.168.0.111", "port": 5552},
-            {"host": "192.168.0.111", "port": 5553},
-            {"host": "192.168.0.111", "port": 5554}
+            {"host": "192.168.0.111", "port": 5551, "active": True},
+            {"host": "192.168.0.111", "port": 5552, "active": True},
+            {"host": "192.168.0.111", "port": 5553, "active": True},
+            {"host": "192.168.0.111", "port": 5554, "active": True}
         ]
-        self.vector_clock = VectorialClock(len(self.banks),
-                                            self.banks.index({"host": self.cnpj, "port": self.port}))
+        self.vector_clock = VectorialClock(len(self.banks), self.banks.index({"host": self.cnpj,
+                                                                              "port": self.port, "active": True}))
         self.lock = Lock()
         self.lock_exec = Lock()
         self.receive_acks = {}
+        self.thread_active = Thread(target=self.check_server, args=()).start()
 
     # Método para fazer login na conta
     def login(self, user, password):
@@ -312,46 +317,6 @@ class Bank:
                     f"do tipo {self.clients_accounts[cpf_cnpj].type_account}")
         raise Exceptions.ClientNotFound
 
-    '''def deposit(self, cpf_cnpj, type_account, key, value):
-        if type_account == "physical":
-            if cpf_cnpj+"phys" not in self.clients_accounts:
-                raise Exceptions.ClientNotFound
-            elif key not in self.clients_accounts[cpf_cnpj+"phys"].pix.values():
-                raise Exceptions.KeyNotFound
-            self.clients_accounts[cpf_cnpj+"phys"].balance += value
-            return (f"Deposito de R${value} realizado com sucesso para uma conta {self.clients_accounts[cpf_cnpj+"phys"].name} "
-                    f"do tipo {self.clients_accounts[cpf_cnpj+"phys"].type_account}!")
-
-        elif type_account == "physical_joint":
-            if cpf_cnpj+"join" not in self.clients_accounts:
-                raise Exceptions.ClientNotFound
-            elif key not in self.clients_accounts[cpf_cnpj+"join"].pix.values():
-                raise Exceptions.KeyNotFound
-            self.clients_accounts[cpf_cnpj+"join"].unity.balance += value
-            return (f"Deposito de R${value} realizado com sucesso para uma conta {self.clients_accounts[cpf_cnpj+"join"].name} "
-                    f"do tipo {self.clients_accounts[cpf_cnpj+"join"].type_account}!")
-
-        elif type_account == "juridic":
-            if cpf_cnpj+"juri" not in self.clients_accounts:
-                raise Exceptions.ClientNotFound
-            elif key not in self.clients_accounts[cpf_cnpj+"juri"].pix.values():
-                raise Exceptions.KeyNotFound
-            self.clients_accounts[cpf_cnpj+"juri"].unity.balance += value
-            return (f"Deposito de R${value} realizado com sucesso para uma conta do tipo "
-                    f"{self.clients_accounts[cpf_cnpj+"juri"].type_account}!")
-
-        elif type_account == "juridic_company":
-            if cpf_cnpj not in self.clients_accounts:
-                raise Exceptions.ClientNotFound
-            elif key not in self.clients_accounts[cpf_cnpj].pix.values():
-                raise Exceptions.KeyNotFound
-            self.clients_accounts[cpf_cnpj].balance += value
-            return (f"Deposito de R${value} realizado com sucesso para uma conta {self.clients_accounts[cpf_cnpj].name} do tipo "
-                    f"{self.clients_accounts[cpf_cnpj].type_account}")
-
-        return (f"Não foi possível realizar o d"
-                f"eposito!")'''
-
     # Método para realizar um depósito interno
     def in_deposit(self, cpf, type, value):
         if type == "physical":
@@ -523,20 +488,56 @@ class Bank:
                 time, operations = self.queue_operations.queue[0][0], self.queue_operations.queue[0][1]
 
                 for op in operations:
+                    # Antes de executar, verifica se o banco está ativo
                     if op["operation"] == "deposit":
-                        # por que no deposito ta dando o erro 405?
+                        check_server = True
+                        for bank in self.banks:
+                            if bank["active"] is False:
+                                if bank["port"] == op["port"]:
+                                    check_server = False
+                                    break
+                        if check_server is False:
+                            break
+
                         response = requests.post(f"http://{op['host']}:{op['port']}/{op['cpf']}/{op['type']}"
                                                  f"/{op['value']}/in_deposit")
                         if response.status_code != 200:
                             break
 
                     elif op["operation"] == "withdraw":
+                        check_server = True
+                        for bank in self.banks:
+                            if bank["active"] is False:
+                                if bank["port"] == op["port"]:
+                                    check_server = False
+                                    break
+                        if check_server is False:
+                            break
+
                         response = requests.post(f"http://{op['host']}:{op['port']}/{op['cpf']}/{op['type']}"
                                                  f"/{op['value']}/withdraw")
                         if response.status_code != 200:
                             break
 
                     elif op["operation"] == "transfer":
+                        check_server = True
+                        for bank in self.banks:
+                            if bank["active"] is False:
+                                if bank["port"] == op["port_send"]:
+                                    check_server = False
+                                    break
+                        if check_server is False:
+                            break
+
+                        check_server = True
+                        for bank in self.banks:
+                            if bank["active"] is False:
+                                if bank["port"] == op["port_recp"]:
+                                    check_server = False
+                                    break
+                        if check_server is False:
+                            break
+
                         response = requests.post(f"http://{op['host_send']}:{op['port_send']}/{op['cpf_send']}"
                                                  f"/{op['type_send']}"
                                                  f"/{op['value']}/in_withdraw")
@@ -560,6 +561,9 @@ class Bank:
         # Quando retornar depois da execução...
         # Excluir a operação da fila de prioridade
         for bank in self.banks:
+            if bank["active"] is False:
+                continue
+
             response = requests.get(f"http://{bank['host']}:{bank['port']}/delete_first_operation")
             requests.get(f"http://{bank['host']}:{bank['port']}/{response.json()}/add_first_operation")
 
@@ -579,6 +583,9 @@ class Bank:
     def check_list_operations(self, operation):
         time, message = operation[0], operation[1]
         for bank in self.banks:
+            if bank["active"] is False:
+                continue
+
             if self.port == bank["port"]:
                 continue
             response = requests.get(f"http://{bank['host']}:{bank['port']}/get_first_operation")
@@ -593,6 +600,9 @@ class Bank:
     # Método para enviar uma nova operação para os demais bancos
     def send_new_operation(self, operation):
         for bank in self.banks:
+            if bank["active"] is False:
+                continue
+
             if self.port == bank["port"]:
                 continue
             requests.get(f"http://{bank['host']}:{bank['port']}/{operation}/receive_new_operation")
@@ -617,6 +627,9 @@ class Bank:
     # Método para enviar um ack para os demais bancos
     def send_ack(self, message, id_message):
         for bank in self.banks:
+            if bank["active"] is False:
+                continue
+
             if self.port == bank["port"]:
                 continue
             ack = f"{message};OK;{id_message}"
@@ -635,7 +648,13 @@ class Bank:
 
     # Método para verificar se todos os acks foram recebidos
     def check_acks(self):
+        # Verifica o número de bancos ativos
+        count_banks = len(self.banks)
+
         for bank in self.banks:
+            if bank["active"] is False:
+                count_banks -= 1
+                continue
             port = bank["port"]
             id_bank = str(port)
             id_bank = id_bank[-2:]
@@ -643,10 +662,12 @@ class Bank:
             dict_acks = json.loads(response.text)
             for id in dict_acks:
                 if id[:2] == id_bank:
-                    if len(dict_acks[id]) != (len(self.banks) - 1):
+                    # if len(dict_acks[id]) != (len(self.banks) - 1):
+                    if len(dict_acks[id]) != (count_banks - 1):
                         return False
                 elif id[:2] != id_bank:
-                    if len(dict_acks[id]) != (len(self.banks) - 2):
+                    # if len(dict_acks[id]) != (len(self.banks) - 2):
+                    if len(dict_acks[id]) != (count_banks - 2):
                         return False
         return True
 
@@ -664,7 +685,7 @@ class Bank:
             raise Exceptions.QueueIsEmpty
         return self.queue_operations.queue_exec
 
-
+    # Método para checar se o cliente existe
     def check_client(self, cpf, type):
         if type == "physical":
             if cpf+"phys" in self.clients_accounts:
@@ -677,3 +698,20 @@ class Bank:
                 return True
         raise Exceptions.ClientNotFound
 
+    def check_server(self):
+        while True:
+            for bank in self.banks:
+                try:
+                    timeout = 1
+                    # Cria um novo socket
+                    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                    # Define um tempo limite para a tentativa de conexão
+                    sock.settimeout(timeout)
+                    # Tenta se conectar ao servidor
+                    sock.connect((bank["host"], bank["port"]))
+                    # Fecha o socket
+                    sock.close()
+                    self.banks[self.banks.index(bank)]["active"] = True
+                except (socket.timeout, socket.error):
+                    self.banks[self.banks.index(bank)]["active"] = False
+            time.sleep(5)
