@@ -8,12 +8,18 @@ from os import system, name
 from Application import Application
 
 banks = [
-    {"host": "192.168.0.111", "port": 5551, "active": False},
-    {"host": "192.168.0.111", "port": 5552, "active": False},
-    {"host": "192.168.0.111", "port": 5553, "active": False},
-    {"host": "192.168.0.111", "port": 5554, "active": False}
+    {"host": "172.16.103.1", "port": 5551, "active": False},
+    {"host": "172.16.103.2", "port": 5552, "active": False},
+    {"host": "172.16.103.4", "port": 5553, "active": False},
+    {"host": "172.16.103.5", "port": 5554, "active": False}
 ]
 
+# banks = [
+#     {"host": "192.168.0.111", "port": 5551, "active": False},
+#     {"host": "192.168.0.111", "port": 5552, "active": False},
+#     {"host": "192.168.0.111", "port": 5553, "active": False},
+#     {"host": "192.168.0.111", "port": 5554, "active": False}
+# ]
 
 # Limpar o terminal antes de iniciar
 def clear():
@@ -35,7 +41,6 @@ def menu_bank():
         print("\t| Tipo de conta: ", app.type)
         print("\t| Saldo atual: R$", app.account_management.get_balance(), "\n")
 
-
         print("\t", "-"*60)
         print("\t\t\tOperações dispníveis")
         print("\t", "-"*60)
@@ -45,11 +50,17 @@ def menu_bank():
         print("\t[3] Depositar na conta")
         print("\t[4] Sacar da conta")
         print("\t[5] Transferir para outra conta")
-        #print("\t[6] Extrato da conta")
         print("\t[0] Sair\n")
 
-        print("\n\t Digite o número correspondente à operação desejada:")
-        operation = int(input("\t> "))
+        operation = -1
+        while operation < 0 or operation > 5:
+            try:
+                print("\n\t Digite o número correspondente à operação desejada:")
+                operation = int(input("\t> "))
+            except ValueError:
+                print("\n\t| Opção inválida! Digite um número inteiro.")
+            except IndexError:
+                print("\n\t| Opção inválida! Digite um número entre 0 e 5.")
 
         if operation == 0:
             print("\n\t| Saindo...")
@@ -81,11 +92,6 @@ def menu_bank():
             app.transactions.create_transfer()
             input("\n\tPressione qualquer tecla para continuar...")
 
-            '''elif operation == 6:
-                clear()
-                app.account_management.get_statment()
-                input("\n\tPressione qualquer tecla para continuar...")'''
-
         else:
             print("\n\t| Operação inválida!")
 
@@ -96,7 +102,7 @@ def initial_menu():
         clear()
 
         print("\t", "-"*60)
-        print("\t\t\tMenu inicial do sistema bancário")
+        print(f"\t    Menu inicial do sistema bancário: {app.host}:{app.port}")
         print("\t", "-"*60)
 
         print("\t[1] Login em uma conta existente")
@@ -105,8 +111,15 @@ def initial_menu():
         print("\t[4] Visualizar histórico de transações")
         print("\t[0] Desativar esse banco")
 
-        print("\n\t Digite o número correspondente à operação desejada:")
-        operation = int(input("\t> "))
+        operation = -1
+        while operation < 0 or operation > 4:
+            try:
+                print("\n\t Digite o número correspondente à operação desejada:")
+                operation = int(input("\t> "))
+            except ValueError:
+                print("\n\t| Opção inválida! Digite um número inteiro.")
+            except IndexError:
+                print("\n\t| Opção inválida! Digite um número entre 0 e 4.")
 
         if operation == 0:
             banks[bank - 1]["active"] = False
@@ -116,7 +129,7 @@ def initial_menu():
             response = app.login()
             if response.status_code == 200:
                 print("\t| Tentativa de login na conta...")
-                sleep(1)
+                sleep(0.5)
                 menu_bank()
 
         elif operation == 2:
@@ -180,7 +193,7 @@ if __name__ == "__main__":
             print(f"\tBanco {banks.index(bank) + 1}: Host: {bank['host']} - Porta: {bank['port']}")
         print("\n\t[0] Sair\n")
 
-        # Escolher um banco; caso seja uma opção inválida, pede para que o usuário insera novamente
+        # Escolher um banco; caso seja uma opção inválida, pede para que o utilizador inserir novamente
         bank = 0
         while bank <= 0 or bank > 4:
             try:
@@ -191,15 +204,13 @@ if __name__ == "__main__":
                 print("\n\t| Opção inválida! Digite um número inteiro.")
             except IndexError:
                 print("\n\t| Opção inválida! Digite um número entre 1 e 4.")
-            except KeyboardInterrupt:
-                print("\n\t| Saindo...")
-                exit(0)
 
         # Conectar ao banco escolhido
         if bank == 1:
             app = Application(banks[0]["host"], banks[0]["port"])
             app.host = banks[0]["host"]
             app.port = str(banks[0]["port"])
+
         elif bank == 2:
             app = Application(banks[1]["host"], banks[1]["port"])
             app.host = banks[1]["host"]
@@ -222,4 +233,3 @@ if __name__ == "__main__":
         print("\n\t| API encerrada!")
         sleep(0.5)
         exit(0)
-

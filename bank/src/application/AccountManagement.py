@@ -57,6 +57,7 @@ class AccountManagement:
 
         response = requests.post(f"http://{self.host}:{self.port}/{self.cpf}/{self.type}/{type_key}/{value}"
                                 f"/create_pix_key")
+
         if response.status_code == 200:
             print(f"\n\t| {response.json()}")
         else:
@@ -79,7 +80,6 @@ class AccountManagement:
         else:
             return response.status_code, response.json()
 
-    # POR ENQUANTO, PEGA TODAS AS TRANSAÇÕES!
     # Método que faz requisição para obter o extrato banco (completo)
     def get_statment(self):
         response = requests.get(f"http://{self.host}:{self.port}/get_bank_statement")

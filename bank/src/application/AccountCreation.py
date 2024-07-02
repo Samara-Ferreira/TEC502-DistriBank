@@ -5,7 +5,6 @@ bancário.
 
 # Importar a biblioteca necessária
 import requests
-
 from os import system, name
 
 
@@ -209,11 +208,22 @@ class CreateAccount:
             name = str(input("\t> "))
         return name
 
+    # Aceitar somente números
+    def check_phone(self, phone):
+        while not phone.isdigit():
+            print("\n\t| Telefone inválido! Digite apenas números.")
+            phone = str(input("\t> "))
+        return
+
     # Aceitar somente números e 11 dígitos
     def check_cpf(self, cpf):
         while not cpf.isdigit() or len(cpf) != 11:
-            print("\n\t| CPF inválido! Digite apenas números e 11 dígitos.")
-            cpf = str(input("\t> "))
+            try:
+                print("\n\t| CPF inválido! Digite apenas números e 11 dígitos.")
+                cpf = str(input("\t> "))
+            except ValueError:
+                print("\n\t| CPF inválido! Digite apenas números e 11 dígitos.")
+                cpf = str(input("\t> "))
         return cpf
 
     # Aceitar somente números e 14 dígitos
@@ -226,20 +236,34 @@ class CreateAccount:
     # Aceitar somente letras, números e sem espaços e com no máximo 6 caracteres
     def check_user(self, user):
         while not user.isalnum() or len(user) > 6:
-            print("\n\t| Usuário inválido! Digite apenas letras e números, sem espaços e com no máximo 6 caracteres.")
-            user = str(input("\t> "))
+            try:
+                print("\n\t| Usuário inválido! Digite apenas letras e números, sem espaços e com no máximo 6 "
+                      "caracteres.")
+                user = str(input("\t> "))
+            except ValueError:
+                print("\n\t| Usuário inválido! Digite apenas letras e números, sem espaços e com no máximo 6 "
+                      "caracteres.")
+                user = str(input("\t> "))
         return user
 
     # Aceitar somente letras, números e sem espaços e com no máximo 6 caracteres
     def check_password(self, password):
         while not password.isalnum() or len(password) > 6:
-            print("\n\t| Senha inválida! Digite apenas letras e números, sem espaços e com no máximo 6 caracteres.")
-            password = str(input("\t> "))
+            try:
+                print("\n\t| Senha inválida! Digite apenas letras e números, sem espaços e com no máximo 6 caracteres.")
+                password = str(input("\t> "))
+            except ValueError:
+                print("\n\t| Senha inválida! Digite até no máximo 6 caracteres, sem espaço.")
+                password = str(input("\t> "))
         return password
 
     # Aceitar somente números e com valor mínimo de R$ 100,00
     def check_balance(self, balance, min_balance):
         while balance < min_balance:
-            print(f"\n\t| Saldo inválido! Digite um valor numérico e com o mínimo de R$ {min_balance:.2f}.")
-            balance = float(input("\t> "))
+            try:
+                print(f"\n\t| Saldo inválido! Digite um valor numérico e com o mínimo de R$ {min_balance:.2f}.")
+                balance = float(input("\t> "))
+            except ValueError:
+                print(f"\n\t| Saldo inválido! Digite um valor numérico e com o mínimo de R$ {min_balance:.2f}.")
+                balance = float(input("\t> "))
         return balance

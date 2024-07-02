@@ -39,13 +39,34 @@ class Application:
         print("\t\t\tLogin no sistema bancário")
         print("\t", "-"*60)
 
+        print("\n\t| Qual o tipo de conta?")
+        print("\n\t[1] Conta física particular \n\t[2] Conta física conjunta \n\t[3] Conta jurídica")
+        type_account = 0
+        while type_account < 1 or type_account > 3:
+            try:
+                type_account = int(input("\t> "))
+            except ValueError:
+                print("\n\t| Opção inválida! Digite um número inteiro.")
+            except IndexError:
+                print("\n\t| Opção inválida! Digite um número entre 1 e 3.")
+            except KeyboardInterrupt:
+                print("\n\t| Saindo...")
+                exit(0)
+        if type_account == 1:
+            type_account = "physical"
+        elif type_account == 2:
+            type_account = "physical_joint"
+        else:
+            type_account = "juridic"
+
+
         print("\n\t Digite o seu usuário:")
         user = str(input("\t> "))
 
         print("\n\t Digite a sua senha:")
         password = str(input("\t> "))
 
-        response = requests.post(f"http://{self.host}:{self.port}/{user}/{password}/login")
+        response = requests.post(f"http://{self.host}:{self.port}/{type_account}/{user}/{password}/login")
         if response.status_code == 200:
             self.user = user
             self.name, self.cpf, self.type = response.json().split(";")
