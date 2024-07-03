@@ -1,8 +1,17 @@
-# TEC502-DistriBank
+<div align="center">
+  <img src="/images/logo.png" width="100" height="100">
+
+<h1> TEC502-DistriBank </h1>
+
+</div>
+
+<div align="justify">
+
 > Este projeto foi desenvolvido como parte da disciplina MI - Concorrência e Conectividade, do curso de
 Engenharia de Computação da Universidade Estadual de Feira de Santana (UEFS). O nome "DistriBank" foi escolhido
-> para representar um sistema de transações bancárias distribuído, que permite a realização de transações entre
-> contas de diferentes bancos, sem a necessidade de um intermediário. 
+para representar um sistema de transações bancárias distribuído.
+
+</div>  
 
 ## Sumário 
 - Descrição do projeto
@@ -31,23 +40,25 @@ Engenharia de Computação da Universidade Estadual de Feira de Santana (UEFS). 
 - Execução do projeto
 - Referências
 
-## Descrição do projeto
+<div align="justify">
+  <h1>Descrição do projeto</h1>
 
 O projeto DistriBank é um sistema de transações bancárias distribuído, que permite a realização de transações entre
-contas de diferentes bancos, sem a necessidade de um intermediário, que no cenário real seria o Banco Central. 
-O sistema é composto por vários servidores, cada um representando um banco, que se comunicam entre si para a 
-realização das transações bancárias. Nos testes apresentados, são criadas 4 instâncias de servidores, que 
-representam os bancos do consórcio, e cada servidor possui uma porta específica para a comunicação entre eles.
-É importante ressaltar que o sistema pode utilizar mais de 4 servidores, desde que seja feita a configuração 
-adequada para a comunicação entre eles.
+contas de diferentes bancos sem a necessidade de um intermediário, como o Banco Central. O sistema é composto por 
+vários servidores, cada um representando um banco, que se comunicam entre si para a realização das transações. 
+Nos testes apresentados, são criadas quatro instâncias de servidores, que representam os bancos do consórcio, 
+e cada servidor possui uma porta específica para a comunicação entre eles. É importante ressaltar que o sistema 
+pode utilizar mais do que esse número de servidores, desde que seja feita a configuração adequada, 
+para haver a comunicação entre eles.
 
-Para o desenvolvimento do projeto, foi utilizado a linguagem de programação Python, com o framework Flask para a 
-criação de APIs, e a biblioteca requests para a comunicação entre os servidores, que foi via HTTP. Por fim, 
-o ambiente de desenvolvimento utilizado para criação do projeto foi o PyCharm, podendo ser executado em qualquer 
-IDE de preferência do usuário.
+Para o desenvolvimento do projeto, foi utilizado a linguagem de programação Python, com o ‘framework’ Flask.
+Esse ‘framework’ permite a criação de ‘Interfaces’ de Programação de Aplicativos (Application Programming ‘Interface’ - APIs) 
+de forma simples e eficiente. Também foi utilizado no projeto a biblioteca requests, que permite a comunicação entre
+os servidores, por meio do Protocolo de Transferência de Hipertexto (Hypertext Transfer Protocol - HTTP). 
+O ambiente de desenvolvimento utilizado para a criação do projeto foi o PyCharm, mas o projeto pode ser executado
+em qualquer IDE de preferência do utilizador ou até mesmo no terminal. 
 
-
-## Requisitos e funcionalidades do sistema
+### Requisitos e funcionalidades do sistema
 
 O sistema DistriBank foi desenvolvido para atender as seguintes funcionalidades:
 - Criação de contas bancárias de pessoa física e jurídica;
@@ -59,59 +70,643 @@ O sistema DistriBank foi desenvolvido para atender as seguintes funcionalidades:
 - Tratamento de erros e retorno de conexão;
 - Execução do sistema em containers Docker.
 
+### Componentes principais do sistema
 
-## Gerenciamento de contas
+Como componentes principais do sistema, tem-se a aplicação e os servidores, que representam os bancos do consórcio.
+A aplicação é responsável por realizar a comunicação entre os servidores, por meio de um protocolo de comunicação,
+que permite a transferência de informações entre os servidores, para a realização das transações bancárias.
+Os servidores, por sua vez, são responsáveis por armazenar as informações das contas bancárias, e realizar as operações
+bancárias, como a criação de contas e a realização de transações. É importante ressaltar que além da aplicação, o
+sistema pode usar ‘scripts’ para a realização de transações bancárias concorrentes, que são transações realizadas 
+de forma paralela, para simular um cenário real, onde várias transações são realizadas simultaneamente,
 
-### Criação de contas
+#### Aplicação 
 
-O sistema DistriBank permite a criação de contas bancárias de pessoa física e jurídica. Para a criação de uma conta, o
-usuário deve informar os seguintes dados: nome, CPF, usuário, senha e o valor inicial daquela conta. No caso de uma 
-conta física particular, o valor mínimo exigido para a criação de conta no sistema é de R$ 100,00. 
+PRINTS DO TERMINAL? EXPLICAÇÃO DOS DIRETÓRIOS?
 
-Já para a criação de conta física conjunta, há duas opções: quando a pessoa vai abrir a conta, que cria a conta do 
-titular (opção 2), ou quando a conta já existe e deseja-se adicionar um novo membro, que é a opção 3 (complementar).
-No primeiro caso, segue a mesma lógica da conta de pessoa física particular, mas o limite mínimo exigido é de R$ 200,00.
-No segundo caso, o usuário deve informar o CPF do titular da conta, e só depois entrar com seus dados pessoais, que 
-são os mesmos da pessoa física particular, exceto pelo saldo, que nesse caso, não é informado.
+A aplicação é responsável por realizar a comunicação entre os servidores.
+No diretório, segue a seguinte estrutura:
 
-Por fim, para a criação de conta jurídica, o usuário deve informar os seguintes dados: nome da empresa, CNPJ, e os
-dados pessoais do usuário, como nome, CPF, usuário, senha e o valor inicial da conta. O valor mínimo exigido para a
-criação de conta jurídica é de R$ 300,00. Nesse caso segue a mesma lógica da conta conjunta: o primeiro usuário que cria
-a conta é dito como o "administrador", enquanto ou outros podem ser adicionados, utilizando o cnpj da empre para a busca
-da conta e suas informações pessoais, com exceção, novamente, do saldo inicial.
+    ├── __init__.py
+    ├── __main__.py
+    ├── AccountCreation.py
+    ├── AccountManagement.py
+    ├── Application.py
+    ├── Transactions.py
+    ├── Dockerfile 
 
-As rotas para as criações das contas e suas respectivas respostas podem ser visualizadas abaixo.
+- __main__.py: é o arquivo principal da aplicação, que é responsável por iniciar a 
+aplicação e realizar a comunicação entre os servidores.
+- AccountCreation.py: é o arquivo responsável por realizar a criação de contas bancárias.
+- AccountManagement.py: é o arquivo responsável por realizar a gestão de contas bancárias.
+- Application.py: é o arquivo responsável por realizar a comunicação entre os servidores.
+- Transactions.py: é o arquivo responsável por realizar as transações bancárias.
+- Dockerfile: é o arquivo responsável por criar a imagem do Docker.
 
-### Tipos de contas
+#### Bancos
 
-O sistema DistriBank permite a criação de três tipos de contas bancárias: pessoa física particular, pessoa física conjunta
-e pessoa jurídica. Cada tipo de conta possui suas particularidades, como o valor mínimo exigido para a criação da conta,
-e os dados necessários para a criação da conta. Abaixo, segue a descrição de cada tipo de conta:
+Os bancos são os servidores que compõem o sistema.
 
-- Pessoa física particular: é uma conta de pessoa física, onde o usuário entra com os seguintes dados: nome, CPF, usuário,
-- senha e o valor inicial da conta. O valor mínimo exigido para a criação de conta de pessoa física particular é de R$ 100,00.
-- Pessoa física conjunta: é uma conta de pessoa física, onde o usuário entra com os seguintes dados: nome, CPF, usuário,
-- senha e o valor inicial da conta. O valor mínimo exigido para a criação de conta de pessoa física conjunta é de R$ 200,00.
-- Pessoa jurídica: é uma conta de pessoa jurídica, onde o usuário entra com os seguintes dados: nome da empresa, CNPJ,
-- e os dados pessoais do usuário, como nome, CPF, usuário, senha e o valor inicial da conta. O valor mínimo exigido para a
-- criação de conta jurídica é de R$ 300,00.
-- O sistema permite a criação de mais de uma conta jurídica, sendo diferenciadas por seus CNPJs, que não podem ser iguais.
-- O primeiro usuário que cria a conta é considerado como o "administrador" da conta, e pode adicionar outros usuários à
-- conta, utilizando o CNPJ da empresa para a busca da conta e suas informações pessoais, com exceção do saldo inicial.
 
+    ├── api
+    │   ├── __init__.py
+    │   ├── API.py
+    │   ├── FloatConverter.py
+    ├── clients 
+    │   ├── __init__.py
+    │   ├── JointClient.py
+    │   ├── JuridicClient.py
+    │   ├── PhysicalClient.py
+    ├── exceptions
+    │   ├── __init__.py
+    │   ├── Exceptions.py
+    ├── utils
+    │   ├── __init__.py
+    │   ├── Utils.py
+    ├── __init__.py
+    ├── __main__.py
+    ├── Bank.py
+    ├── Dockerfile
+    ├── Queue.py
+    ├── UniqueTwoDigitID.py
+    ├── VectorialClock.py
+
+- __main__.py: é o arquivo principal do servidor, que é responsável por iniciar o 
+servidor e realizar as operações bancárias.
+- Bank.py: é o arquivo responsável por armazenar as informações das contas bancárias, 
+e realizar as operações bancárias.
+- Queue.py: é o arquivo responsável por criar a fila de execução, que é responsável por 
+garantir que as transações sejam realizadas de forma correta, sem que haja erros ou 
+inconsistências nos saldos das contas.
+- UniqueTwoDigitID.py: é o arquivo responsável por gerar um id único de 2 dígitos, que é
+crucial para a confirmação entre os bancos.
+- VectorialClock.py: é o arquivo responsável por criar o relógio vetorial, que é utilizado
+para definir a posição das transações na fila de execução, de acordo com o seu tempo vetorial.
+- Dockerfile: é o arquivo responsável por criar a imagem do Docker.
+- api/API.py: é o arquivo responsável por realizar a comunicação entre os servidores.
+- api/FloatConverter.py: é o arquivo responsável por converter os valores das transações
+- clients/JointClient.py: é o arquivo responsável por realizar as operações de conta conjunta.
+- clients/JuridicClient.py: é o arquivo responsável por realizar as operações de conta jurídica.
+- clients/PhysicalClient.py: é o arquivo responsável por realizar as operações de conta física.
+- exceptions/Exceptions.py: é o arquivo responsável por tratar as exceções.
+- utils/Utils.py: é o arquivo responsável por realizar as operações de utilidade.
+
+</div>
+
+<div align="justify">
+  <h1>Comunicação entre servidoress</h1>
+
+A comunicação entre os servidores do sistem é feita por meio de um protocolo de comunicação, que permite a 
+transferência de informações entre os servidores, para a realização das transações bancárias. Essas 
+operações são feitas por meio de uma API, que permite essa comunicação entre os diferentes servidores, que estão 
+alocados em diferentes máquinas.
+
+O protocolo utilizado para a comunicação entre a aplicação e os servidores é o HTTP, que é um protocolo de 
+comunicação que permite a transferência de informações na web, e é amplamente utilizado para a comunicação entre 
+servidores. O HTTP é um protocolo de comunicação cliente-servidor, onde o cliente envia uma requisição para o 
+servidor, e o servidor responde com uma resposta, sendo uma boa escolha para o projeto em questão, pois permite a 
+comunicação entre os servidores de forma eficiente e segura.
+
+Essa comunicação é feita por meio de rotas, que são URLs que permitem a comunicação entre os bancos, para a 
+realização das operações disponíveis no sistema. As rotas são definidas por meio de métodos HTTP, como GET, POST,
+PUT e DELETE, que permitem a realização de operações de leitura, criação, atualização e exclusão de informações, 
+respectivamente. 
+
+### Rotas de comunicação
+
+Cada função retorna um JSON com os dados solicitados. A seguir, são apresentados exemplos de requisições para 
+cada uma das rotas da API REST do projeto apresentadas:
+
+- Requisição para fazer login:
+  - Método: POST
+  - Rota: /<string:type>/<string:user>/<string:password>/login
+  - Resposta:
+  - Exemplo de requisição:
+  ```json
+  {
+    "user": "maria11",
+    "type_account": "physical"
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+    "message": "Login feito com sucesso!",
+    "status": 200
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+    "message": "Cliente não encontrado!",
+    "status": 404
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+    "message": "Senha incorreta!",
+    "status": 401
+  }
+  ```
+
+
+- Requisição para fazer logout:
+  - Método: POST
+  - Rota: /<string:type>/<string:user>/logout
+  - Resposta:
+  - Exemplo de requisição:
+  ```json
+  {
+    "user": "maria11"
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+    "message": "Deslogado com sucesso da conta de Maria!",
+    "status": 200
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+    "message": "Cliente não encontrado!",
+    "status": 404
+  }
+  ```
+
+
+- Requisição para criar conta física particular:
+  - Método: POST
+  - Rota: /<string:name>/<string:cpf>/<string:user>/<string:password>/<float:balance>/create_physical_particular
+  - Resposta:
+  - Exemplo de requisição:
+  ```json
+  {
+    "name": "Maria",
+    "cpf": "12345678910",
+    "user": "maria11",
+    "password": "123456",
+    "balance": 100.0
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+    "message": "Conta particular para Maria criada com sucesso!",
+    "status": 200
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+    "message": "Cliente já existe!",
+    "status": 409
+  }
+  ```
+  
+
+- Requisição para criar conta física conjunta:
+  - Método: POST
+  - Rota: /<string:name>/<string:cpf>/<string:user>/<string:password>/<float:balance>/create_physical_joint
+  - Resposta:
+  - Exemplo de requisição:
+  ```json
+  {
+    "name": "José",
+    "cpf": "12345678919",
+    "user": "jose11",
+    "password": "123456",
+    "balance": 200.0
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+    "message": "Conta conjunta para José criada com sucesso!",
+    "status": 200
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+    "message": "Cliente já existe!",
+    "status": 409
+  }
+  ```
+
+
+- Requisição para criar conta jurídica:
+  - Método: POST
+  - Rota: /<string:company>/<string:cnpj>/<string:name>/<string:cpf>/<string:user>/<string:password>/<float:balance>/create_juridic_account
+  - Resposta:
+  - Exemplo de requisição:
+  ```json
+  {
+    "company": "Empresa",
+    "cnpj": "12345678910111",
+    "name": "Maria",
+    "cpf": "12345678910",
+    "user": "maria11",
+    "password": "123456",
+    "balance": 300.0
+    }
+    ```
+    - Exemplo de resposta:
+    ```json
+    {
+        "message": "Conta jurídica (admin) para Empresa criada com sucesso!",
+        "status": 200
+    }
+    ```
+    - Exemplo de resposta:
+    ```json
+    {
+        "message": "Cliente já existe!",
+        "status": 409
+    }
+    ```
+  
+- Requisição para adicionar usuário à conta jurídica:
+  - Método: POST
+  - Rota: /<string:cnpj>/<string:cpf>/<string:name>/<string:user>/<string:password>/create_juridic_employee
+  - Resposta:
+  - Exemplo de requisição:
+  ```json
+  {
+    "cnpj": "12345678910111",
+    "cpf": "12345678911",
+    "name": "José",
+    "user": "jose11",
+    "password": "123456"
+    }
+    ```
+    - Exemplo de resposta:
+    ```json
+    {
+        "message": "Usuário José adicionado à conta jurídica com sucesso!",
+        "status": 200
+    }
+    ```
+    - Exemplo de resposta:
+    ```json
+    {
+        "message": "Cliente já existe!",
+        "status": 409
+    }
+    ```
+  
+- Requisição para criar uma chave pix:
+  - Método: POST
+  - Rota: /<string:cpf>/<string:type>/<string:type_key>/<string:pix>/create_pix_key
+  - Resposta:
+  - Exemplo de requisição:
+  ```json
+  {
+    "cpf": "12345678910",
+    "type": "physical",
+    "type_key": "cpf",
+    "pix": "12345678910"
+    }
+    ```
+    - Exemplo de resposta:
+    ```json
+    {
+        "message": "Chave PIX criada com sucesso!",
+        "status": 200
+    }
+    ```
+    - Exemplo de resposta:
+    ```json
+    {
+        "message": "Chave PIX já existe!",
+        "status": 409
+    }
+    ```
+  - Exemplo de resposta:
+  ```json
+  {
+      "message": "Cliente não encontrado!",
+      "status": 404
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+      "message": "Chave inválida!!",
+      "status": 400
+  }
+  ```
+  
+
+- Requisição para obter as chaves pix:
+  - Método: GET
+  - Rota: /<string:cpf>/<string:type>/get_keys
+  - Resposta:
+  - Exemplo de requisição:
+  ```json
+  {
+    "cpf": "12345678910",
+    "type": "physical"
+    }
+    ```
+    - Exemplo de resposta:
+    ```json
+    {
+        "keys": [
+            {
+                "type_key": "cpf",
+                "pix": "12345678910"
+            }
+        ]
+    }
+    ```
+    - Exemplo de resposta:
+    ```json
+    {
+        "message": "Cliente não encontrado!",
+        "status": 404
+    }
+    ```
+  
+
+- Requisição para obter os clientes:
+  - Método: GET
+  - Rota: /get_clients
+  - Resposta:
+  - Exemplo de resposta:
+  ```json
+  {
+    "clients": [
+        {
+            "cpf_cnpj": "12345678910",
+            "email": "maria@uefs",
+            "phone": "7599999999",
+            "random": None
+        }
+    ]
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+      "message": "Cliente não encontrado!",
+      "status": 404
+  }
+  ```
+  
+- Requisição para obter o saldo atual do cliente:
+  - Método: GET
+  - Rota: /<string:cpf>/<string:type>/get_balance
+  - Resposta:
+  - Exemplo de requisição:
+  ```json
+  {
+    "cpf": "12345678910",
+    "type": "physical"
+    }
+    ```
+    - Exemplo de resposta:
+    ```json
+    {
+        "balance": 100.0
+    }
+    ```
+    - Exemplo de resposta:
+    ```json
+    {
+        "message": "Cliente não encontrado!",
+        "status": 404
+    }
+    ```
+
+- Requisição para obter o extrato de operações do banco:
+- Método: GET
+- Rota: /get_bank_statement
+- Resposta:
+- Exemplo de resposta:
+  ```json
+  {
+    "operations": [
+        {
+            "id": "5500",
+            "operation": "transfer",
+            "cpf_cnpj": "12345678910",
+            "value": 50.0
+        }
+    ]
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+      "message": "Fila vazia!",
+      "status": 404
+  }
+  ```
+  
+- Requisição para criar um depósito:
+  - Método: POST
+  - Rota: /<string:host>/<string:port>/<string:type>/<float:value>/create_deposit
+  - Resposta:
+  - Exemplo de requisição:
+  ```json
+  {
+    "host": "172.16.103.1",
+    "port": "5551",
+    "type": "physical",
+    "value": 100.0
+   }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+    "message": "Depósito de 100.0 criado com sucesso!",
+    "status": 200
+  }
+  ```
+  
+- Requisição para criar uma transferência:
+  - Método: POST
+  - Rota: /<string:list_operations>/create_transfer
+  - Resposta:
+  - Exemplo de requisição:
+  ```json
+  {
+    "list_operations": 
+    [
+        {
+          "host_send": "172.16.103.1",
+          "port_send": "5551",
+          "cpf_send": "12345678910",
+          "type_send": "physical",
+          "value": "value",
+            
+          "host_recp": "172.16.103.2",
+          "port_recp": "5552",
+          "cpf_recp": "12345678919",
+          "type_recp": "physical",
+          "key_recp": "cpf"
+        }
+    ]
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+      "message": "Transferência de 50.0 criada com sucesso!",
+      "status": 200
+  }
+  ```  
+
+- Requisição para fazer um saque:
+  - Método: POST
+  - Rota: /<string:host>/<string:port>/<string:type>/<float:value>/create_withdraw
+  - Resposta:
+  - Exemplo de requisição:
+  ```json
+  {
+    "host": "172.16.103.1",
+    "port": "5551",
+    "type": "physical",
+    "value": 50.0
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+   {
+     "message": "Saque de 50.0 criado com sucesso!",
+     "status": 200
+   }
+  ```
+
+- Requisição para fazer um depósito:
+  - Método: POST
+  - Rota: /<string:cpf>/<string:type>/<string:key>/<float:value>/deposit
+  - Resposta:
+  - Exemplo de requisição:
+  ```json
+  {
+    "cpf": "12345678910",
+    "type": "physical",
+    "key": "cpf",
+    "value": 100.0
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+    "message": "Depósito de 100.0 feito com sucesso!",
+    "status": 200
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+    "message": "Cliente não encontrado!",
+    "status": 404
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+    "message": "Chave não encontrada!",
+    "status": 404
+  }
+  ```
+  
+- Requisição para fazer um saque:
+  - Método: POST
+  - Rota: /<string:cpf>/<string:type>/<string:key>/<float:value>/withdraw
+  - Resposta:
+  - Exemplo de requisição:
+  ```json
+  {
+    "cpf": "12345678910",
+    "type": "physical",
+    "key": "cpf",
+    "value": 50.0
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+    "message": "Saque de 50.0 feito com sucesso!",
+    "status": 200
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+    "message": "Cliente não encontrado!",
+    "status": 404
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+    "message": "Chave não encontrada!",
+    "status": 404
+  }
+  ```
+  
+- Requisição para verificar se um cliente existe:
+  - Método: GET
+  - Rota: /<string:cpf>/<string:type>/check_client
+  - Resposta:
+  - Exemplo de requisição:
+  ```json
+  {
+    "cpf": "12345678910",
+    "type": "physical"
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+    "message": "Cliente encontrado!",
+    "status": 200
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+    "message": "Cliente não encontrado!",
+    "status": 404
+  }
+  ```
+
+</div>
+
+<div align="justify">
+  <h1>Relógio Vetorial</h1>
+
+  <img src="/images/relogio_vetorial.png" >
+
+</div>
 
 ## Algoritmo da concorrência distribuída
 
-Para o tratamento da concorrência distribuída, o sistema faz uso do relógio vetorial junto com o algoritmo mulicast
-totalmente ordenado. O algoritmo de multicast de ordenação com o uso do relógio vetorial é um algoritmo de 
-concorrência distribuída que é responsável por garantir que as transações sejam realizadas de forma correta, 
-sem que haja erros ou inconsistências nos saldos das contas. 
+Para o tratamento da concorrência distribuída, o sistema usa o relógio vetorial com o algoritmo mulicast totalmente 
+ordenado. O algoritmo de multicast de ordenação com o uso do relógio vetorial é um algoritmo de concorrência distribuída 
+que é responsável por garantir que as transações sejam realizadas de forma correta, sem que haja erros ou inconsistências 
+nos saldos das contas. 
 
-O relógio vetorial é utilizado para definir a posição das transações na fila de execução, de acordo com o seu 
-tempo vetorial. A cada nova transação, o relógio vetorial é incrementado em uma unidade e, ao mandar a transação 
-para os demais bancos, para que eles possam inserir em suas filas internas, o tempo de seus relógios é atualizado 
+### Relógio Vetorial
+
+O relógio vetorial é utilizado para definir a posição das transações na fila de execução, conforme o seu 
+tempo vetorial. A cada nova transação, o relógio vetorial é incrementado numa unidade e, ao mandar a transação 
+para os demais bancos, para que eles possam inserir na suas filas internas, o tempo dos seus relógios é atualizado 
 para o relógio do banco que enviou a transação. Assim, é garantido que todos eles tenham o mesmo tempo e, dessa 
-forma, estejam sincronizados. 
+forma, estejam sincronizados. O relógio vetorial é um vetor de tamanho n, onde n é o número de bancos do consórcio, que 
+é responsável por armazenar o tempo de cada banco. Assim, é possível saber a ordem correta das transações, de acordo 
+com o tempo vetorial de cada banco.
+
+IMAGEM DO RELÓGIO VETORIAL
+
+
+### Algoritmo de ordenação em multicast
 
 Com o tempo vetorial e a nova transação, é feita uma busca binária na fila de execução, para que a transação seja
 inserida na posição correta, de acordo com o seu tempo vetorial. O uso da busca binária é importante para garantir
@@ -119,7 +714,8 @@ que todos os bancos ordene da mesma forma as transações que estão na fila de 
 eficiente para a ordenação de elementos em uma lista, que torna o processo mais rápido e eficiente.
 
 Para cada nova transação, é colocado um id único de 2 dígitos, que é crucial para a confirmação entre os bancos, 
-que será abordada mais adiante.
+que será abordada mais adiante. O ID da transação é formado pelos 2 últimos dígitos da porta daquele banco, e por 
+2 dígitos que são gerados com essa classe. Assim, é garantido que o ID seja único e que não haja conflitos. 
 
 Com relação ao algoritmo de ordenação de multicast, ele funciona da seguinte forma: ao receber uma transação e 
 passar pelas etapas anteriores, essa nova transação é enviada para todos os bancos do consórcio. Após todos os 
@@ -153,7 +749,14 @@ de fato e elas são realizadas.
 Quando finalizadas, aquela operação é retirada da fila e é feita a verificação se tem mais operações para serem
 executadas. Caso tenha, segue os mesmos passos anteriores, até o final.
 
+
 ## Transações bancárias
+
+As transações desse sistema são ditas como transações atomicas, pois são realizadas de forma indivisivel, ou seja,
+ou todas as operações são realizadas com sucesso, ou nenhuma operação é realizada. Isso é feito para garantir que as
+transações sejam realizadas de forma correta.
+
+IMAGEM DA ATOMICIDADE
 
 ### Transações bancárias internas
 
@@ -200,18 +803,6 @@ sejam realizadas de forma correta, sem que haja erros ou inconsistências nos sa
 a criação de filas internas de execução, que são responsáveis por garantir que as transações sejam realizadas de forma
 sequencial, uma após a outra.
 
-## Comunicação entre servidores
-
-### Protocolo utilizado
-
-O sistema DistriBank utiliza o protocolo HTTP para a comunicação entre os servidores. O protocolo HTTP é um protocolo
-de comunicação que permite a transferência de informações na web, e é amplamente utilizado para a comunicação entre
-servidores. 
-
-### Rotas de comunicação
-
-O sistema DistriBank possui as seguintes rotas de comunicação:
-
 
 ## Tratamento da concorrência
 
@@ -234,6 +825,7 @@ O sistema DistriBank permite a realização de operações simultâneas em um ú
 sejam realizadas de forma correta, sem que haja erros ou inconsistências nos saldos das contas. As operações simultâneas
 são operações que são realizadas ao mesmo tempo, e o sistema deve ser capaz de lidar com essas operações de forma correta,
 sem que haja erros ou inconsistências nos saldos das contas.
+
 
 ## Tratamento da confiabilidade
 
@@ -262,9 +854,13 @@ que são lançadas quando ocorre um erro, e são capturadas para que o sistema p
 
 ## Testes
 
+
 ## Execução do projeto
 
+
 ## Referências
+https://edisciplinas.usp.br/pluginfile.php/3609782/mod_resource/content/1/aula-12.pdf
+
 
 
 ! ------------------------------------------------------------------------------------------------------------------- !
