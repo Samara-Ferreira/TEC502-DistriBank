@@ -13,7 +13,12 @@ para representar um sistema de transações bancárias distribuído.
 
 </div>  
 
-## Sumário 
+<div align="center">
+  <img src="/images/divisor.jpg" width="1280" height="5">
+</div>
+
+<h2>Sumário</h2>
+
 - Descrição do projeto
 - Requisitos e funcionalidades do sistema
 - Gerenciamento de contas 
@@ -40,8 +45,12 @@ para representar um sistema de transações bancárias distribuído.
 - Execução do projeto
 - Referências
 
+<div align="center">
+  <img src="/images/divisor.jpg" width="1280" height="5">
+</div>
+
 <div align="justify">
-  <h1>Descrição do projeto</h1>
+  <h2>Descrição do projeto</h2>
 
 O projeto DistriBank é um sistema de transações bancárias distribuído, que permite a realização de transações entre
 contas de diferentes bancos sem a necessidade de um intermediário, como o Banco Central. O sistema é composto por 
@@ -52,13 +61,15 @@ pode utilizar mais do que esse número de servidores, desde que seja feita a con
 para haver a comunicação entre eles.
 
 Para o desenvolvimento do projeto, foi utilizado a linguagem de programação Python, com o ‘framework’ Flask.
-Esse ‘framework’ permite a criação de ‘Interfaces’ de Programação de Aplicativos (Application Programming ‘Interface’ - APIs) 
+Esse ‘framework’ permite a criação de ‘Interfaces’ de Programação de Aplicativos (Application Programming ‘Interface’ 
+- APIs) 
 de forma simples e eficiente. Também foi utilizado no projeto a biblioteca requests, que permite a comunicação entre
 os servidores, por meio do Protocolo de Transferência de Hipertexto (Hypertext Transfer Protocol - HTTP). 
 O ambiente de desenvolvimento utilizado para a criação do projeto foi o PyCharm, mas o projeto pode ser executado
 em qualquer IDE de preferência do utilizador ou até mesmo no terminal. 
 
-### Requisitos e funcionalidades do sistema
+
+<h3>Requisitos e Funcionalidades do Sistema</h3>
 
 O sistema DistriBank foi desenvolvido para atender as seguintes funcionalidades:
 - Criação de contas bancárias de pessoa física e jurídica;
@@ -70,7 +81,8 @@ O sistema DistriBank foi desenvolvido para atender as seguintes funcionalidades:
 - Tratamento de erros e retorno de conexão;
 - Execução do sistema em containers Docker.
 
-### Componentes principais do sistema
+
+<h3>Componentes Principais do Sistema</h3>
 
 Como componentes principais do sistema, tem-se a aplicação e os servidores, que representam os bancos do consórcio.
 A aplicação é responsável por realizar a comunicação entre os servidores, por meio de um protocolo de comunicação,
@@ -80,9 +92,8 @@ bancárias, como a criação de contas e a realização de transações. É impo
 sistema pode usar ‘scripts’ para a realização de transações bancárias concorrentes, que são transações realizadas 
 de forma paralela, para simular um cenário real, onde várias transações são realizadas simultaneamente,
 
-#### Aplicação 
 
-PRINTS DO TERMINAL? EXPLICAÇÃO DOS DIRETÓRIOS?
+<h4>Aplicação</h4>
 
 A aplicação é responsável por realizar a comunicação entre os servidores.
 No diretório, segue a seguinte estrutura:
@@ -103,10 +114,9 @@ aplicação e realizar a comunicação entre os servidores.
 - Transactions.py: é o arquivo responsável por realizar as transações bancárias.
 - Dockerfile: é o arquivo responsável por criar a imagem do Docker.
 
-#### Bancos
+<h4>Bancos</h4>
 
 Os bancos são os servidores que compõem o sistema.
-
 
     ├── api
     │   ├── __init__.py
@@ -172,10 +182,20 @@ realização das operações disponíveis no sistema. As rotas são definidas po
 PUT e DELETE, que permitem a realização de operações de leitura, criação, atualização e exclusão de informações, 
 respectivamente. 
 
-### Rotas de comunicação
+</div>
 
-Cada função retorna um JSON com os dados solicitados. A seguir, são apresentados exemplos de requisições para 
-cada uma das rotas da API REST do projeto apresentadas:
+<div align="center">
+  <img src="/images/divisor.jpg" width="1280" height="5">
+</div>
+
+<div align="justify">
+  <h2>Comunicação entre os Servidores<h2>
+
+
+<h3>Rotas de Comunicação</h3>
+
+Cada função retorna um JSON com os dados solicitados. A seguir, são apresentados exemplos 
+de requisições para cada uma das rotas da API REST do projeto apresentadas:
 
 - Requisição para fazer login:
   - Método: POST
@@ -679,6 +699,10 @@ cada uma das rotas da API REST do projeto apresentadas:
 
 </div>
 
+<div align="center">
+  <img src="/images/divisor.jpg" width="1280" height="5">
+</div>
+
 <div align="justify">
   <h1>Relógio Vetorial</h1>
 
@@ -686,173 +710,349 @@ cada uma das rotas da API REST do projeto apresentadas:
 
 </div>
 
-## Algoritmo da concorrência distribuída
+<div align="justify">
+  <h2>Algoritmos da Concorrência Distribuída</h2>
 
-Para o tratamento da concorrência distribuída, o sistema usa o relógio vetorial com o algoritmo mulicast totalmente 
-ordenado. O algoritmo de multicast de ordenação com o uso do relógio vetorial é um algoritmo de concorrência distribuída 
-que é responsável por garantir que as transações sejam realizadas de forma correta, sem que haja erros ou inconsistências 
-nos saldos das contas. 
+Para o tratamento da concorrência distribuída, o sistema faz uso do relógio vetorial com o algoritmo de multicast
+totalmente ordenado. A junção desses algoritmos é responsável por garantir que as transações sejam realizadas de forma 
+correta, sem que haja erros ou inconsistências nos saldos das contas.
 
-### Relógio Vetorial
+  <h3>Relógio Vetorial</h3>
 
-O relógio vetorial é utilizado para definir a posição das transações na fila de execução, conforme o seu 
-tempo vetorial. A cada nova transação, o relógio vetorial é incrementado numa unidade e, ao mandar a transação 
-para os demais bancos, para que eles possam inserir na suas filas internas, o tempo dos seus relógios é atualizado 
-para o relógio do banco que enviou a transação. Assim, é garantido que todos eles tenham o mesmo tempo e, dessa 
-forma, estejam sincronizados. O relógio vetorial é um vetor de tamanho n, onde n é o número de bancos do consórcio, que 
-é responsável por armazenar o tempo de cada banco. Assim, é possível saber a ordem correta das transações, de acordo 
-com o tempo vetorial de cada banco.
+O relógio vetorial é um algoritmo usado para definir o tempo das operações de um sistema distribuído. Ele é utilizado 
+no sistema para definir a posição das transações na fila de execução, de acordo com o seu tempo vetorial. A cada nova
+transação, o relógio vetorial é incrementado em uma unidade, e ao enviar a transação para os demais bancos, o tempo dos
+seus relógios é atualizado para o relógio do banco que enviou a transação. Assim, é garantido que todos os bancos tenham
+o mesmo tempo e, dessa forma, estejam sincronizados. O relógio vetorial é um vetor de tamanho n, onde n é o número de
+bancos do consórcio, que é responsável por armazenar o tempo de cada banco. No exemplo abordado para testes, como são
+criadas quatro instâncias de servidores, o vetor terá tamanho 4, e cada posição do vetor será responsável por armazenar
+o tempo de cada banco.
 
-IMAGEM DO RELÓGIO VETORIAL
+Na imagem abaixo, é apresentado um exemplo de relógio vetorial, onde tem-se quatro processos (P1, P2, P3 e P4), e cada
+processo possui um relógio vetorial de tamanho 4, que é responsável por armazenar o tempo de cada processo. O processo
+3 inicia a transação, e o seu relógio vetorial é incrementado em uma unidade. Após isso, é enviado para o processo 2,
+que atualiza o seu relógio vetorial para o relógio do processo 3. A cada processo que recebe a transação, o seu relógio
+vetorial é atualizado para o relógio do processo que enviou a transação. Assim, é garantido que todos os processos 
+estejam sincronizados.
 
+<div align="center">
+  <img src="/images/relogio.png" width="1920" height="1080">
+</div>
 
-### Algoritmo de ordenação em multicast
+<h3>Algoritmo de Multicast Totalmente Ordenado</h3>
 
-Com o tempo vetorial e a nova transação, é feita uma busca binária na fila de execução, para que a transação seja
-inserida na posição correta, de acordo com o seu tempo vetorial. O uso da busca binária é importante para garantir
-que todos os bancos ordene da mesma forma as transações que estão na fila de execução, além de ser um algoritmo
-eficiente para a ordenação de elementos em uma lista, que torna o processo mais rápido e eficiente.
+Com o tempo vetorial, é necessário um algoritmo de ordenação para garantir que as transações sejam realizadas de forma
+correta, sem que haja erros ou inconsistências nos saldos das contas. Para isso, o sistema faz uso do algoritmo de 
+multicast totalmente ordenado. Esse algoritmo refere-se a um método de comunicação em sistemas distribuídos que 
+garante que todas as mensagens enviadas sejam entregues a todos os destinatários, na mesma ordem. Essa ordenação é
+crucial para manter a consistência entre os estados dos processos.
 
-Para cada nova transação, é colocado um id único de 2 dígitos, que é crucial para a confirmação entre os bancos, 
-que será abordada mais adiante. O ID da transação é formado pelos 2 últimos dígitos da porta daquele banco, e por 
-2 dígitos que são gerados com essa classe. Assim, é garantido que o ID seja único e que não haja conflitos. 
+A cada nova transação, o tempo do relógio vetorial é incrementado e é criado um ID de 2 dígitos para aquela 
+determinada transação. Esse identificador é formado pelos 2 últimos dígitos da porta daquele banco, e por 2 dígitos
+que são gerados com uma classe específica. Assim, é garantido que o ID seja único e que não haja conflitos. Esse ID
+é utilizado para a confirmação entre os bancos do recebimento dos pacotes, e é armazenado em uma lista juntamente com 
+tempo do relógio vetorial, a transação e o ID. 
 
-Com relação ao algoritmo de ordenação de multicast, ele funciona da seguinte forma: ao receber uma transação e 
-passar pelas etapas anteriores, essa nova transação é enviada para todos os bancos do consórcio. Após todos os 
-bancos receberem, eles enviam a confirmação de recebimento, chamados de ACKs, para os demais bancos. Esses ACKs
-são armazenados em um dicionário interno em cada banco, que tem como chave o ID de cada operação e os valores é 
-a transação e o ACKs, que é um "OK". Para saber se o número de ACKs está correto, é feito o seguinte cálculo: 
-o número de ACKs recebidos no banco que enviou a determinada transação é igual ao número total de bancos do 
-consórcio menos 1. Já nos demais bancos, aquele mesmo ACKs deve ter sido recebido o número total de bancos menos 2.
-Caso esse cálculo não seja verdadeiro, significa que nem todos os bancos receberam aquela determinada transação, 
-então ela ainda não pode ser executada.
+Após isso, é feita uma busca binária para saber a posição na qual o novo elemento na fila de execução, de acordo 
+com o seu tempo vetorial. A busca binária foi escolhida por ser um algoritmo eficiente para a ordenação de elementos 
+em uma lista, que torna o processo mais rápido e eficiente. 
 
-ESQUEMA DE ENVIO DOS ACKS
+Após isso, essa operação é enviada para os demais bancos do consóricio onde, respectivamente, são feitas as etapas
+descritas anteriormente. Após os bancos receberem essas transações, eles enviam a confirmação de recebimento para
+todos os outros bancos do consórcio, que são conhecidos como ACKs. Esses ACKs são armazenados em um dicionário interno
+em cada banco, que tem como chave o ID de cada operação e os valores são listas com todos os ACKs recebidos daquela 
+operação. Para saber se o número de ACKs está correto, é feito o seguinte cálculo: o número de ACKs recebidos no banco
+que enviou a determinada transação é igual ao número total de bancos do consórcio menos 1. Já nos demais bancos, aquele
+mesmo ACKs deve ter sido recebido o número total de bancos menos 2. Caso esse cálculo não seja verdadeiro, significa
+que nem todos os bancos receberam o pacote.
 
-Além disso, antes de executar uma determinada operação é verificado se ela também é a primeira da fila. Essa 
-verificação é feita para todos os bancos.
+Para garantir que todos os bancos estejam sincronizados, ou seja, todos eles com a mesma fila de transação, antes
+de executar é feita uma verificação se o pacote é o primeiro da fila em todos os bancos. Caso seja, essse banco 
+que enviou a verificação é considerado como líder e assume o papel de disparar todas as transações disponíveis 
+na fila de execução.
 
-Para executar uma determinada operação, é feita uma eleição de um líder, ou de vários liders. Esse lider será o 
-banco que tem essas duas verificações verdadeiras: o número de ACKs correto e a operação é a primeira da fila. 
-No caso de uma trnsação paralela, o líder sempre será o último banco que enviar a transação, de acordo com a
-fila interna do Lock, pois ele será o único que ambas as verificações serão verdadeiras. No caso das transações
-sequenciais, são eleitos vários líderes, que são os bancos que estão inserindo as operações de forma sequencial.
+Abaixo, é apresentado um exemplo de como é feita a comunicação entre os bancos, por meio do algoritmo de multicast 
+totalmente ordenado com o relógio vetorial. Nesse exemplo, tem-se quatro bancos (B1, B2, B3 e B4), e cada banco 
+possui um relógio vetorial de tamanho 4, que é responsável por armazenar o tempo de cada banco. O banco 1 e o banco 2
+recebem transações de forma paralela, com o mesmo tempo vetorial. Para o tratamento desse tipo de operação é feito 
+o uso dos Locks (travas), que são mecanismos utilizados para garantir a consistência de dados em sistemas distribuídos,
+especialmente em ambientes onde múltiplas transações podem acessar e modificar os mesmos recursos simultaneamente. 
+O uso dessas travas assegura que apenas uma transação por vez possa acessar um recurso crítico, evitando condições
+de corrida e garantindo a integridade dos dados.
 
-Assim, vai se para a próxima etapa, que é a execução da operação. Antes de executar de fato uma operação, é feita
-uma semiexecução para saber se a operação pode ser realizada ou não. Isso é feito pois caos haja mais de uma 
-operação em uma única transação, ou seja, tratando-se de uma fila de operações, se houver algum erro, todas 
-as operações são canceladas e a lista é retirada da fila do banco. Assim, garante-se a atomicidade das operações.
+<div align="center">
+  <img src="/images/multicast1.png" width="1920" height="1080">
+</div>
 
-Quando todas as operações são semiexecutadas com sucesso, então é retornado verdadeiro para a função de execução 
-de fato e elas são realizadas.
+Nesse caso, o Lock vai travar uma das operações recebidas, e a outra poderá ser manipulada. Supoe-se que a operação
+1 seja escolhida para manipulação e a operação 2 seja travada. Dessa forma, a operação 1 é inserida na fila do banco 
+1 e é enviada para ser inserida na fila dos demais bancos, como pode ser visto na imagem abaixo.
 
-Quando finalizadas, aquela operação é retirada da fila e é feita a verificação se tem mais operações para serem
-executadas. Caso tenha, segue os mesmos passos anteriores, até o final.
+<div align="center">
+  <img src="/images/multicast2.png" width="1920" height="1080">
+</div>
 
+Após isso, é feita a verificação do número de ACKs, que são a confirmação de recebimento dos pacotes. Como pode ser
+visualizado na imagem abaixo, o banco 1 recebeu o ACK do banco 2, 3 e 4, mas não fez envio. Já o banco 2 recebeu
+ACKs do banco 3 e do banco 4, enquanto o banco 3 recebeu ACKs do banco 4 e 2, e o banco 4 recebeu ACKs do banco 2 e 3.
+Assim, é possível visualizar a fórmula de cálculo do número de ACKs, que foi descrita anteriormente, pois o banco 
+que enviou a operação deve receber o número total de bancos menos 1, e os demais bancos devem receber o número total
+de bancos menos 2.
 
-## Transações bancárias
+<div align="center">
+  <img src="/images/multicast3.png" width="1920" height="1080">
+</div>
 
-As transações desse sistema são ditas como transações atomicas, pois são realizadas de forma indivisivel, ou seja,
-ou todas as operações são realizadas com sucesso, ou nenhuma operação é realizada. Isso é feito para garantir que as
-transações sejam realizadas de forma correta.
+Recebido o número de ACKs, tem-se que verificar a se a operação que é a primeira da lista no banco 1 é a mesma 
+dos demais bancos. Com a liberação do Lock, a operação 2 é liberada e inserida na fila do banco 2, e, dessa forma, 
+a OP1 não é a primeira da fila em todos os bancos, retornando falso para essa verificação. Logo, o banco 1 não 
+poderá executar a operação 1, pois mais operações estão sendo inseridas na fila. Essa representação pode ser
+vista na imagem abaixo.
 
-IMAGEM DA ATOMICIDADE
+<div align="center">
+  <img src="/images/multicast4.png" width="1920" height="1080">
+</div>
 
-### Transações bancárias internas
+Agora com a operação 2, repete-se o mesmo processo anterior: essa nova transação deve ser enviada para os demais
+bancos, assim mostrado na imagem abaixo, como na operação 1.
 
-O sistema permite a realização de transações bancárias internas, para contas de um mesmo banco, ou as opções de depósito
-e saque, que são referentes a conta do próprio usuário que está utilizando no mmomento. 
+<div align="center">
+  <img src="/images/multicast5.png" width="1920" height="1080">
+</div>
 
-### Transações bancárias externas
+E, por fim, é feita a verificação do número de ACKs e da posição da operação na fila de execução. Como todos os 
+bancos tem a mesma operação como a primeira da fila, então o banco 2 pode ser eleito um lider e disparar a 
+execução das operações da lista. Assim, a operação 2 é executada e, após isso, a operação 1 é executada, pois
+a operação 2 foi a primeira da fila. Essa última parte da verificação pode ser vista na imagem abaixo.
 
-O sistema permite a realização de transações bancárias externas, para contas de diferentes bancos. Para a realização de
-uma transação bancária externa, o usuário deve informar os seguintes dados: para os dados do remetente, deve se
-informar o banco de origem, pois pode ser o banco atual que está sendo utilizado ou algum outro banco em que tenha conta.
-Nesse caso, ele deve informar também o tipo de conta, que pode ser pessoa física particular, pessoa física conjunta ou
-pessoa jurídica. O tipo de conta é necessário pois para verificar se aquele usuário, por meio do seu cpf, está cadastrado
-no banco, ele pode ter mais de um tipo de conta, então deve-se ter o tipo também.
+<div align="center">
+  <img src="/images/multicast6.png" width="1920" height="1080">
+</div>
 
-Para os dados do destinatário, deve-se informar o banco de destino, o tipo de conta, o cpf do destino, a chave pix
-e o valor da transferencia. 
+Para as operações sequenciais, o sistema segue o mesmo passo a passo so que, nesse caso, o lider será aquele
+banco que estiver enviando a operação. Ou seja, pode ser feita a eleição de um lider para cada operação, e,
+dessa forma, garantir que as operações sejam realizadas na ordem.
 
-Após inserir todos esses dados, há a possibilidade de inserir uma nova operação ou finalizar a transação. Caso insira 
-uma nova, essas novas operações vão sendo adicionadas em uma lista, que ao estar completa, é enviada para a fila de
-execução. Antes de mandar propriamente para a fila, é feita uma semiexecução. Nessa semiexecução da fila de operações, 
-são feitas todas as operações na lista com um valor nulo, para não haver alteração no saldo das contas. Caso haja algum
-erro, essa lista de transações específica é cancelada e retirada da fila de operações e a próxima, se houver, é feita a 
-mesma operação. Caso não haja erros, as operações são executadas normalmente e, quando finalizadas, são retiradas da 
-lista.
+</div>
 
-### Transações sequenciais
-
-Na aplicação, as transações são feitas de forma sequenciais. Isso significa que, ao realizar uma transação, ela é 
-executada de forma sequencial, ou seja, uma após a outra. Isso é feito para garantir que as transações sejam realizadas
-de forma correta, sem que haja erros ou inconsistências nos saldos das contas.
-
-### Transações concorrentes
-
-O sistema permite, por meio de scripts, a realização de transações bancárias concorrentes. Para isso, foi utilizado a
-seguinte função:
-
-Nela, as transações são enviadas de forma paralela para o sistema bancário. Isso é feito para simular um cenário
-real, onde várias transações são realizadas ao mesmo tempo, e o sistema deve ser capaz de lidar com essas transações de
-forma correta, sem que haja erros ou inconsistências nos saldos das contas. 
-
-Nessa caso, o sistema faz o uso do algoritmo de concorrência distribuída, que é responsável por garantir que as transações
-sejam realizadas de forma correta, sem que haja erros ou inconsistências nos saldos das contas, e o uso do Lock para
-a criação de filas internas de execução, que são responsáveis por garantir que as transações sejam realizadas de forma
-sequencial, uma após a outra.
-
-
-## Tratamento da concorrência
-
-### Algoritmo da concorrência distribuída
-
-O sistema DistriBank utiliza o algoritmo de multicast de ordenação com o uso do relógio vetorial, para garantir que as
-transações sejam realizadas de forma correta, sem que haja erros ou inconsistências nos saldos das contas. O algoritmo
-de multicast de ordenação com o uso do relógio vetorial é um algoritmo de concorrência distribuída que é responsável por4
-garantir que as transações sejam realizadas de forma correta, sem que haja erros ou inconsistências nos saldos das contas.
-
-### Operações atômicas
-
-O sistema DistriBank utiliza operações atômicas para garantir que as transações sejam realizadas de forma correta, sem
-que haja erros ou inconsistências nos saldos das contas. As operações atômicas são operações que são realizadas de forma
-indivisível, ou seja, ou todas as operações são realizadas com sucesso, ou nenhuma operação é realizada.
-
-### Operações simultâneas em um único servidor
-
-O sistema DistriBank permite a realização de operações simultâneas em um único servidor, para garantir que as transações
-sejam realizadas de forma correta, sem que haja erros ou inconsistências nos saldos das contas. As operações simultâneas
-são operações que são realizadas ao mesmo tempo, e o sistema deve ser capaz de lidar com essas operações de forma correta,
-sem que haja erros ou inconsistências nos saldos das contas.
+<div align="center">
+  <img src="/images/divisor.jpg" width="1280" height="5">
+</div>
 
 
-## Tratamento da confiabilidade
+<div align="justify">
+  <h2>Transações Bancárias</h2>
 
-### Verificação de conexão
+As transações neste sistema são chamadas de transações atômicas porque são executadas
+de forma indivisível. Isso significa que ou todas as operações dentro de uma transação
+são concluídas com sucesso, ou nenhuma operação é realizada. Esse mecanismo assegura que
+as transações sejam realizadas corretamente, mantendo a consistência e a integridade dos
+dados.
 
-O sistema verifica a conexão se os servidores do consórcio estão ativos ou não por meio de uma thread, que fica 
-tantando fazer a conexão via socket com o servidor. Caso haja erro, a thread muda o status do servidor no dicionário
-de servidores, que é um dicionário que contém os servidores do consórcio e seus status, para offline.
+Na imagem abaixo, tem-se se o exemplo de 3 operações em uma única transação, caso o cliente
+tenha contas em tres bancos diferentes:
+- Transferência do banco 1 para o banco 4;
+- Transferência do banco 2 para o banco 4;
+- Transferência do banco 3 para o banco 4.
 
-Antes de adicionar uma oeração na fila, é verificado todos os bancos do consórcio. caso algum esteja offline, aquela
-operação é descartada e é retornado que existe um banco offline e por isso, não é possível fazer a operação. Quando 
-o servidor volta, aquele status no dicionaário é atualizado e, então pode se ralizar novas operalçoes.
+Nesse caso, todas as operações antes de serem executadas de fato, elas são semiexecutadas
+e verifica se houve a ocorrencia de algum erro durante esse processo.
 
-### Retorno de conexão
+<div align="center">
+  <img src="/images/atomicidade1.png.png" width="1920" height="1080
+</div>
+
+No caso registrado abaixo, tem-se o exemplo de que a operação de transferencia do banco 1
+para o banco 4 não foi bem sucedida, por motivos que podem ser: saldo insuficiente, conta
+inexistente, entre outros. Nesse caso, a toda operação é cancelada e retirada da fila de 
+execução, como pode ser visto, que mesmo as outras que não houve inconsistencias, foram 
+canceladas de serem executadas.
+
+<div align="center">
+  <img src="/images/atomicidade2.png.png" width="1920" height
+</div>
+
+Já em outro caso, como o abaixo, todas as operações foram bem sucedidas e, dessa forma,
+foram retiradas da fila de execução, como pode ser visto.
+
+<div align="center">
+  <img src="/images/atomicidade3.png.png" width="1920" height
+</div>
 
 
-### Tratamento de erros
+**<h3>Transações Bancárias Internas</h3>
 
-O sistema DistriBank trata os erros de forma correta, para garantir que as transações sejam realizadas de forma 
-correta, sem que haja erros ou inconsistências nos saldos das contas. Os erros são tratados por meio de exceções,
-que são lançadas quando ocorre um erro, e são capturadas para que o sistema possa lidar com o erro de forma correta.
+O sistema permite a execução de transações bancárias internas, possibilitando 
+transferências entre contas do mesmo banco, além das opções de depósito e saque, que se 
+referem à conta do próprio usuário que está utilizando o sistema no momento.
+
+<h3>Transações Bancárias Externas</h3>
+
+O sistema permite a execução de transações bancárias externas, facilitando transferências
+para contas em diferentes bancos. Para realizar uma transação bancária externa, o 
+usuário deve fornecer os seguintes dados:
+
+- Dados do remetente: O usuário deve fornecer informações detalhadas para garantir que 
+a transação seja iniciada corretamente. Os dados exigidos incluem:
+  - Banco de origem: Nome ou código do banco onde a conta do remetente está registrada. 
+  Pode ser o banco atual que está sendo utilizado ou outro banco onde o usuário possua 
+  conta.
+  - Tipo de conta: Especificar se a conta do remetente é de pessoa física particular, 
+  pessoa física conjunta ou pessoa jurídica. Isso ajuda a verificar se o usuário,
+  através do seu CPF, está cadastrado no banco, considerando que ele pode ter mais de
+  um tipo de conta.
+  - CPF do remetente: O número do CPF do titular da conta de origem, necessário para
+  identificar e autenticar o usuário.
+  - Valor da transferência: O montante exato que o usuário deseja transferir. 
+  Esse valor deve ser especificado claramente para garantir a precisão da transação.**
+
+- Dados do destinatário: O usuário deve fornecer informações detalhadas para 
+garantir que a transação seja realizada corretamente. Os dados exigidos incluem:
+  - Banco de destino: Nome ou código do banco onde a conta do destinatário está registrada.
+  - Tipo de conta: Especificar se a conta do destinatário é de pessoa física particular,
+  pessoa física conjunta ou pessoa jurídica. Isso ajuda a garantir que a transferência
+  seja direcionada corretamente.
+  - CPF do destinatário: O número do CPF do titular da conta de destino, que é 
+  utilizado para confirmar a identidade do destinatário e evitar erros de transferência.
+  - Chave Pix: A chave Pix associada à conta do destinatário, que pode ser um CPF, 
+  e-mail, número de telefone ou chave aleatória. O Pix é um sistema de pagamento 
+  instantâneo, e a chave ajuda a direcionar a transferência de forma rápida e segura.
+  - Valor da transferência: O montante exato que o usuário deseja transferir para a 
+  conta do destinatário. Esse valor deve ser especificado claramente para evitar 
+  qualquer erro na transação.
+
+Ao fornecer todos esses dados, o sistema pode processar a transação bancária externa
+de forma precisa e eficiente, garantindo que os fundos sejam transferidos para o 
+destinatário correto e que a operação seja concluída com sucesso.
+
+Após inserir todos esses dados, o usuário tem a opção de adicionar uma nova operação ou 
+finalizar a transação. Se o usuário optar por adicionar uma nova operação, essas 
+operações serão acumuladas em uma lista. Quando a lista estiver completa, ela é enviada
+para a fila de execução.
+
+Antes de serem enviadas para a fila de execução, é realizada uma semiexecução. Durante 
+a semiexecução, todas as operações na lista são executadas com um valor nulo, 
+garantindo que não haja alterações no saldo das contas. Essa etapa é crucial para 
+detectar possíveis erros. Se um erro for encontrado, a lista específica de transações 
+é cancelada e removida da fila de operações. Em seguida, o processo é repetido para a 
+próxima lista, se houver.
+
+Se não houver erros durante a semiexecução, as operações são então executadas 
+normalmente. Após a conclusão das operações, elas são removidas da lista, garantindo
+que a fila de operações seja processada de forma eficiente e segura.
 
 
-## Docker
+<h3>Transações Bancárias Sequenciais</h3>
+
+Na aplicação, as transações são realizadas de forma sequencial. Isso significa que cada 
+transação é executada uma após a outra, garantindo que não ocorram erros ou inconsistências
+nos saldos das contas. Esse método sequencial assegura a correta execução de cada 
+transação, mantendo a integridade e a consistência dos dados financeiros no sistema.
+
+
+<h3>Transações Bancárias Concorrentes</h3>
+
+O sistema possibilita a execução de transações bancárias concorrentes por meio de 
+scripts. Para isso, foi implementada a seguinte função:
+
+```
+  async def create_request(url):
+      async with aiohttp.ClientSession() as session:
+          async with session.get(url) as response:
+              return await response.text()
+  
+  async def main():
+      url = 'http://localhost:5000/transfer/1/2/100'
+      tasks = [create_request(url) for url in urls]
+      resultados = await asyncio.gather(*tasks)
+      for response in responses:
+          print(response)
+  
+  asyncio.run(main())
+```
+
+Dessa forma, as transações podem ser enviadas de forma paralela para o sistema bancário, 
+contanto que as URLs corretas sejam adicionadas. Esse método de execução paralela é 
+empregado para simular um ambiente real onde múltiplas transações ocorrem 
+simultaneamente. O sistema é projetado para gerenciar essas transações de maneira 
+precisa, garantindo a integridade e consistência dos saldos das contas, sem erros ou
+inconsistências.
+
+</div>
+
+
+<div align="justify">
+  <h2>Tratamento da Confiabilidade</h2>
+
+Com relação ao tratamento de confiabilidade, é importante ressaltar que o algoritmo de 
+multicast ordenado não é projetado para garantir a confiabilidade no sentido de tolerância
+a falhas ou recuperação automática caso um dos bancos falhe durante uma operação.
+
+Dessa forma, a solução proposta para garantir a confiabilidade é a implementação de um
+macanismo de verificação de conexão. Nesse caso, foi criada uma thread que verifica 
+continuamente, a cada 5 segundos, se os servidores do consórcio estão ativos ou não.
+Essa verificação é feita por meio de uma conexão via socket com cada servidor. Caso haja
+um erro na conexão, a thread muda o status do servidor no dicionário de servidores para
+offline. Dessa forma, caso um banco esteja inativo, o sistema não poderá realizar 
+transações até que o banco volte a ficar online. Tratando-se de um consórcio de bancos,
+para que não haja erros ou inconsistências nas filas de operações, é necessário que todos
+os bancos estejam ativos e online.
+
+Após o retorno da conexão, o sistema poderá continuar a realizar transações normalmente,
+garantindo a confiabilidade e a integridade dos dados financeiros. 
+
+Esse mecanismo pode ser visto na imagem abaixo:
+
+<div align="center">
+  <img src="/images/conexao.png" width="1920" height="1080">
+</div>
+
+Nessa imagem, tem-se o banco 1 criando uma operação. Após isso, o banco 1 empacota essa 
+operação e faz a verificação: se o banco 2 está online, o banco 3 e o banco 4. Caso 
+qualquer uma das opções seja falsa, a operação é cancelada e retirada da fila de execução.
+Assim, é retornada uma mensagem informando que um dos bancos está inativo e, por tanto, 
+não é possível realizar a transação. Caso todos os bancos estejam online, a operação é
+enviada para a fila de execução e, posteriormente, é executada.
+
+Além disso, o sistema também faz uso de exceções para tratar erros e garantir que as
+transações sejam realizadas de forma correta. As exceções são lançadas quando ocorre um
+erro, e são capturadas para que o sistema possa lidar com o erro de forma correta.
+
+</div>
+
+<div align="center">
+  <img src="/images/divisor.jpg" width="1280" height="5">
+</div>
+
+<div align="justify">
+  <h2>Docker</h2>
+
+Para facilitar a execução do sistema, foi criado um arquivo Dockerfile que contém as 
+instruções necessárias para a criação de uma imagem Docker. Esse arquivo é responsável
+por definir o ambiente de execução do sistema, incluindo as dependências e configurações
+necessárias para a execução do sistema.
+
+O Dockerfile contém as seguintes instruções:
+
+```
+  FROM python:3.8
+  WORKDIR /app
+  COPY . /app
+  RUN pip install -r requirements.txt
+  CMD ["python", "app.py"]
+```
+
+</div>
 
 
 ## Testes
+
+Para garantir a qualidade e a eficiência do sistema, foram realizados testes unitários e
+de integração. Os testes unitários foram feitos para verificar o funcionamento correto de
+cada função e módulo do sistema, enquanto os testes de integração foram realizados para
+verificar a interação entre os diferentes módulos e componentes do sistema.
+
+Esses testes estão disponíveis no arquivos
 
 
 ## Execução do projeto
