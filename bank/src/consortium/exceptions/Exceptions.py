@@ -49,3 +49,9 @@ class QueueIsEmpty(MyException):
 class InsufficientBalance(MyException):
     def __init__(self):
         super().__init__("Saldo insuficiente.")
+
+
+class BankIsInactive(MyException):
+    def __init__(self):
+        super().__init__("Banco inativo.")
+

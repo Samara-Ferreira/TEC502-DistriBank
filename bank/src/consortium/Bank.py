@@ -129,7 +129,7 @@ class Bank:
             new_account.accounts[cpf+"juri"] = new_client
             self.clients_accounts[cnpj] = new_account
             self.clients_accounts[cpf+"juri"] = new_client
-            return f"Conta jurídica admin para {name_company} criada com sucesso!"
+            return f"Conta jurídica (admin) para {name_company} criada com sucesso!"
 
     # Método para criar uma conta jurídica empregado
     def create_juridic_employee(self, cnpj, name, user, cpf, password):
@@ -148,11 +148,20 @@ class Bank:
 
             self.clients_accounts[cnpj].accounts[cpf+"juri"] = new_client
             self.clients_accounts[cpf+"juri"] = new_client
-            return f"Conta jurídica empregado para {name} criada com sucesso!"
+            return f"Usuário {name} adicionado à conta jurídica com sucesso!"
 
     # Método para gerar a agência e o número da conta de um cliente
     def generate_agency_account(self):
         return Utils.generate_agency_account(self.cnpj, len(self.clients_accounts))
+
+    # Método para verificar se a chave existe
+    def check_key(self, key):
+        for client in self.clients_accounts:
+            if self.clients_accounts[client].type_account == "juridic_company":
+                continue
+            if key in self.clients_accounts[client].pix.values():
+                return "True"
+        return "False"
 
     # Método para a criação de uma chave PIX
     def create_pix_key(self, cpf, type, type_key, key):
@@ -599,6 +608,7 @@ class Bank:
                             # Thread(target=self.try_delete_queue, args=(index,)).start()
                             return False
                 value = 0.0
+
                 response = requests.post(f"http://{op['host_send']}:{op['port_send']}/{op['cpf_send']}"
                                          f"/{op['type_send']}/{value}/in_withdraw")
                 if response.status_code == 200:
@@ -606,6 +616,7 @@ class Bank:
                     response = requests.post(f"http://{op['host_recp']}:{op['port_recp']}/{op['cpf_recp']}"
                                              f"/{op['type_recp']}/{op['key_recp']}"
                                              f"/{value}/deposit")
+
                     if response.status_code != 200:
                         return False
                 else:
@@ -716,6 +727,7 @@ class Bank:
             id_bank = id_bank[-2:]
             response = requests.get(f"http://{bank['host']}:{port}/get_acks")
             dict_acks = json.loads(response.text)
+
             for id in dict_acks:
                 if id[:2] == id_bank:
                     # if len(dict_acks[id]) != (len(self.banks) - 1):

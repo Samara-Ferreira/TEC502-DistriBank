@@ -4,6 +4,7 @@ bancário.
 '''
 
 # Importar a biblioteca necessária
+import ast
 import requests
 
 from os import system, name
@@ -42,12 +43,10 @@ class Transactions:
         print("\t\t\tCriação de um depósito")
         print("\t", "-" * 60)
 
-        print(f"\n\t Host {self.host} - Porta {self.port} - {self.cpf} - {self.type}\n")
-
         print("\n\t Digite o valor do depósito:")
         value = float(input("\t> "))
 
-        response = requests.get(f"http://{self.host}:{self.port}/{self.host}/{self.port}/{self.cpf}/{self.type}/{value}"
+        response = requests.post(f"http://{self.host}:{self.port}/{self.host}/{self.port}/{self.cpf}/{self.type}/{value}"
                                  f"/create_deposit")
 
         if response.status_code == 200:
@@ -71,7 +70,7 @@ class Transactions:
                 print("\n\t| Saldo insuficiente! Tente novamente.")
                 return None
 
-            response = requests.get(f"http://{self.host}:{self.port}/{self.host}/{self.port}/{self.cpf}/{self.type}/{value}"
+            response = requests.post(f"http://{self.host}:{self.port}/{self.host}/{self.port}/{self.cpf}/{self.type}/{value}"
                                      f"/create_withdraw")
 
             if response.status_code == 200:
@@ -215,21 +214,26 @@ class Transactions:
                 print("\n\t| Valor inválido! Digite um valor positivo.")
                 value = float(input("\t> "))
 
-            actual_balance = requests.get(f"http://{self.host}:{self.port}/{self.cpf}/{self.type}/get_balance")
-            if actual_balance.status_code == 200:
-                actual_balance = actual_balance.json()
+            try:
+                response = requests.get(f"http://{host_send}:{port_send}/{self.cpf}/{type_account_send}/get_balance")
+            except requests.exceptions.ConnectionError:
+                print("\n\t| Banco indisponível! Tente novamente mais tarde.")
+                return None
+
+            if response.status_code == 200:
+                actual_balance = response.json()
                 if value > actual_balance:
                     print("\n\t| Saldo insuficiente! Tente novamente.")
                     return None
 
-                operation = {"host_recp": host_recp, "port_recp": port_recp, "cpf_recp": cpf_recp, "type_recp": type_recp,
-                             "key_recp": key_recp,
-                             "host_send": host_send, "port_send": port_send, "cpf_send": self.cpf, "type_send": type_account_send,
-                             "value": value, "operation": "transfer"}
+                operation = {"host_recp": host_recp, "port_recp": port_recp, "cpf_recp": cpf_recp,
+                             "type_recp": type_recp, "key_recp": key_recp,
+                             "host_send": host_send, "port_send": port_send, "cpf_send": self.cpf,
+                             "type_send": type_account_send, "value": value, "operation": "transfer"}
                 return operation
 
             else:
-                print(f"\n\t| {actual_balance.status_code}, {actual_balance.json()}")
+                print(f"\n\t| {response.status_code}, {response.json()}")
                 return None
         else:
             print(f"\n\t| {response.status_code}, {response.json()}")

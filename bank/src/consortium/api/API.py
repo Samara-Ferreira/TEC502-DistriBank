@@ -43,7 +43,7 @@ def login(type, user, password):
     except Exceptions.ClientNotFound:
         return jsonify({"error": "Cliente não encontrado!"}), 404
     except Exceptions.InvalidPassword:
-        return jsonify({"error": "Senha inválida!"}), 401
+        return jsonify({"error": "Senha incorreta!"}), 401
 
 
 # Rota para deslogar da conta
@@ -116,9 +116,10 @@ def get_clients():
     try:
         return jsonify(bank.get_clients())
     except Exceptions.ClientNotFound:
-        return jsonify({"error": "Clientes não encontrados!"}), 404
+        return jsonify({"error": "Não há clientes cadastrados!"}), 404
 
 # ------------------------------ Account Management ------------------------------
+
 
 # Rota para criação de uma chave pix
 @app.route("/<string:cpf>/<string:type_account>/<string:type_key>/<string:value>/create_pix_key",
@@ -132,6 +133,8 @@ def create_pix_key(cpf, type_account, type_key, value):
         return jsonify({"error": "Chave já existe!"}), 409
     except Exceptions.InvalidKey:
         return jsonify({"error": "Chave inválida!"}), 400
+    except Exceptions.BankIsInactive:
+        return jsonify({"error": "Um dos banco está inativo! Tente novamente mais tarde."}), 400
 
 
 # Rota para obter as chaves pix de um cliente
@@ -163,14 +166,14 @@ def get_bank_statement():
 
 # Rota para criar um depósito
 @app.route("/<string:host>/<string:port>/<string:cpf>/<string:type>/<float:value>/create_deposit",
-           methods=["GET"])
+           methods=["POST"])
 def create_deposit(host, port, cpf, type, value):
     return jsonify(bank.create_deposit(host, port, cpf, type, value))
 
 
 # Rota para criar um saque
 @app.route("/<string:host>/<string:port>/<string:cpf>/<string:type>/<float:value>/create_withdraw",
-           methods=["GET"])
+           methods=["POST"])
 def create_withdraw(host, port, cpf, type, value):
     return jsonify(bank.create_withdraw(host, port, cpf, type, value))
 
