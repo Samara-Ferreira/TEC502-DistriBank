@@ -88,7 +88,11 @@ O sistema DistriBank é um sistema de transações bancárias distribuído
 que facilita transações entre contas de diferentes bancos sem a 
 necessidade de um intermediário central, como o Banco Central. O 
 sistema consiste em múltiplos servidores, cada um representando um 
-banco do consórcio, que se comunicam entre si para realizar as transações. Nos testes apresentados, foram criadas quatro instâncias de servidores, cada uma com uma porta específica para facilitar a comunicação entre eles. É possível expandir o sistema para utilizar mais servidores, contanto que a configuração adequada para a comunicação entre eles seja feita.
+banco do consórcio, que se comunicam entre si para realizar as transações. 
+Nos testes apresentados, foram criadas quatro instâncias de servidores, cada 
+uma com uma porta específica para facilitar a comunicação entre eles. 
+É possível expandir o sistema para utilizar mais servidores, contanto 
+que a configuração adequada para a comunicação entre eles seja feita.
 
 Para o desenvolvimento do projeto DistriBank, foi utilizada a linguagem
 de programação Python em conjunto com o framework Flask. O Flask 
@@ -129,8 +133,11 @@ sistema robusto e eficiente para transações bancárias distribuídas.
 <h3>Componentes Principais do Sistema</h3>
 
 No sistema DistriBank, os principais componentes são a aplicação e os
-servidores, que atuam como representantes dos bancos consorciados. A 
-aplicação desempenha um papel crucial ao facilitar a comunicação entre os 
+servidores, que atuam como representantes dos bancos consorciados. 
+
+<h4>Aplicação</h4>
+
+A aplicação desempenha um papel crucial ao facilitar a comunicação entre os 
 servidores por meio de um protocolo específico. Esse protocolo viabiliza a 
 transferência de informações essenciais para a realização de transações 
 bancárias entre contas de diferentes instituições financeiras.
@@ -170,11 +177,41 @@ os servidores;
 
 - Dockerfile: é o arquivo responsável por criar a imagem do Docker.
 
+A aplicação foi feita utilizando uma interface de linha de comando (CLI),
+que permite ao usuário interagir com o sistema de forma intuitiva e eficiente.
+
+Abaixo, estão as 3 principais telas do sistema:
+
+1. **Tela de escolha de qual banco irá se conectar**:
+    - Nesta tela, o usuário escolhe com qual banco deseja se conectar,
+    escolhendo entre os bancos 1, 2, 3 e 4.
+
+IMG
+
+2. **Tela de operações bancárias**:
+    - Nesta tela, o usuário pode escolher entre as operações para fazer
+   login, criar uma conta, ver todos os clientes cadastrados no banco
+   e também, ver todo o extrato bancário.
+
+IMG
+
+3. **Tela de operações da conta**:
+    - Nesta tela, o usuário poderá criar uma nova chave pix, listar
+   todas as chaves que tem cadastradas, fazer um depósito, fazer um
+    saque, fazer uma transferência e deslogar da conta.
+
+IMG
+
 Além da aplicação principal, o sistema utiliza scripts especializados para 
 implementar transações bancárias concorrentes. Essa abordagem permite 
 simular situações reais onde múltiplas transações são processadas 
 simultaneamente, testando a capacidade do sistema em lidar com uma alta 
-carga de operações de forma resiliente e eficaz.
+carga de operações de forma resiliente e eficaz. Alguns scripts prontos
+estão dizponíveis no diretório `tests`, como será abordado na seção 
+de testes.
+
+
+<h4>Servidores</h4>
 
 Por sua vez, os servidores são responsáveis por armazenar dados detalhados 
 das contas bancárias dos usuários e executar operações fundamentais, como a
@@ -313,7 +350,7 @@ tipos de interações entre os componentes do sistema.
 
 
 <div id="comunicacao-servidor" align="justify">
-  <h2>Comunicação entre os Servidores<h2>
+  <h2>Comunicação entre os Servidores</h2>
 
 No sistema DistriBank, a comunicação entre os bancos é realizada por meio 
 de rotas definidas como URLs, que facilitam a troca de informações necessárias
@@ -452,7 +489,8 @@ como operações bancárias são realizadas de forma distribuída e segura:
 
 - Requisição para criar conta jurídica:
   - Método: POST
-  - Rota: /<string:company>/<string:cnpj>/<string:name>/<string:cpf>/<string:user>/<string:password>/<float:balance>/create_juridic_account
+  - Rota: /<string:company>/<string:cnpj>/<string:name>/<string:cpf>/<string:user>/<string:password>/<float:balance>
+  /create_juridic_account
   - Resposta:
   - Exemplo de requisição:
   ```json
@@ -609,29 +647,29 @@ como operações bancárias são realizadas de forma distribuída e segura:
     ```
 
 - Requisição para obter o extrato de operações do banco:
-- Método: GET
-- Rota: /get_bank_statement
-- Resposta:
-- Exemplo de resposta:
-  ```json
-  {
-    "operations": [
-        {
-            "id": "5500",
-            "operation": "transfer",
-            "cpf_cnpj": "12345678910",
-            "value": 50.0
-        }
-    ]
-  }
-  ```
+  - Método: GET
+  - Rota: /get_bank_statement
+  - Resposta:
   - Exemplo de resposta:
-  ```json
-  {
-      "message": "Fila vazia!",
-      "status": 404
-  }
-  ```
+    ```json
+    {
+      "operations": [
+          {
+              "id": "5500",
+              "operation": "transfer",
+              "cpf_cnpj": "12345678910",
+              "value": 50.0
+          }
+      ]
+    }
+    ```
+    - Exemplo de resposta:
+    ```json
+    {
+        "message": "Fila vazia!",
+        "status": 404
+    }
+    ```
   
 - Requisição para criar um depósito:
   - Método: POST
@@ -861,7 +899,7 @@ do tempo de todos os outros processos no sistema distribuído.
 </div>
 
 
-<h3>Algoritmo de Multicast Totalmente Ordenado</h3>
+<h3>Multicast Totalmente Ordenado</h3>
 
 O uso do algoritmo de multicast totalmente ordenado é essencial para 
 garantir a consistência das transações no sistema distribuído do DistriBank.
@@ -885,40 +923,113 @@ conflitos. Esse identificador é crucial para a confirmação entre os bancos
 sobre o recebimento dos pacotes de transação e é armazenado junto com o tempo
 do relógio vetorial, detalhes da transação e o próprio ID em uma lista.
 
+
+<h4>Busca Binária e Ordenação</h4>
+
 Para determinar a posição correta dessa nova transação na fila de execução,
-conforme seu tempo vetorial, utiliza-se um método de busca binária. 
+conforme seu tempo vetorial, utiliza-se um método de busca binária.
+A busca binária é um algoritmo de divisão e conquista que divide a lista
+de transações em duas metades e verifica se o elemento a ser inserido
+deve ser colocado antes ou depois do elemento do meio. Esse processo é
+repetido até que a posição correta do novo elemento seja encontrada,
+garantindo que a lista permaneça ordenada de acordo com o tempo
+vetorial associado a cada transação.
+
 Esse algoritmo foi escolhido devido à sua eficiência na ordenação de 
 elementos em uma lista. A busca binária não apenas acelera o processo
 de inserção, mas também garante que as transações sejam ordenadas 
 de acordo com seu tempo vetorial, mantendo a integridade temporal 
 das operações no sistema distribuído.
 
-Esse processo de geração de ID único e ordenação através de busca binária
-é fundamental para a precisão e confiabilidade das transações bancárias no 
-ambiente distribuído do DistriBank, assegurando que todas as operações
-sejam tratadas de maneira organizada e sem conflitos de execução.
+Abaixo, tem-se um exemplo simplificado de como a busca binária é aplicada
+para ordenar as transações na fila de execução do DistriBank. Neste exemplo,
+tem-se quatro transações, cada uma com um tempo vetorial associado. A busca
+binária é utilizada para determinar a posição correta de uma nova transação
+com base em seu tempo vetorial, garantindo que a lista permaneça ordenada
+de acordo com a sequência temporal das operações.
 
-Após isso, essa operação é enviada para os demais bancos do consóricio onde, respectivamente, são feitas as etapas
-descritas anteriormente. Após os bancos receberem essas transações, eles enviam a confirmação de recebimento para
-todos os outros bancos do consórcio, que são conhecidos como ACKs. Esses ACKs são armazenados em um dicionário interno
-em cada banco, que tem como chave o ID de cada operação e os valores são listas com todos os ACKs recebidos daquela 
-operação. Para saber se o número de ACKs está correto, é feito o seguinte cálculo: o número de ACKs recebidos no banco
-que enviou a determinada transação é igual ao número total de bancos do consórcio menos 1. Já nos demais bancos, aquele
-mesmo ACKs deve ter sido recebido o número total de bancos menos 2. Caso esse cálculo não seja verdadeiro, significa
-que nem todos os bancos receberam o pacote.
+IMG
 
-Para garantir que todos os bancos estejam sincronizados, ou seja, todos eles com a mesma fila de transação, antes
-de executar é feita uma verificação se o pacote é o primeiro da fila em todos os bancos. Caso seja, essse banco 
-que enviou a verificação é considerado como líder e assume o papel de disparar todas as transações disponíveis 
-na fila de execução.
+<h4>Geração de ID Único</h4>
 
-Abaixo, é apresentado um exemplo de como é feita a comunicação entre os bancos, por meio do algoritmo de multicast 
-totalmente ordenado com o relógio vetorial. Nesse exemplo, tem-se quatro bancos (B1, B2, B3 e B4), e cada banco 
-possui um relógio vetorial de tamanho 4, que é responsável por armazenar o tempo de cada banco. O banco 1 e o banco 2
-recebem transações de forma paralela, com o mesmo tempo vetorial. Para o tratamento desse tipo de operação é feito 
-o uso dos Locks (travas), que são mecanismos utilizados para garantir a consistência de dados em sistemas distribuídos,
-especialmente em ambientes onde múltiplas transações podem acessar e modificar os mesmos recursos simultaneamente. 
-O uso dessas travas assegura que apenas uma transação por vez possa acessar um recurso crítico, evitando condições
+O de geração de indentificador (ID) único de duas casas decimais é um
+componente essencial para a identificação e rastreamento das transações
+bancárias no sistema DistriBank. Esse ID é composto por quatro dígitos
+totais, sendo os dois primeiros dígitos referentes à porta do banco e os
+dois últimos dígitos gerados de forma única. Essa abordagem garante que
+cada transação seja devidamente identificada e rastreada dentro do
+sistema distribuído.
+
+No esquema abaixo, é retratado exemplos de IDs únicos gerados para as
+transações no DistriBank. Cada ID é composto por dois dígitos, que são
+utilizados para identificar e rastrear as operações bancárias entre os
+
+IMG
+
+
+<h4>Envio dos ACKs></h4>
+
+O pacote estando completo, ele é enviado então aos demais bancos do 
+consórcio, nos quais são feitas as mesmas operações de organização
+e criação de identificadores descritas anteriormente. Após o recebimento
+dessas operações, os bancos enviam a confirmação de recebimento para
+todos os outros bancos do consórcio, conhecidos como ACKs. Esses ACKs
+são armazenados em um dicionário interno em cada banco, que tem como
+chave o ID de cada operação e os valores são listas com todos os ACKs
+recebidos daquela operação. Para saber se o número de ACKs está correto,
+é feito o seguinte cálculo: 
+
+- o número de ACKs recebidos no banco que enviou a determinada transação
+é igual ao número total de bancos do consórcio menos 1;
+- nos demais bancos, aquele mesmo ACKs deve ter sido recebido o número
+total de bancos menos 2.
+
+Assim, é garantido que todos os bancos receberam a transação e os outros
+bancos do consórcio tem essa confirmação.
+
+
+<h4>Verificação da Fila de Execução</h4>
+
+Para garantir que todos os bancos estejam sincronizados, ou seja, 
+todos eles com a mesma fila de transação, antes de executar é feita
+uma verificação se o pacote é o primeiro da fila em todos os bancos.
+
+Caso o número de ACKs esteja correto e a operação seja a primeira da
+fila em todos os bancos, então é possível eleger um banco como líder
+para disparar a execução das operações. Esse banco líder é aquele que
+executa as operações. Caso uma dessas verificações não seja verdadeira,
+significa que outra transação está sendo inserida na fila e, portanto,
+não é possível executar a operação atual.
+
+
+<h4>Uso de Locks</h4>
+
+Para garantir a consistência dos dados e evitar condições de corrida
+em operações críticas, o DistriBank utiliza locks (travas) para controlar
+o acesso a recursos compartilhados entre os bancos. Esses locks são
+mecanismos essenciais para garantir a integridade das transações e
+evitar conflitos de dados em um ambiente distribuído.
+
+Quando uma transação é recebida por um banco, um lock é acionado para
+travar a operação e garantir que ela seja processada de forma segura.
+Isso evita que outras transações interfiram na operação em andamento,
+garantindo que a execução seja concluída com sucesso e sem conflitos.
+
+
+<h4>Exemplo de Comunicação entre Bancos</h4>
+
+Abaixo, é apresentado um exemplo de como é feita a comunicação 
+entre os bancos, por meio do algoritmo de multicast totalmente 
+ordenado com o relógio vetorial. Nesse exemplo, tem-se q uatro bancos
+(B1, B2, B3 e B4), e cada banco possui um relógio vetorial de tamanho 4,
+que é responsável por armazenar o tempo de cada banco. O banco 1 e o banco
+2 recebem transações de forma paralela, com o mesmo tempo vetorial. Para
+o tratamento desse tipo de operação é feito o uso dos Locks (travas),
+que são mecanismos utilizados para garantir a consistência de dados em
+sistemas distribuídos, especialmente em ambientes onde múltiplas 
+transações podem acessar e modificar os mesmos recursos simultaneamente. 
+O uso dessas travas assegura que apenas uma transação por vez possa
+acessar um recurso crítico, evitando condições
 de corrida e garantindo a integridade dos dados.
 
 <div align="center">
@@ -980,8 +1091,6 @@ dessa forma, garantir que as operações sejam realizadas na ordem.
   <img src="/images/divisor.jpg">
 </div>
 
-</div>
-
 
 <div align="justify">
   <h2>Transações Bancárias</h2>
@@ -1002,7 +1111,7 @@ Nesse caso, todas as operações antes de serem executadas de fato, elas são se
 e verifica se houve a ocorrencia de algum erro durante esse processo.
 
 <div align="center">
-  <img src="/images/atomicidade1.png.png">
+  <img src="/images/atomicidade1.png">
 </div>
 
 No caso registrado abaixo, tem-se o exemplo de que a operação de transferencia do banco 1
@@ -1012,14 +1121,14 @@ execução, como pode ser visto, que mesmo as outras que não houve inconsistenc
 canceladas de serem executadas.
 
 <div align="center">
-  <img src="/images/atomicidade2.png.png">
+  <img src="/images/atomicidade2.png">
 </div>
 
 Já em outro caso, como o abaixo, todas as operações foram bem sucedidas e, dessa forma,
 foram retiradas da fila de execução, como pode ser visto.
 
 <div align="center">
-  <img src="/images/atomicidade3.png.png">
+  <img src="/images/atomicidade3.png">
 </div>
 
 
@@ -1124,6 +1233,11 @@ inconsistências.
 </div>
 
 
+<div align="center">
+  <img src="/images/divisor.jpg">
+</div>
+
+
 <div align="justify">
   <h2>Tratamento da Confiabilidade</h2>
 
@@ -1163,6 +1277,7 @@ erro, e são capturadas para que o sistema possa lidar com o erro de forma corre
 
 </div>
 
+
 <div align="center">
   <img src="/images/divisor.jpg">
 </div>
@@ -1179,22 +1294,129 @@ necessárias para a execução do sistema.
 </div>
 
 
-## Testes
+<div id="testes" align="justify">
+  <h2>Testes</h2>
 
 Para garantir a qualidade e a eficiência do sistema, foram realizados testes unitários e
 de integração. Os testes unitários foram feitos para verificar o funcionamento correto de
 cada função e módulo do sistema, enquanto os testes de integração foram realizados para
 verificar a interação entre os diferentes módulos e componentes do sistema.
 
-Esses testes estão disponíveis no arquivos
+Esses testes estão disponíveis no arquivos:
+
+- tests\AccountTest.py: testes unitários para a classe Account, que
+são relacionados com as funções que envolve as contas dos usuários;
+- tests\Transaction.py: testes unitários para a classe Transaction,
+que são relacionados com as funções que envolvem as transações bancárias.
+
+Para executar os testes, basta executar o comando abaixo:
+
+```
+python tests\AccountTest.py
+python tests\Transaction.py
+python tests\TransNew.py
+```
 
 
-## Execução do projeto
+<div align="center">
+  <img src="/images/divisor.jpg">
+</div>
 
 
-## Referências
+<div id="execucao" align="justify">
+  <h2>Execução do Projeto</h2>
+
+O projeto pode ser executado com ou sem a utilização do Docker. A
+execução sem o Docker requer a instalação das dependências do projeto.
+
+Primeiramente, é necessário obter o repositório do projeto. Ele pode ser
+obtido clonando o repositório do GitHub, caso tenha o Git instalado
+na máquina, ou baixando o arquivo ZIP do projeto.
+
+```
+
+<h3>Execução sem Docker</h3>
+
+Para a execução do projeto sem o Docker, tem-se os seguitnes pré-
+requisitos:
+
+- Python 3.8 ou superior;
+- Pip, para instalação das dependências do projeto.
+- Bibliotecas do Python, como o Flask e a requests.
+
+Para instalar as dependências do projeto, basta executar o comando 
+abaixo, nos diretórios da aplicação e do consórcio:
+
+```
+pip install -r requirements.txt
+```
+
+Após a instalação das dependências, o projeto pode ser executado 
+utilizando o comando abaixo, nos diretórios da aplicação e do consórcio:
+
+```
+python __main__.py
+```
+
+
+<h3>Execução com o Docker</h3>
+
+Para a execução com o Docker, primeiramente obtem o diretório
+de cada um dos componentes executando o seguinte comando
+
+```
+docker pull samarasf/app
+```
+
+```
+docker pull samarasf/bank
+```
+
+Após a obtenção dos diretórios, o projeto pode ser executado
+utilizando o comando abaixo, nos diretórios da aplicação e do consórcio:
+
+```
+docker run --network=host -it -e PORT=555x samarasf/bank
+```
+
+```
+docker run --network=host -it samarasf/app
+```
+
+
+</div>
+
+
+<div align="center">
+  <img src="/images/divisor.jpg">
+</div>
+
+
+<div id="conclusao" align="justify">
+  <h2>Conclusão</h2>
+  
+O sistema DistriBank é uma solução inovadora e eficiente para
+a realização de transações bancárias em um ambiente distribuído.
+Por meio do uso de algoritmos avançados, como o relógio vetorial
+e o multicast totalmente ordenado, o sistema garante a precisão
+e a consistência das operações bancárias, evitando erros e
+inconsistências nos saldos das contas.
+
+
+</div>
+
+
+<div align="center">
+  <img src="/images/divisor.jpg">
+</div>
+
+
+<div id="referencias" align="justify">
+  <h2>Referências</h2>
+
 https://edisciplinas.usp.br/pluginfile.php/3609782/mod_resource/content/1/aula-12.pdf
 
+</div>
 
 
 ! ------------------------------------------------------------------------------------------------------------------- !
