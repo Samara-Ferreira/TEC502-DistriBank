@@ -1,15 +1,17 @@
 <div align="center">
   <img src="/images/logo.png" width="100" height="100">
-
 <h1> TEC502-DistriBank </h1>
-
 </div>
+
 
 <div align="justify">
 
-> Este projeto foi desenvolvido como parte da disciplina MI - Concorrência e Conectividade, do curso de
-Engenharia de Computação da Universidade Estadual de Feira de Santana (UEFS). O nome "DistriBank" foi escolhido
-para representar um sistema de transações bancárias distribuído.
+>Este projeto, intitulado "DistriBank", foi desenvolvido como parte 
+da disciplina MI - Concorrência e Conectividade do curso de Engenharia
+de Computação da Universidade Estadual de Feira de Santana (UEFS).
+Ele representa um sistema de transações bancárias distribuído, criado
+para explorar conceitos de concorrência e conectividade em ambientes
+computacionais distribuídos.
 
 </div>  
 
@@ -17,8 +19,13 @@ para representar um sistema de transações bancárias distribuído.
   <img src="/images/divisor.jpg" width="1280" height="5">
 </div>
 
-<h2>Sumário</h2>
 
+<h2>Sumário</h2>
+<div id="sumario">
+  <ul>
+  <li><a href="#descricao-projeto">Descrição do Projeto</a></li>
+    <li><a href="#requisitos-funcionalidades">Requisitos e Funcionalidades do Sistema</a></li>
+  
 - Descrição do projeto
 - Requisitos e funcionalidades do sistema
 - Gerenciamento de contas 
@@ -49,54 +56,89 @@ para representar um sistema de transações bancárias distribuído.
   <img src="/images/divisor.jpg" width="1280" height="5">
 </div>
 
-<div align="justify">
+<div id="introducao" align="justify">
+  <h2>Introdução</h2>
+
+No cenário atual, a tecnologia desempenha um papel fundamental
+na vida das pessoas, e o setor financeiro não é exceção. Com os 
+avanços tecnológicos, os bancos têm procurado inovações para melhor 
+atender às necessidades de seus clientes. Uma das soluções encontradas 
+foi a criação de sistemas de transações bancárias distribuídos. Esses 
+sistemas permitem que transações sejam realizadas entre contas de 
+diferentes bancos sem a necessidade de um intermediário central, como 
+o Banco Central.
+
+O projeto DistriBank foi desenvolvido para atender a essa demanda, 
+sendo um sistema de transações bancárias distribuído que possibilita 
+a execução rápida e segura de transações entre contas de diferentes 
+bancos.
+
+</div>
+
+
+<div align="center">
+  <img src="/images/divisor.jpg" width="1280" height="5">
+</div>
+
+
+<div id="descricao-projeto" align="justify">
   <h2>Descrição do projeto</h2>
 
-O projeto DistriBank é um sistema de transações bancárias distribuído, que permite a realização de transações entre
-contas de diferentes bancos sem a necessidade de um intermediário, como o Banco Central. O sistema é composto por 
-vários servidores, cada um representando um banco, que se comunicam entre si para a realização das transações. 
-Nos testes apresentados, são criadas quatro instâncias de servidores, que representam os bancos do consórcio, 
-e cada servidor possui uma porta específica para a comunicação entre eles. É importante ressaltar que o sistema 
-pode utilizar mais do que esse número de servidores, desde que seja feita a configuração adequada, 
-para haver a comunicação entre eles.
+O sistema DistriBank é um sistema de transações bancárias distribuído
+que facilita transações entre contas de diferentes bancos sem a 
+necessidade de um intermediário central, como o Banco Central. O 
+sistema consiste em múltiplos servidores, cada um representando um 
+banco do consórcio, que se comunicam entre si para realizar as transações. Nos testes apresentados, foram criadas quatro instâncias de servidores, cada uma com uma porta específica para facilitar a comunicação entre eles. É possível expandir o sistema para utilizar mais servidores, contanto que a configuração adequada para a comunicação entre eles seja feita.
 
-Para o desenvolvimento do projeto, foi utilizado a linguagem de programação Python, com o ‘framework’ Flask.
-Esse ‘framework’ permite a criação de ‘Interfaces’ de Programação de Aplicativos (Application Programming ‘Interface’ 
-- APIs) 
-de forma simples e eficiente. Também foi utilizado no projeto a biblioteca requests, que permite a comunicação entre
-os servidores, por meio do Protocolo de Transferência de Hipertexto (Hypertext Transfer Protocol - HTTP). 
-O ambiente de desenvolvimento utilizado para a criação do projeto foi o PyCharm, mas o projeto pode ser executado
-em qualquer IDE de preferência do utilizador ou até mesmo no terminal. 
+Para o desenvolvimento do projeto DistriBank, foi utilizada a linguagem
+de programação Python em conjunto com o framework Flask. O Flask 
+permitiu criar APIs de forma simples e eficiente para o sistema de 
+transações bancárias distribuídas. Além disso, utilizei a biblioteca 
+requests para facilitar a comunicação entre os servidores, utilizando 
+o protocolo HTTP.
+
+O ambiente de desenvolvimento principal foi o PyCharm, porém o projeto
+é compatível com qualquer IDE de preferência do usuário ou pode ser
+executado diretamente no terminal.
 
 
 <h3>Requisitos e Funcionalidades do Sistema</h3>
 
-O sistema DistriBank foi desenvolvido para atender as seguintes funcionalidades:
-- Criação de contas bancárias de pessoa física e jurídica;
-- Realização de transações bancárias entre contas de diferentes bancos;
-- Realização de transações bancárias internas entre contas do mesmo banco;
-- Realização de transações bancárias sequenciais;
-- Realização de transações bancárias concorrentes;
-- Verificação de conexão entre os servidores;
-- Tratamento de erros e retorno de conexão;
-- Execução do sistema em containers Docker.
+O sistema DistriBank foi desenvolvido com os seguintes requisitos e funcionalidades:
+
+1. **Criação de contas bancárias** para pessoa física e jurídica.
+2. **Realização de transações bancárias** entre contas de diferentes 
+bancos.
+3. **Realização de transações bancárias internas** entre contas do 
+mesmo banco.
+4. **Execução de transações bancárias sequenciais** para garantir a 
+ordem e consistência das operações.
+5. **Execução de transações bancárias concorrentes** para simular 
+cenários de alta demanda.
+6. **Verificação de conexão entre os servidores** para garantir a 
+disponibilidade e comunicação adequada.
+7. **Tratamento de erros** e retorno de conexão para lidar com situações
+inesperadas de forma adequada.
+8. **Execução do sistema em containers Docker** para facilitar a 
+implantação e manutenção do ambiente de desenvolvimento.
+
+Esses requisitos e funcionalidades garantem que o DistriBank seja um 
+sistema robusto e eficiente para transações bancárias distribuídas.
 
 
 <h3>Componentes Principais do Sistema</h3>
 
-Como componentes principais do sistema, tem-se a aplicação e os servidores, que representam os bancos do consórcio.
-A aplicação é responsável por realizar a comunicação entre os servidores, por meio de um protocolo de comunicação,
-que permite a transferência de informações entre os servidores, para a realização das transações bancárias.
-Os servidores, por sua vez, são responsáveis por armazenar as informações das contas bancárias, e realizar as operações
-bancárias, como a criação de contas e a realização de transações. É importante ressaltar que além da aplicação, o
-sistema pode usar ‘scripts’ para a realização de transações bancárias concorrentes, que são transações realizadas 
-de forma paralela, para simular um cenário real, onde várias transações são realizadas simultaneamente,
+No sistema DistriBank, os principais componentes são a aplicação e os
+servidores, que atuam como representantes dos bancos consorciados. A 
+aplicação desempenha um papel crucial ao facilitar a comunicação entre os 
+servidores por meio de um protocolo específico. Esse protocolo viabiliza a 
+transferência de informações essenciais para a realização de transações 
+bancárias entre contas de diferentes instituições financeiras.
 
-
-<h4>Aplicação</h4>
-
-A aplicação é responsável por realizar a comunicação entre os servidores.
-No diretório, segue a seguinte estrutura:
+A estrutura da aplicação DistriBank é composta por diversos componentes 
+essenciais, cada um desempenhando um papel crucial na operação do sistema 
+distribuído de transações bancárias. Os arquivos que compõem essa estrutura
+são organizados da seguinte forma:
 
     ├── __init__.py
     ├── __main__.py
@@ -106,17 +148,46 @@ No diretório, segue a seguinte estrutura:
     ├── Transactions.py
     ├── Dockerfile 
 
-- __main__.py: é o arquivo principal da aplicação, que é responsável por iniciar a 
-aplicação e realizar a comunicação entre os servidores.
-- AccountCreation.py: é o arquivo responsável por realizar a criação de contas bancárias.
-- AccountManagement.py: é o arquivo responsável por realizar a gestão de contas bancárias.
-- Application.py: é o arquivo responsável por realizar a comunicação entre os servidores.
-- Transactions.py: é o arquivo responsável por realizar as transações bancárias.
+Para cada um desses arquivos, tem-se as seguintes funções:
+
+- init.py: Este arquivo inicializa o pacote da aplicação, preparando o
+ambiente para a execução dos módulos subsequentes;
+
+- main.py: Como o arquivo principal da aplicação, é responsável por iniciar o
+sistema e coordenar a comunicação entre os servidores bancários distribuídos;
+
+- AccountCreation.py: Aqui são definidas as classes e funções dedicadas à
+criação de novas contas bancárias, atendendo tanto a pessoas físicas quanto
+jurídicas;
+
+- AccountManagement.py: é o arquivo responsável por realizar a gestão de
+contas bancárias;
+
+- Application.py: é o arquivo responsável por realizar a comunicação entre
+os servidores;
+
+- Transactions.py: é o arquivo responsável por realizar as transações bancárias;
+
 - Dockerfile: é o arquivo responsável por criar a imagem do Docker.
 
-<h4>Bancos</h4>
+Além da aplicação principal, o sistema utiliza scripts especializados para 
+implementar transações bancárias concorrentes. Essa abordagem permite 
+simular situações reais onde múltiplas transações são processadas 
+simultaneamente, testando a capacidade do sistema em lidar com uma alta 
+carga de operações de forma resiliente e eficaz.
+
+Por sua vez, os servidores são responsáveis por armazenar dados detalhados 
+das contas bancárias dos usuários e executar operações fundamentais, como a
+criação de novas contas e a condução de transações financeiras. Essa 
+estrutura permite que o DistriBank opere de maneira eficiente e segura, 
+garantindo a integridade e a precisão das operações bancárias realizadas 
+pelos usuários.
 
 Os bancos são os servidores que compõem o sistema.
+
+Os bancos, que funcionam como servidores no sistema, são a espinha dorsal 
+do DistriBank. Abaixo, são apresentados os diretórios e arquivos 
+que compõem essa estrutura:
 
     ├── api
     │   ├── __init__.py
@@ -141,61 +212,123 @@ Os bancos são os servidores que compõem o sistema.
     ├── UniqueTwoDigitID.py
     ├── VectorialClock.py
 
-- __main__.py: é o arquivo principal do servidor, que é responsável por iniciar o 
-servidor e realizar as operações bancárias.
-- Bank.py: é o arquivo responsável por armazenar as informações das contas bancárias, 
-e realizar as operações bancárias.
-- Queue.py: é o arquivo responsável por criar a fila de execução, que é responsável por 
-garantir que as transações sejam realizadas de forma correta, sem que haja erros ou 
-inconsistências nos saldos das contas.
-- UniqueTwoDigitID.py: é o arquivo responsável por gerar um id único de 2 dígitos, que é
-crucial para a confirmação entre os bancos.
-- VectorialClock.py: é o arquivo responsável por criar o relógio vetorial, que é utilizado
-para definir a posição das transações na fila de execução, de acordo com o seu tempo vetorial.
-- Dockerfile: é o arquivo responsável por criar a imagem do Docker.
-- api/API.py: é o arquivo responsável por realizar a comunicação entre os servidores.
-- api/FloatConverter.py: é o arquivo responsável por converter os valores das transações
-- clients/JointClient.py: é o arquivo responsável por realizar as operações de conta conjunta.
-- clients/JuridicClient.py: é o arquivo responsável por realizar as operações de conta jurídica.
-- clients/PhysicalClient.py: é o arquivo responsável por realizar as operações de conta física.
-- exceptions/Exceptions.py: é o arquivo responsável por tratar as exceções.
-- utils/Utils.py: é o arquivo responsável por realizar as operações de utilidade.
+Os principais arquivos e suas funções dentro da arquitetura do DistriBank são:
+
+- main.py: Como o arquivo principal do servidor, é responsável por 
+inicializar e coordenar as operações bancárias essenciais. Este componente
+assegura que o servidor esteja pronto para receber e processar requisições,
+mantendo a integridade das transações;
+
+- Bank.py: Armazena de forma centralizada todas as informações das contas
+bancárias e implementa as operações bancárias fundamentais. Este arquivo
+garante a consistência e segurança dos dados durante todas as operações 
+realizadas pelo DistriBank;
+
+- Queue.py: Cria e gerencia a fila de execução, essencial para garantir 
+a ordem e correção das transações. Esta estrutura é projetada para minimizar
+erros e inconsistências nos saldos das contas ao coordenar a execução das 
+operações bancárias de forma sequencial e organizada;
+
+- UniqueTwoDigitID.py: Gera IDs únicos de dois dígitos, fundamentais 
+para a identificação e confirmação das transações entre os bancos 
+participantes. Este componente assegura que cada transação seja devidamente
+identificada e rastreada dentro do sistema distribuído;
+
+- VectorialClock.py: Implementa o relógio vetorial, utilizado para ordenar
+as transações na fila de execução com base no tempo vetorial associado
+a cada operação. Este arquivo é crucial para garantir a precisão temporal
+e a correta execução das transações distribuídas pelo DistriBank;
+
+- Dockerfile: Define os passos necessários para a criação da imagem Docker
+que encapsula todo o ambiente de desenvolvimento e produção do DistriBank.
+Este arquivo simplifica o processo de implantação e escalabilidade do 
+sistema em diferentes ambientes de execução;
+
+- api/API.py: Gerencia a comunicação entre os servidores, facilitando a 
+troca de informações críticas para a realização das transações bancárias
+distribuídas. Este componente assegura uma integração eficiente e segura
+entre os diferentes nós do sistema DistriBank;
+
+- api/FloatConverter.py: Converte os valores das transações, garantindo 
+a consistência e precisão dos dados financeiros manipulados pelo DistriBank.
+Este arquivo é essencial para assegurar que todas as transações sejam
+realizadas com exatidão matemática, evitando erros de arredondamento ou
+imprecisões nos cálculos financeiros;
+
+- clients/JointClient.py, clients/JuridicClient.py, clients/PhysicalClient.py: 
+Implementam operações específicas para diferentes tipos de clientes bancários,
+como contas conjuntas, jurídicas e físicas. Cada arquivo oferece funcionalidades
+adaptadas às necessidades e exigências de cada categoria de conta dentro do
+ecossistema do DistriBank;
+
+- exceptions/Exceptions.py: Gerencia e trata exceções que podem ocorrer 
+durante a execução das operações bancárias, garantindo um tratamento 
+adequado de situações inesperadas e mantendo a robustez do sistema. Este 
+arquivo é crucial para a estabilidade e confiabilidade do DistriBank em 
+face de cenários adversos;
+
+utils/Utils.py: Oferece funções utilitárias diversas do sistema.
 
 </div>
 
-<div align="justify">
-  <h1>Comunicação entre servidoress</h1>
-
-A comunicação entre os servidores do sistem é feita por meio de um protocolo de comunicação, que permite a 
-transferência de informações entre os servidores, para a realização das transações bancárias. Essas 
-operações são feitas por meio de uma API, que permite essa comunicação entre os diferentes servidores, que estão 
-alocados em diferentes máquinas.
-
-O protocolo utilizado para a comunicação entre a aplicação e os servidores é o HTTP, que é um protocolo de 
-comunicação que permite a transferência de informações na web, e é amplamente utilizado para a comunicação entre 
-servidores. O HTTP é um protocolo de comunicação cliente-servidor, onde o cliente envia uma requisição para o 
-servidor, e o servidor responde com uma resposta, sendo uma boa escolha para o projeto em questão, pois permite a 
-comunicação entre os servidores de forma eficiente e segura.
-
-Essa comunicação é feita por meio de rotas, que são URLs que permitem a comunicação entre os bancos, para a 
-realização das operações disponíveis no sistema. As rotas são definidas por meio de métodos HTTP, como GET, POST,
-PUT e DELETE, que permitem a realização de operações de leitura, criação, atualização e exclusão de informações, 
-respectivamente. 
-
-</div>
 
 <div align="center">
   <img src="/images/divisor.jpg" width="1280" height="5">
 </div>
 
-<div align="justify">
+
+<div id="comunicacao-servidores" align="justify">
+  <h2>Comunicação entre Servidoress</h2>
+
+A comunicação entre os servidores no sistema DistriBank é facilitada por um
+protocolo de comunicação, que é essencial para a transferência eficiente de
+informações entre os nós do sistema. Esse protocolo desempenha um papel 
+crucial na coordenação das transações bancárias distribuídas, garantindo a 
+integridade das operações realizadas.
+
+A interoperabilidade entre os servidores é viabilizada por meio de uma API,
+projetada para facilitar a comunicação entre os diferentes nós distribuídos
+do DistriBank. Cada servidor, localizado em máquinas distintas, utiliza essa
+API para trocar dados de forma, independentemente da localização física dos
+servidores.
+
+O protocolo escolhido para a comunicação entre a aplicação e os servidores 
+no sistema DistriBank é o HTTP (Hypertext Transfer Protocol). Amplamente 
+utilizado na web, o HTTP facilita a transferência de informações de maneira
+eficiente e segura entre os diferentes componentes distribuídos do sistema.
+
+O HTTP opera em um modelo cliente-servidor, onde o cliente envia uma
+requisição para o servidor e aguarda uma resposta. Essa arquitetura é ideal
+para o DistriBank, pois permite uma comunicação confiável e orientada a
+mensagens entre os servidores distribuídos. Cada requisição HTTP contém
+métodos padrão como GET, POST, PUT e DELETE, que são utilizados para diferentes
+tipos de interações entre os componentes do sistema.
+
+</div>
+
+
+<div align="center">
+  <img src="/images/divisor.jpg" width="1280" height="5">
+</div>
+
+
+<div id="comunicacao-servidor" align="justify">
   <h2>Comunicação entre os Servidores<h2>
+
+No sistema DistriBank, a comunicação entre os bancos é realizada por meio 
+de rotas definidas como URLs, que facilitam a troca de informações necessárias
+para a execução das operações bancárias distribuídas. Essas rotas são
+configuradas utilizando métodos HTTP padrão, como GET, POST, PUT e DELETE,
+que correspondem a operações de leitura, criação, atualização e exclusão de 
+dados, respectivamente.
 
 
 <h3>Rotas de Comunicação</h3>
 
-Cada função retorna um JSON com os dados solicitados. A seguir, são apresentados exemplos 
-de requisições para cada uma das rotas da API REST do projeto apresentadas:
+Cada função da API REST do projeto DistriBank é projetada para retornar
+um JSON estruturado com os dados solicitados. A seguir, são apresentados
+exemplos detalhados de requisições para as principais rotas da API, destacando
+como operações bancárias são realizadas de forma distribuída e segura:
 
 - Requisição para fazer login:
   - Método: POST
@@ -450,32 +583,6 @@ de requisições para cada uma das rotas da API REST do projeto apresentadas:
     }
     ```
   
-
-- Requisição para obter os clientes:
-  - Método: GET
-  - Rota: /get_clients
-  - Resposta:
-  - Exemplo de resposta:
-  ```json
-  {
-    "clients": [
-        {
-            "cpf_cnpj": "12345678910",
-            "email": "maria@uefs",
-            "phone": "7599999999",
-            "random": None
-        }
-    ]
-  }
-  ```
-  - Exemplo de resposta:
-  ```json
-  {
-      "message": "Cliente não encontrado!",
-      "status": 404
-  }
-  ```
-  
 - Requisição para obter o saldo atual do cliente:
   - Método: GET
   - Rota: /<string:cpf>/<string:type>/get_balance
@@ -699,63 +806,97 @@ de requisições para cada uma das rotas da API REST do projeto apresentadas:
 
 </div>
 
+
 <div align="center">
   <img src="/images/divisor.jpg" width="1280" height="5">
 </div>
 
-<div align="justify">
-  <h1>Relógio Vetorial</h1>
 
-  <img src="/images/relogio_vetorial.png" >
-
-</div>
-
-<div align="justify">
+<div id="algoritmos" align="justify">
   <h2>Algoritmos da Concorrência Distribuída</h2>
 
-Para o tratamento da concorrência distribuída, o sistema faz uso do relógio vetorial com o algoritmo de multicast
-totalmente ordenado. A junção desses algoritmos é responsável por garantir que as transações sejam realizadas de forma 
-correta, sem que haja erros ou inconsistências nos saldos das contas.
+Para assegurar o tratamento eficiente da concorrência distribuída, o sistema
+do DistriBank emprega uma combinação estratégica entre o relógio vetorial 
+e o algoritmo de multicast totalmente ordenado. Esses mecanismos são
+essenciais para garantir a precisão e a consistência das transações bancárias,
+evitando erros e inconsistências nos saldos das contas.
+
 
   <h3>Relógio Vetorial</h3>
 
-O relógio vetorial é um algoritmo usado para definir o tempo das operações de um sistema distribuído. Ele é utilizado 
-no sistema para definir a posição das transações na fila de execução, de acordo com o seu tempo vetorial. A cada nova
-transação, o relógio vetorial é incrementado em uma unidade, e ao enviar a transação para os demais bancos, o tempo dos
-seus relógios é atualizado para o relógio do banco que enviou a transação. Assim, é garantido que todos os bancos tenham
-o mesmo tempo e, dessa forma, estejam sincronizados. O relógio vetorial é um vetor de tamanho n, onde n é o número de
-bancos do consórcio, que é responsável por armazenar o tempo de cada banco. No exemplo abordado para testes, como são
-criadas quatro instâncias de servidores, o vetor terá tamanho 4, e cada posição do vetor será responsável por armazenar
-o tempo de cada banco.
+O relógio vetorial é um algoritmo fundamental no sistema DistriBank, 
+projetado para coordenar o tempo das operações em um ambiente distribuído.
+Ele desempenha um papel crucial na determinação da ordem das transações na
+fila de execução com base em marcas de tempo lógicas associadas a cada evento.
+A cada nova transação, o relógio vetorial é incrementado em uma unidade.
+Quando uma transação é enviada entre os bancos, o tempo nos relógios de
+cada banco é atualizado para refletir o tempo do banco que originou a
+transação. Esse processo garante que todos os bancos mantenham um tempo 
+sincronizado, essencial para a consistência e integridade das operações 
+bancárias distribuídas.
 
-Na imagem abaixo, é apresentado um exemplo de relógio vetorial, onde tem-se quatro processos (P1, P2, P3 e P4), e cada
-processo possui um relógio vetorial de tamanho 4, que é responsável por armazenar o tempo de cada processo. O processo
-3 inicia a transação, e o seu relógio vetorial é incrementado em uma unidade. Após isso, é enviado para o processo 2,
-que atualiza o seu relógio vetorial para o relógio do processo 3. A cada processo que recebe a transação, o seu relógio
-vetorial é atualizado para o relógio do processo que enviou a transação. Assim, é garantido que todos os processos 
-estejam sincronizados.
+No DistriBank, o relógio vetorial é implementado como um vetor de tamanho n, 
+onde n representa o número de bancos no consórcio. Por exemplo, com quatro
+instâncias de servidores no ambiente de teste, o vetor tem tamanho 4. Cada
+posição no vetor armazena o tempo associado a cada banco, permitindo que 
+todos os nós do sistema estejam alinhados temporalmente. Essa sincronização 
+é fundamental para evitar conflitos de dados e assegurar que todas as transações
+sejam processadas de acordo com uma ordem globalmente consistente.
+
+Na representação abaixo, temos um exemplo de relógio vetorial aplicado a 
+quatro processos: P1, P2, P3 e P4. Cada processo possui um relógio vetorial 
+de tamanho 4, que armazena o tempo associado a cada um deles. Quando o 
+processo 3 inicia uma transação, seu relógio vetorial é incrementado em uma
+unidade para refletir essa operação. Em seguida, a transação é enviada ao 
+processo 2, que atualiza seu próprio relógio vetorial para refletir o tempo 
+do processo 3. Esse processo se repete para cada novo processo que recebe 
+a transação, garantindo que todos os processos mantenham uma sincronia temporal.
+
+O relógio vetorial no exemplo ilustra como cada processo mantém um registro 
+do tempo de todos os outros processos no sistema distribuído.
+
 
 <div align="center">
-  <img src="/images/relogio.png" width="1920" height="1080">
+  <img src="/images/relogio.png">
 </div>
+
 
 <h3>Algoritmo de Multicast Totalmente Ordenado</h3>
 
-Com o tempo vetorial, é necessário um algoritmo de ordenação para garantir que as transações sejam realizadas de forma
-correta, sem que haja erros ou inconsistências nos saldos das contas. Para isso, o sistema faz uso do algoritmo de 
-multicast totalmente ordenado. Esse algoritmo refere-se a um método de comunicação em sistemas distribuídos que 
-garante que todas as mensagens enviadas sejam entregues a todos os destinatários, na mesma ordem. Essa ordenação é
-crucial para manter a consistência entre os estados dos processos.
+O uso do algoritmo de multicast totalmente ordenado é essencial para 
+garantir a consistência das transações no sistema distribuído do DistriBank.
+Este algoritmo é responsável por assegurar que todas as mensagens enviadas 
+sejam entregues a todos os destinatários na mesma ordem em que foram enviadas.
+Isso é crucial para evitar que ocorram inconsistências nos saldos das contas 
+bancárias durante as transações.
 
-A cada nova transação, o tempo do relógio vetorial é incrementado e é criado um ID de 2 dígitos para aquela 
-determinada transação. Esse identificador é formado pelos 2 últimos dígitos da porta daquele banco, e por 2 dígitos
-que são gerados com uma classe específica. Assim, é garantido que o ID seja único e que não haja conflitos. Esse ID
-é utilizado para a confirmação entre os bancos do recebimento dos pacotes, e é armazenado em uma lista juntamente com 
-tempo do relógio vetorial, a transação e o ID. 
+Quando uma transação é iniciada e seu tempo é registrado pelo relógio
+vetorial, o algoritmo de multicast totalmente ordenado entra em ação para 
+garantir que todas as operações relacionadas a essa transação sejam processadas
+na ordem correta em todos os servidores envolvidos. Isso significa que cada
+servidor recebe e processa as mensagens de transação na mesma sequência,
+independentemente da ordem em que as mensagens são recebidas.
 
-Após isso, é feita uma busca binária para saber a posição na qual o novo elemento na fila de execução, de acordo 
-com o seu tempo vetorial. A busca binária foi escolhida por ser um algoritmo eficiente para a ordenação de elementos 
-em uma lista, que torna o processo mais rápido e eficiente. 
+A cada nova transação no sistema DistriBank, o tempo do relógio vetorial é 
+incrementado e um ID de transação de 2 dígitos é gerado de forma única.
+Esse ID é composto pelos 2 últimos dígitos da porta do banco e por mais 2
+dígitos gerados por uma classe específica, garantindo sua unicidade e evitando
+conflitos. Esse identificador é crucial para a confirmação entre os bancos
+sobre o recebimento dos pacotes de transação e é armazenado junto com o tempo
+do relógio vetorial, detalhes da transação e o próprio ID em uma lista.
+
+Para determinar a posição correta dessa nova transação na fila de execução,
+conforme seu tempo vetorial, utiliza-se um método de busca binária. 
+Esse algoritmo foi escolhido devido à sua eficiência na ordenação de 
+elementos em uma lista. A busca binária não apenas acelera o processo
+de inserção, mas também garante que as transações sejam ordenadas 
+de acordo com seu tempo vetorial, mantendo a integridade temporal 
+das operações no sistema distribuído.
+
+Esse processo de geração de ID único e ordenação através de busca binária
+é fundamental para a precisão e confiabilidade das transações bancárias no 
+ambiente distribuído do DistriBank, assegurando que todas as operações
+sejam tratadas de maneira organizada e sem conflitos de execução.
 
 Após isso, essa operação é enviada para os demais bancos do consóricio onde, respectivamente, são feitas as etapas
 descritas anteriormente. Após os bancos receberem essas transações, eles enviam a confirmação de recebimento para
@@ -781,7 +922,7 @@ O uso dessas travas assegura que apenas uma transação por vez possa acessar um
 de corrida e garantindo a integridade dos dados.
 
 <div align="center">
-  <img src="/images/multicast1.png" width="1920" height="1080">
+  <img src="/images/multicast1.png">
 </div>
 
 Nesse caso, o Lock vai travar uma das operações recebidas, e a outra poderá ser manipulada. Supoe-se que a operação
@@ -789,7 +930,7 @@ Nesse caso, o Lock vai travar uma das operações recebidas, e a outra poderá s
 1 e é enviada para ser inserida na fila dos demais bancos, como pode ser visto na imagem abaixo.
 
 <div align="center">
-  <img src="/images/multicast2.png" width="1920" height="1080">
+  <img src="/images/multicast2.png">
 </div>
 
 Após isso, é feita a verificação do número de ACKs, que são a confirmação de recebimento dos pacotes. Como pode ser
@@ -800,7 +941,7 @@ que enviou a operação deve receber o número total de bancos menos 1, e os dem
 de bancos menos 2.
 
 <div align="center">
-  <img src="/images/multicast3.png" width="1920" height="1080">
+  <img src="/images/multicast3.png">
 </div>
 
 Recebido o número de ACKs, tem-se que verificar a se a operação que é a primeira da lista no banco 1 é a mesma 
@@ -810,14 +951,14 @@ poderá executar a operação 1, pois mais operações estão sendo inseridas na
 vista na imagem abaixo.
 
 <div align="center">
-  <img src="/images/multicast4.png" width="1920" height="1080">
+  <img src="/images/multicast4.png">
 </div>
 
 Agora com a operação 2, repete-se o mesmo processo anterior: essa nova transação deve ser enviada para os demais
 bancos, assim mostrado na imagem abaixo, como na operação 1.
 
 <div align="center">
-  <img src="/images/multicast5.png" width="1920" height="1080">
+  <img src="/images/multicast5.png">
 </div>
 
 E, por fim, é feita a verificação do número de ACKs e da posição da operação na fila de execução. Como todos os 
@@ -826,7 +967,7 @@ execução das operações da lista. Assim, a operação 2 é executada e, após
 a operação 2 foi a primeira da fila. Essa última parte da verificação pode ser vista na imagem abaixo.
 
 <div align="center">
-  <img src="/images/multicast6.png" width="1920" height="1080">
+  <img src="/images/multicast6.png">
 </div>
 
 Para as operações sequenciais, o sistema segue o mesmo passo a passo so que, nesse caso, o lider será aquele
@@ -836,7 +977,9 @@ dessa forma, garantir que as operações sejam realizadas na ordem.
 </div>
 
 <div align="center">
-  <img src="/images/divisor.jpg" width="1280" height="5">
+  <img src="/images/divisor.jpg">
+</div>
+
 </div>
 
 
@@ -859,7 +1002,7 @@ Nesse caso, todas as operações antes de serem executadas de fato, elas são se
 e verifica se houve a ocorrencia de algum erro durante esse processo.
 
 <div align="center">
-  <img src="/images/atomicidade1.png.png" width="1920" height="1080
+  <img src="/images/atomicidade1.png.png">
 </div>
 
 No caso registrado abaixo, tem-se o exemplo de que a operação de transferencia do banco 1
@@ -869,18 +1012,18 @@ execução, como pode ser visto, que mesmo as outras que não houve inconsistenc
 canceladas de serem executadas.
 
 <div align="center">
-  <img src="/images/atomicidade2.png.png" width="1920" height
+  <img src="/images/atomicidade2.png.png">
 </div>
 
 Já em outro caso, como o abaixo, todas as operações foram bem sucedidas e, dessa forma,
 foram retiradas da fila de execução, como pode ser visto.
 
 <div align="center">
-  <img src="/images/atomicidade3.png.png" width="1920" height
+  <img src="/images/atomicidade3.png.png">
 </div>
 
 
-**<h3>Transações Bancárias Internas</h3>
+<h3>Transações Bancárias Internas</h3>
 
 O sistema permite a execução de transações bancárias internas, possibilitando 
 transferências entre contas do mesmo banco, além das opções de depósito e saque, que se 
@@ -1004,7 +1147,7 @@ garantindo a confiabilidade e a integridade dos dados financeiros.
 Esse mecanismo pode ser visto na imagem abaixo:
 
 <div align="center">
-  <img src="/images/conexao.png" width="1920" height="1080">
+  <img src="/images/conexao.png">
 </div>
 
 Nessa imagem, tem-se o banco 1 criando uma operação. Após isso, o banco 1 empacota essa 
@@ -1021,8 +1164,9 @@ erro, e são capturadas para que o sistema possa lidar com o erro de forma corre
 </div>
 
 <div align="center">
-  <img src="/images/divisor.jpg" width="1280" height="5">
+  <img src="/images/divisor.jpg">
 </div>
+
 
 <div align="justify">
   <h2>Docker</h2>
@@ -1031,16 +1175,6 @@ Para facilitar a execução do sistema, foi criado um arquivo Dockerfile que con
 instruções necessárias para a criação de uma imagem Docker. Esse arquivo é responsável
 por definir o ambiente de execução do sistema, incluindo as dependências e configurações
 necessárias para a execução do sistema.
-
-O Dockerfile contém as seguintes instruções:
-
-```
-  FROM python:3.8
-  WORKDIR /app
-  COPY . /app
-  RUN pip install -r requirements.txt
-  CMD ["python", "app.py"]
-```
 
 </div>
 
