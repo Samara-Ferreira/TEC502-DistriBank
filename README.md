@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="/images/logo.png" width="100" height="100">
+  <img src="/images/logo.png" width="120" height="120">
 <h1> TEC502-DistriBank </h1>
 </div>
 
@@ -22,20 +22,48 @@ computacionais distribuídos.
 
 <h2>Sumário</h2>
 <div id="sumario">
-  <ul>
-  <li><a href="#descricao-projeto">Descrição do Projeto</a></li>
-      <li><a href="#requisitos-funcionalidades">Requisitos e Funcionalidades do Sistema</a></li>
-  <li><a href="#componentes">Componentes Principais do Sistema</a></li>
 
-
-
+- <A href = "#Introducao">Introdução</A><br>
+- <A href = "#descricao-projeto">Descrição do Projeto</A><br>
+  - <A href = "#requisitos-funcionalidades">Requisitos e Funcionalidades do Sistema</A><br>
+- <A href = "#componentes">Componentes Principais do Sistema</A><br>
+  - <A href = "#aplicacao">Aplicação</A><br>
+  - <A href = "#servidores">Servidores</A><br>
+- <A href = "#comunicacao-servidores">Comunicação entre Servidores</A><br>
+  - <A href = "#rotas-comunicacao">Rotas de Comunicação</A><br>
+- <A href = "#algoritmos">Algoritmos da Concorrência Distribuída</A><br>
+  - <A href = "#relogio-vetorial">Relógio Vetorial</A><br>
+  - <A href = "#multicast">Multicast Totalmente Ordenado</A><br>
+    - <A href = "#busca-binaria">Busca Binária e Ordenação</A><br>
+    - <A href = "#id">ID Único de Transação</A><br>
+    - <A href = "#ACKs">ACKs e Confirmação de Transações</A><br>
+    - <A href = "#fila-execucao">Fila de Execução</A><br>
+    - <A href = "#lock">Locks e Exclusão Mútua</A><br>
+  - <A href = "#exemplo-comunicacao">Exemplo de Comunicação</A><br>
+- <A href = "#transacoes">Transações Bancárias</A><br>
+  - <A href = "#transacoes-internas">Transações Bancárias Internas</A><br>
+  - <A href = "#transacoes-externas">Transações Bancárias Externas</A><br>
+  - <A href = "#transacoes-sequenciais">Transações Bancárias Sequenciais</A><br>
+  - <A href = "#transacoes-concorrentes">Transações Bancárias Concorrentes</A><br>
+- <A href = "#confiabilidade">Tratamento de Erros e Confiabilidade</A><br>
+  - <A href = "#tratamento-erros">Tratamento de Erros</A><br>
+  - <A href = "#confiabilidade">Confiabilidade</A><br>
+- <A href = "docker">Docker</A><br>
+- <A href = "#testes">Testes de Concorrência</A><br>
+- <A href = "execucao">Execução do Projeto</A><br>
+- <A href = "#conclusao">Conclusão</A><br>
+- <A href = "#referencias">Referências</A><br>
+  
+<\div>
 
 
 <div align="center">
   <img src="/images/divisor.jpg" width="1280" height="5">
 </div>
 
-<div id="introducao" align="justify">
+
+<A name= "Introducao"></A>
+<div align="justify">
   <h2>Introdução</h2>
 
 No cenário atual, a tecnologia desempenha um papel fundamental
@@ -60,7 +88,8 @@ bancos.
 </div>
 
 
-<div id="descricao-projeto" align="justify">
+<A name= "descricao-projeto"></A>
+<div align="justify">
   <h2>Descrição do projeto</h2>
 
 O sistema DistriBank é um sistema de transações bancárias distribuído
@@ -79,6 +108,7 @@ aplicações, e as possíveis conexões entre si.
 <div align="center">
   <img src="/images/arquitetura.png">
 </div>
+<p align="center"><strong>Figura 1: Arquitetura do sistema DistriBank </strong></p>
 
 Para o desenvolvimento do projeto DistriBank, foi utilizada a linguagem
 de programação Python em conjunto com o framework Flask. O Flask 
@@ -92,7 +122,7 @@ O ambiente de desenvolvimento principal foi o PyCharm, porém o projeto
 executado diretamente no terminal.
 
 
-<div id="requisitos-funcionalidades" align="justify">
+  <A name= "requisitos-funcionalidades"></A>
   <h3>Requisitos e Funcionalidades do Sistema</h3>
 
 O sistema DistriBank foi desenvolvido com os seguintes requisitos e funcionalidades:
@@ -117,19 +147,22 @@ Esses requisitos e funcionalidades garantem que o DistriBank seja um
 sistema robusto e eficiente para transações bancárias distribuídas.
 
 </div>
-</div>
+
 
 <div align="center">
   <img src="/images/divisor.jpg" width="1280" height="5">
 </div>
 
+
+<A name= "componentes"></A>
 <div id="componentes" align="justify">
   <h2>Componentes Principais do Sistema</h2>
 
 No sistema DistriBank, os principais componentes são a aplicação e os
 servidores, que atuam como representantes dos bancos consorciados. 
 
-<div id="aplicacao"" align="justify">
+
+  <A name= "aplicacao"></A>
   <h3>Aplicação</h3>
 
 A aplicação desempenha um papel crucial ao facilitar a comunicação entre os 
@@ -186,7 +219,6 @@ Abaixo, estão as 3 principais telas do sistema:
 </div>
 <p align="center"><strong> Tela de escolha de banco </strong></p>
 
-
 2. **Tela de operações bancárias**:
     - Nesta tela, o usuário pode escolher entre as operações para fazer
    login, criar uma conta, ver todos os clientes cadastrados no banco
@@ -214,12 +246,10 @@ simultaneamente, testando a capacidade do sistema em lidar com uma alta
 carga de operações de forma resiliente e eficaz. Alguns scripts prontos
 estão dizponíveis no diretório `tests`, como será abordado na seção 
 de testes.
-</div>
 
 
-
-
-<h4>Servidores</h4>
+  <A name= "servidores"></A>
+  <h3>Servidores</h3>
 
 Por sua vez, os servidores são responsáveis por armazenar dados detalhados 
 das contas bancárias dos usuários e executar operações fundamentais, como a
@@ -312,7 +342,7 @@ adequado de situações inesperadas e mantendo a robustez do sistema. Este
 arquivo é crucial para a estabilidade e confiabilidade do DistriBank em 
 face de cenários adversos;
 
-utils/Utils.py: Oferece funções utilitárias diversas do sistema.
+- utils/Utils.py: Oferece funções utilitárias diversas do sistema.
 
 </div>
 
@@ -322,8 +352,16 @@ utils/Utils.py: Oferece funções utilitárias diversas do sistema.
 </div>
 
 
-<div id="comunicacao-servidores" align="justify">
-  <h2>Comunicação entre Servidoress</h2>
+<A name= "comunicacao-servidores"></A>
+<div align="justify">
+  <h2>Comunicação entre os Servidores</h2>
+
+No sistema DistriBank, a comunicação entre os bancos é realizada por meio 
+de rotas definidas como URLs, que facilitam a troca de informações necessárias
+para a execução das operações bancárias distribuídas. Essas rotas são
+configuradas utilizando métodos HTTP padrão, como GET, POST, PUT e DELETE,
+que correspondem a operações de leitura, criação, atualização e exclusão de 
+dados, respectivamente.
 
 A comunicação entre os servidores no sistema DistriBank é facilitada por um
 protocolo de comunicação, que é essencial para a transferência eficiente de
@@ -349,26 +387,9 @@ mensagens entre os servidores distribuídos. Cada requisição HTTP contém
 métodos padrão como GET, POST, PUT e DELETE, que são utilizados para diferentes
 tipos de interações entre os componentes do sistema.
 
-</div>
 
-
-<div align="center">
-  <img src="/images/divisor.jpg" width="1280" height="5">
-</div>
-
-
-<div id="comunicacao-servidor" align="justify">
-  <h2>Comunicação entre os Servidores</h2>
-
-No sistema DistriBank, a comunicação entre os bancos é realizada por meio 
-de rotas definidas como URLs, que facilitam a troca de informações necessárias
-para a execução das operações bancárias distribuídas. Essas rotas são
-configuradas utilizando métodos HTTP padrão, como GET, POST, PUT e DELETE,
-que correspondem a operações de leitura, criação, atualização e exclusão de 
-dados, respectivamente.
-
-
-<h3>Rotas de Comunicação</h3>
+  <A name="rotas-comunicacao"></A>
+  <h3>Rotas de Comunicação</h3>
 
 Cada função da API REST do projeto DistriBank é projetada para retornar
 um JSON estruturado com os dados solicitados. A seguir, são apresentados
@@ -503,29 +524,29 @@ como operações bancárias são realizadas de forma distribuída e segura:
   - Exemplo de requisição:
   ```json
   {
-    "company": "Empresa",
-    "cnpj": "12345678910111",
-    "name": "Maria",
-    "cpf": "12345678910",
-    "user": "maria11",
-    "password": "123456",
-    "balance": 300.0
-    }
-    ```
-    - Exemplo de resposta:
-    ```json
-    {
-        "message": "Conta jurídica (admin) para Empresa criada com sucesso!",
-        "status": 200
-    }
-    ```
-    - Exemplo de resposta:
-    ```json
-    {
-        "message": "Cliente já existe!",
-        "status": 409
-    }
-    ```
+  "company": "Empresa",
+  "cnpj": "12345678910111",
+  "name": "Maria",
+  "cpf": "12345678910",
+  "user": "maria11",
+  "password": "123456",
+  "balance": 300.0
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+    "message": "Conta jurídica (admin) para Empresa criada com sucesso!",
+    "status": 200
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+    "message": "Cliente já existe!",
+    "status": 409
+  }
+  ```
   
 - Requisição para adicionar usuário à conta jurídica:
   - Método: POST
@@ -539,22 +560,22 @@ como operações bancárias são realizadas de forma distribuída e segura:
     "name": "José",
     "user": "jose11",
     "password": "123456"
-    }
-    ```
-    - Exemplo de resposta:
-    ```json
-    {
-        "message": "Usuário José adicionado à conta jurídica com sucesso!",
-        "status": 200
-    }
-    ```
-    - Exemplo de resposta:
-    ```json
-    {
-        "message": "Cliente já existe!",
-        "status": 409
-    }
-    ```
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+    "message": "Usuário José adicionado à conta jurídica com sucesso!",
+    "status": 200
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+    "message": "Cliente já existe!",
+    "status": 409
+  }
+  ```
   
 - Requisição para criar uma chave pix:
   - Método: POST
@@ -567,117 +588,36 @@ como operações bancárias são realizadas de forma distribuída e segura:
     "type": "physical",
     "type_key": "cpf",
     "pix": "12345678910"
-    }
-    ```
-    - Exemplo de resposta:
-    ```json
-    {
-        "message": "Chave PIX criada com sucesso!",
-        "status": 200
-    }
-    ```
-    - Exemplo de resposta:
-    ```json
-    {
-        "message": "Chave PIX já existe!",
-        "status": 409
-    }
-    ```
-  - Exemplo de resposta:
-  ```json
-  {
-      "message": "Cliente não encontrado!",
-      "status": 404
   }
   ```
   - Exemplo de resposta:
   ```json
   {
-      "message": "Chave inválida!!",
-      "status": 400
+    "message": "Chave PIX criada com sucesso!",
+    "status": 200
   }
   ```
-  
-
-- Requisição para obter as chaves pix:
-  - Método: GET
-  - Rota: /<string:cpf>/<string:type>/get_keys
-  - Resposta:
-  - Exemplo de requisição:
-  ```json
-  {
-    "cpf": "12345678910",
-    "type": "physical"
-    }
-    ```
-    - Exemplo de resposta:
-    ```json
-    {
-        "keys": [
-            {
-                "type_key": "cpf",
-                "pix": "12345678910"
-            }
-        ]
-    }
-    ```
-    - Exemplo de resposta:
-    ```json
-    {
-        "message": "Cliente não encontrado!",
-        "status": 404
-    }
-    ```
-  
-- Requisição para obter o saldo atual do cliente:
-  - Método: GET
-  - Rota: /<string:cpf>/<string:type>/get_balance
-  - Resposta:
-  - Exemplo de requisição:
-  ```json
-  {
-    "cpf": "12345678910",
-    "type": "physical"
-    }
-    ```
-    - Exemplo de resposta:
-    ```json
-    {
-        "balance": 100.0
-    }
-    ```
-    - Exemplo de resposta:
-    ```json
-    {
-        "message": "Cliente não encontrado!",
-        "status": 404
-    }
-    ```
-
-- Requisição para obter o extrato de operações do banco:
-  - Método: GET
-  - Rota: /get_bank_statement
-  - Resposta:
   - Exemplo de resposta:
-    ```json
-    {
-      "operations": [
-          {
-              "id": "5500",
-              "operation": "transfer",
-              "cpf_cnpj": "12345678910",
-              "value": 50.0
-          }
-      ]
-    }
-    ```
-    - Exemplo de resposta:
-    ```json
-    {
-        "message": "Fila vazia!",
-        "status": 404
-    }
-    ```
+  ```json
+  {
+    "message": "Chave PIX já existe!",
+    "status": 409
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+    "message": "Cliente não encontrado!",
+    "status": 404
+  }
+  ```
+  - Exemplo de resposta:
+  ```json
+  {
+    "message": "Chave inválida!!",
+    "status": 400
+  }
+  ```
   
 - Requisição para criar um depósito:
   - Método: POST
@@ -709,19 +649,19 @@ como operações bancárias são realizadas de forma distribuída e segura:
   {
     "list_operations": 
     [
-        {
-          "host_send": "172.16.103.1",
-          "port_send": "5551",
-          "cpf_send": "12345678910",
-          "type_send": "physical",
-          "value": "value",
-            
-          "host_recp": "172.16.103.2",
-          "port_recp": "5552",
-          "cpf_recp": "12345678919",
-          "type_recp": "physical",
-          "key_recp": "cpf"
-        }
+      {
+        "host_send": "172.16.103.1",
+        "port_send": "5551",
+        "cpf_send": "12345678910",
+        "type_send": "physical",
+        "value": "value",
+          
+        "host_recp": "172.16.103.2",
+        "port_recp": "5552",
+        "cpf_recp": "12345678919",
+        "type_recp": "physical",
+        "key_recp": "cpf"
+      }
     ]
   }
   ```
@@ -824,32 +764,6 @@ como operações bancárias são realizadas de forma distribuída e segura:
   }
   ```
   
-- Requisição para verificar se um cliente existe:
-  - Método: GET
-  - Rota: /<string:cpf>/<string:type>/check_client
-  - Resposta:
-  - Exemplo de requisição:
-  ```json
-  {
-    "cpf": "12345678910",
-    "type": "physical"
-  }
-  ```
-  - Exemplo de resposta:
-  ```json
-  {
-    "message": "Cliente encontrado!",
-    "status": 200
-  }
-  ```
-  - Exemplo de resposta:
-  ```json
-  {
-    "message": "Cliente não encontrado!",
-    "status": 404
-  }
-  ```
-
 </div>
 
 
@@ -858,7 +772,8 @@ como operações bancárias são realizadas de forma distribuída e segura:
 </div>
 
 
-<div id="algoritmos" align="justify">
+<A name= "algoritmos"></A>
+<div align="justify">
   <h2>Algoritmos da Concorrência Distribuída</h2>
 
 Para assegurar o tratamento eficiente da concorrência distribuída, o sistema
@@ -868,6 +783,7 @@ essenciais para garantir a precisão e a consistência das transações bancári
 evitando erros e inconsistências nos saldos das contas.
 
 
+  <A name= "relogio-vetorial"></A>
   <h3>Relógio Vetorial</h3>
 
 O relógio vetorial é um algoritmo fundamental no sistema DistriBank, 
@@ -901,13 +817,14 @@ a transação, garantindo que todos os processos mantenham uma sincronia tempora
 O relógio vetorial no exemplo ilustra como cada processo mantém um registro 
 do tempo de todos os outros processos no sistema distribuído.
 
-
 <div align="center">
   <img src="/images/relogio.png">
 </div>
+<p align="center"><strong>Figura 2: Relógio Vetorial no DistriBank </strong></p>
 
 
-<h3>Multicast Totalmente Ordenado</h3>
+  <A name= "multicast"></A>
+  <h3>Multicast Totalmente Ordenado</h3>
 
 O uso do algoritmo de multicast totalmente ordenado é essencial para 
 garantir a consistência das transações no sistema distribuído do DistriBank.
@@ -931,8 +848,9 @@ conflitos. Esse identificador é crucial para a confirmação entre os bancos
 sobre o recebimento dos pacotes de transação e é armazenado junto com o tempo
 do relógio vetorial, detalhes da transação e o próprio ID em uma lista.
 
-
-<h4>Busca Binária e Ordenação</h4>
+  
+  <A name= "busca-binaria"></A>
+  <h4>Busca Binária e Ordenação</h4>
 
 Para determinar a posição correta dessa nova transação na fila de execução,
 conforme seu tempo vetorial, utiliza-se um método de busca binária.
@@ -956,9 +874,9 @@ binária é utilizada para determinar a posição correta de uma nova transaçã
 com base em seu tempo vetorial, garantindo que a lista permaneça ordenada
 de acordo com a sequência temporal das operações.
 
-IMG
 
-<h4>Geração de ID Único</h4>
+  <A name="id"></A>
+  <h4>ID Único de Transação</h4>
 
 O de geração de indentificador (ID) único de duas casas decimais é um
 componente essencial para a identificação e rastreamento das transações
@@ -972,10 +890,9 @@ No esquema abaixo, é retratado exemplos de IDs únicos gerados para as
 transações no DistriBank. Cada ID é composto por dois dígitos, que são
 utilizados para identificar e rastrear as operações bancárias entre os
 
-IMG
 
-
-<h4>Envio dos ACKs></h4>
+  <A name="ACKs"></A>
+  <h4>ACKs e Confirmação de Transações></h4>
 
 O pacote estando completo, ele é enviado então aos demais bancos do 
 consórcio, nos quais são feitas as mesmas operações de organização
@@ -996,7 +913,8 @@ Assim, é garantido que todos os bancos receberam a transação e os outros
 bancos do consórcio tem essa confirmação.
 
 
-<h4>Verificação da Fila de Execução</h4>
+  <A name="fila-execucao"></A>
+  <h4>Fila de Execução</h4>
 
 Para garantir que todos os bancos estejam sincronizados, ou seja, 
 todos eles com a mesma fila de transação, antes de executar é feita
@@ -1010,7 +928,8 @@ significa que outra transação está sendo inserida na fila e, portanto,
 não é possível executar a operação atual.
 
 
-<h4>Uso de Locks</h4>
+  <A name="lock"></A>
+  <h4>Locks e Exclusão Mútua</h4>
 
 Para garantir a consistência dos dados e evitar condições de corrida
 em operações críticas, o DistriBank utiliza locks (travas) para controlar
@@ -1024,7 +943,8 @@ Isso evita que outras transações interfiram na operação em andamento,
 garantindo que a execução seja concluída com sucesso e sem conflitos.
 
 
-<h4>Exemplo de Comunicação entre Bancos</h4>
+  <A name="exemplo-comunicacao"></A>
+  <h3>Exemplo de Comunicação entre Bancos</h3>
 
 Abaixo, é apresentado um exemplo de como é feita a comunicação 
 entre os bancos, por meio do algoritmo de multicast totalmente 
@@ -1043,6 +963,7 @@ de corrida e garantindo a integridade dos dados.
 <div align="center">
   <img src="/images/multicast1.png">
 </div>
+<p align="center"><strong>Figura 3: Recebimento de novas transações </strong></p>
 
 Nesse caso, o Lock vai travar uma das operações recebidas, e a outra poderá ser manipulada. Supoe-se que a operação
 1 seja escolhida para manipulação e a operação 2 seja travada. Dessa forma, a operação 1 é inserida na fila do banco 
@@ -1051,6 +972,7 @@ Nesse caso, o Lock vai travar uma das operações recebidas, e a outra poderá s
 <div align="center">
   <img src="/images/multicast2.png">
 </div>
+<p align="center"><strong>Figura 4: Envio de operações para os demais bancos </strong></p>
 
 Após isso, é feita a verificação do número de ACKs, que são a confirmação de recebimento dos pacotes. Como pode ser
 visualizado na imagem abaixo, o banco 1 recebeu o ACK do banco 2, 3 e 4, mas não fez envio. Já o banco 2 recebeu
@@ -1062,6 +984,7 @@ de bancos menos 2.
 <div align="center">
   <img src="/images/multicast3.png">
 </div>
+<p align="center"><strong>Figura 5: Verificação do número de ACKs </strong></p>
 
 Recebido o número de ACKs, tem-se que verificar a se a operação que é a primeira da lista no banco 1 é a mesma 
 dos demais bancos. Com a liberação do Lock, a operação 2 é liberada e inserida na fila do banco 2, e, dessa forma, 
@@ -1072,6 +995,7 @@ vista na imagem abaixo.
 <div align="center">
   <img src="/images/multicast4.png">
 </div>
+<p align="center"><strong>Figura 6: Verificação da fila de execução </strong></p>
 
 Agora com a operação 2, repete-se o mesmo processo anterior: essa nova transação deve ser enviada para os demais
 bancos, assim mostrado na imagem abaixo, como na operação 1.
@@ -1079,6 +1003,7 @@ bancos, assim mostrado na imagem abaixo, como na operação 1.
 <div align="center">
   <img src="/images/multicast5.png">
 </div>
+<p align="center"><strong>Figura 7: Envio de operações para os demais bancos </strong></p>
 
 E, por fim, é feita a verificação do número de ACKs e da posição da operação na fila de execução. Como todos os 
 bancos tem a mesma operação como a primeira da fila, então o banco 2 pode ser eleito um lider e disparar a 
@@ -1088,6 +1013,7 @@ a operação 2 foi a primeira da fila. Essa última parte da verificação pode 
 <div align="center">
   <img src="/images/multicast6.png">
 </div>
+<p align="center"><strong>Figura 8: Verificação da fila de execução </strong></p>
 
 Para as operações sequenciais, o sistema segue o mesmo passo a passo so que, nesse caso, o lider será aquele
 banco que estiver enviando a operação. Ou seja, pode ser feita a eleição de um lider para cada operação, e,
@@ -1095,11 +1021,13 @@ dessa forma, garantir que as operações sejam realizadas na ordem.
 
 </div>
 
+
 <div align="center">
   <img src="/images/divisor.jpg">
 </div>
 
 
+<A name= "transacoes"></A>
 <div align="justify">
   <h2>Transações Bancárias</h2>
 
@@ -1121,6 +1049,7 @@ e verifica se houve a ocorrencia de algum erro durante esse processo.
 <div align="center">
   <img src="/images/atomicidade1.png">
 </div>
+<p align="center"><strong>Figura 9: Semiexecução das operações </strong></p>
 
 No caso registrado abaixo, tem-se o exemplo de que a operação de transferencia do banco 1
 para o banco 4 não foi bem sucedida, por motivos que podem ser: saldo insuficiente, conta
@@ -1131,6 +1060,7 @@ canceladas de serem executadas.
 <div align="center">
   <img src="/images/atomicidade2.png">
 </div>
+<p align="center"><strong>Figura 10: Cancelamento das operações </strong></p>
 
 Já em outro caso, como o abaixo, todas as operações foram bem sucedidas e, dessa forma,
 foram retiradas da fila de execução, como pode ser visto.
@@ -1138,15 +1068,19 @@ foram retiradas da fila de execução, como pode ser visto.
 <div align="center">
   <img src="/images/atomicidade3.png">
 </div>
+<p align="center"><strong>Figura 11: Execução das operações </strong></p>
 
 
-<h3>Transações Bancárias Internas</h3>
+  <A name="transacoes-internas"></A>
+  <h3>Transações Bancárias Internas</h3>
 
 O sistema permite a execução de transações bancárias internas, possibilitando 
 transferências entre contas do mesmo banco, além das opções de depósito e saque, que se 
 referem à conta do próprio usuário que está utilizando o sistema no momento.
 
-<h3>Transações Bancárias Externas</h3>
+
+  <A name="transacoes-externas"></A>  
+  <h3>Transações Bancárias Externas</h3>
 
 O sistema permite a execução de transações bancárias externas, facilitando transferências
 para contas em diferentes bancos. Para realizar uma transação bancária externa, o 
@@ -1202,7 +1136,8 @@ normalmente. Após a conclusão das operações, elas são removidas da lista, g
 que a fila de operações seja processada de forma eficiente e segura.
 
 
-<h3>Transações Bancárias Sequenciais</h3>
+  <A name="transacoes-sequenciais"></A>
+  <h3>Transações Bancárias Sequenciais</h3>
 
 Na aplicação, as transações são realizadas de forma sequencial. Isso significa que cada 
 transação é executada uma após a outra, garantindo que não ocorram erros ou inconsistências
@@ -1210,7 +1145,8 @@ nos saldos das contas. Esse método sequencial assegura a correta execução de 
 transação, mantendo a integridade e a consistência dos dados financeiros no sistema.
 
 
-<h3>Transações Bancárias Concorrentes</h3>
+  <A name="transacoes-concorrentes"></A>
+  <h3>Transações Bancárias Concorrentes</h3>
 
 O sistema possibilita a execução de transações bancárias concorrentes por meio de 
 scripts. Para isso, foi implementada a seguinte função:
@@ -1246,8 +1182,9 @@ inconsistências.
 </div>
 
 
+<A name= "confiabilidade"></A>
 <div align="justify">
-  <h2>Tratamento da Confiabilidade</h2>
+  <h2>Tratamento de Erros e Confiabilidade</h2>
 
 Com relação ao tratamento de confiabilidade, é importante ressaltar que o algoritmo de 
 multicast ordenado não é projetado para garantir a confiabilidade no sentido de tolerância
@@ -1271,6 +1208,7 @@ Esse mecanismo pode ser visto na imagem abaixo:
 <div align="center">
   <img src="/images/conexao.png">
 </div>
+<p align="center"><strong>Figura 12: Verificação de Conexão </strong></p>
 
 Nessa imagem, tem-se o banco 1 criando uma operação. Após isso, o banco 1 empacota essa 
 operação e faz a verificação: se o banco 2 está online, o banco 3 e o banco 4. Caso 
@@ -1291,6 +1229,7 @@ erro, e são capturadas para que o sistema possa lidar com o erro de forma corre
 </div>
 
 
+<A name= "docker"></A>
 <div align="justify">
   <h2>Docker</h2>
 
@@ -1302,8 +1241,14 @@ necessárias para a execução do sistema.
 </div>
 
 
-<div id="testes" align="justify">
-  <h2>Testes</h2>
+<div align="center">
+  <img src="/images/divisor.jpg">
+</div>
+
+
+<A name= "testes"></A>
+<div align="justify">
+  <h2>Testes de Concorrência</h2>
 
 Para garantir a qualidade e a eficiência do sistema, foram realizados testes unitários e
 de integração. Os testes unitários foram feitos para verificar o funcionamento correto de
@@ -1331,6 +1276,7 @@ python tests\TransNew.py
 </div>
 
 
+<A name= "execucao"></A>
 <div id="execucao" align="justify">
   <h2>Execução do Projeto</h2>
 
@@ -1341,8 +1287,8 @@ Primeiramente, é necessário obter o repositório do projeto. Ele pode ser
 obtido clonando o repositório do GitHub, caso tenha o Git instalado
 na máquina, ou baixando o arquivo ZIP do projeto.
 
-
-<h3>Execução sem Docker</h3>
+  <A name= "execucao-sem-docker"></A>
+  <h3>Execução sem Docker</h3>
 
 Para a execução do projeto sem o Docker, tem-se os seguitnes pré-
 requisitos:
@@ -1365,8 +1311,8 @@ utilizando o comando abaixo, nos diretórios da aplicação e do consórcio:
   python __main__.py
 ```
 
-
-<h3>Execução com o Docker</h3>
+  <A name= "execucao-com-docker"></A>
+  <h3>Execução com o Docker</h3>
 
 Para a execução com o Docker, primeiramente obtem o diretório
 de cada um dos componentes executando o seguinte comando
@@ -1398,7 +1344,8 @@ utilizando o comando abaixo, nos diretórios da aplicação e do consórcio:
 </div>
 
 
-<div id="conclusao" align="justify">
+<A name= "conclusao"></A>
+<div align="justify">
   <h2>Conclusão</h2>
   
 O sistema DistriBank é uma solução inovadora e eficiente para
@@ -1416,9 +1363,10 @@ inconsistências nos saldos das contas.
 </div>
 
 
-<div id="referencias" align="justify">
+<A name= "referencias"></A>
+<div align="justify">
   <h2>Referências</h2>
 
 https://edisciplinas.usp.br/pluginfile.php/3609782/mod_resource/content/1/aula-12.pdf
 
-</div> 
+</div>
