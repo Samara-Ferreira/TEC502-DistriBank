@@ -24,33 +24,12 @@ computacionais distribuídos.
 <div id="sumario">
   <ul>
   <li><a href="#descricao-projeto">Descrição do Projeto</a></li>
-    <li><a href="#requisitos-funcionalidades">Requisitos e Funcionalidades do Sistema</a></li>
-  
-- Descrição do projeto
-- Requisitos e funcionalidades do sistema
-- Gerenciamento de contas 
-  - Criação de contas
-  - Tipos de contas
-- Transações bancárias
-  - Transações bancárias internas
-  - Transações bancárias externas
-  - Transações sequenciais
-  - Transações concorrentes
-- Comunicação entre servidores
-  - Protocolo utilizado 
-  - Rotas de comunicação
-- Tratamento da concorrência
-  - Algoritmo da concorrência distribuída
-  - Operações atômicas
-  - Operações simultâneas em um único servidor
-- Tratamento da confiabilidade
-  - Verificação de conexão 
-  - Tratamento de erros
-  - Retorno de conexão
-- Docker
-- Testes
-- Execução do projeto
-- Referências
+      <li><a href="#requisitos-funcionalidades">Requisitos e Funcionalidades do Sistema</a></li>
+  <li><a href="#componentes">Componentes Principais do Sistema</a></li>
+
+
+
+
 
 <div align="center">
   <img src="/images/divisor.jpg" width="1280" height="5">
@@ -94,6 +73,13 @@ uma com uma porta específica para facilitar a comunicação entre eles.
 É possível expandir o sistema para utilizar mais servidores, contanto 
 que a configuração adequada para a comunicação entre eles seja feita.
 
+Abaixo, tem-se a arquitetura geral do sistema para tres bancos e tres 
+aplicações, e as possíveis conexões entre si.
+
+<div align="center">
+  <img src="/images/arquitetura.png">
+</div>
+
 Para o desenvolvimento do projeto DistriBank, foi utilizada a linguagem
 de programação Python em conjunto com o framework Flask. O Flask 
 permitiu criar APIs de forma simples e eficiente para o sistema de 
@@ -106,7 +92,8 @@ O ambiente de desenvolvimento principal foi o PyCharm, porém o projeto
 executado diretamente no terminal.
 
 
-<h3>Requisitos e Funcionalidades do Sistema</h3>
+<div id="requisitos-funcionalidades" align="justify">
+  <h3>Requisitos e Funcionalidades do Sistema</h3>
 
 O sistema DistriBank foi desenvolvido com os seguintes requisitos e funcionalidades:
 
@@ -129,13 +116,21 @@ implantação e manutenção do ambiente de desenvolvimento.
 Esses requisitos e funcionalidades garantem que o DistriBank seja um 
 sistema robusto e eficiente para transações bancárias distribuídas.
 
+</div>
+</div>
 
-<h3>Componentes Principais do Sistema</h3>
+<div align="center">
+  <img src="/images/divisor.jpg" width="1280" height="5">
+</div>
+
+<div id="componentes" align="justify">
+  <h2>Componentes Principais do Sistema</h2>
 
 No sistema DistriBank, os principais componentes são a aplicação e os
 servidores, que atuam como representantes dos bancos consorciados. 
 
-<h4>Aplicação</h4>
+<div id="aplicacao"" align="justify">
+  <h3>Aplicação</h3>
 
 A aplicação desempenha um papel crucial ao facilitar a comunicação entre os 
 servidores por meio de um protocolo específico. Esse protocolo viabiliza a 
@@ -186,21 +181,31 @@ Abaixo, estão as 3 principais telas do sistema:
     - Nesta tela, o usuário escolhe com qual banco deseja se conectar,
     escolhendo entre os bancos 1, 2, 3 e 4.
 
-IMG
+<div align="center">
+  <img src="/images/cli1.jpg">
+</div>
+<p align="center"><strong> Tela de escolha de banco </strong></p>
+
 
 2. **Tela de operações bancárias**:
     - Nesta tela, o usuário pode escolher entre as operações para fazer
    login, criar uma conta, ver todos os clientes cadastrados no banco
    e também, ver todo o extrato bancário.
 
-IMG
+<div align="center">
+  <img src="/images/cli2.jpg">
+</div>
+<p align="center"><strong> Tela de operações bancárias </strong></p>
 
 3. **Tela de operações da conta**:
     - Nesta tela, o usuário poderá criar uma nova chave pix, listar
    todas as chaves que tem cadastradas, fazer um depósito, fazer um
     saque, fazer uma transferência e deslogar da conta.
 
-IMG
+<div align="center">
+    <img src="/images/cli3.jpg">
+</div>
+<p align="center"><strong> Tela de operações da conta </strong></p>
 
 Além da aplicação principal, o sistema utiliza scripts especializados para 
 implementar transações bancárias concorrentes. Essa abordagem permite 
@@ -209,6 +214,9 @@ simultaneamente, testando a capacidade do sistema em lidar com uma alta
 carga de operações de forma resiliente e eficaz. Alguns scripts prontos
 estão dizponíveis no diretório `tests`, como será abordado na seção 
 de testes.
+</div>
+
+
 
 
 <h4>Servidores</h4>
@@ -1333,7 +1341,6 @@ Primeiramente, é necessário obter o repositório do projeto. Ele pode ser
 obtido clonando o repositório do GitHub, caso tenha o Git instalado
 na máquina, ou baixando o arquivo ZIP do projeto.
 
-```
 
 <h3>Execução sem Docker</h3>
 
@@ -1348,14 +1355,14 @@ Para instalar as dependências do projeto, basta executar o comando
 abaixo, nos diretórios da aplicação e do consórcio:
 
 ```
-pip install -r requirements.txt
+  pip install -r requirements.txt
 ```
 
 Após a instalação das dependências, o projeto pode ser executado 
 utilizando o comando abaixo, nos diretórios da aplicação e do consórcio:
 
 ```
-python __main__.py
+  python __main__.py
 ```
 
 
@@ -1365,24 +1372,23 @@ Para a execução com o Docker, primeiramente obtem o diretório
 de cada um dos componentes executando o seguinte comando
 
 ```
-docker pull samarasf/app
+  docker pull samarasf/app
 ```
 
 ```
-docker pull samarasf/bank
+  docker pull samarasf/bank
 ```
 
 Após a obtenção dos diretórios, o projeto pode ser executado
 utilizando o comando abaixo, nos diretórios da aplicação e do consórcio:
 
 ```
-docker run --network=host -it -e PORT=555x samarasf/bank
+  docker run --network=host -it -e PORT=555x samarasf/bank
 ```
 
 ```
-docker run --network=host -it samarasf/app
+  docker run --network=host -it samarasf/app
 ```
-
 
 </div>
 
@@ -1402,7 +1408,6 @@ e o multicast totalmente ordenado, o sistema garante a precisão
 e a consistência das operações bancárias, evitando erros e
 inconsistências nos saldos das contas.
 
-
 </div>
 
 
@@ -1416,59 +1421,4 @@ inconsistências nos saldos das contas.
 
 https://edisciplinas.usp.br/pluginfile.php/3609782/mod_resource/content/1/aula-12.pdf
 
-</div>
-
-
-! ------------------------------------------------------------------------------------------------------------------- !
-
-## FALTA A PARTE DA CONEXÃO, SALDO AUTOMÁTICO
-
-## Gerenciamento de contas
-- realiza a gestão de contas? cria e realiza transações?
-
-- sim, o sistema faz a gestão de contas corretamente. os possíveis tipos de contas que podem ser criados são: conta
-de pessoa física particular e conjunta, e conta de pessoa jurídica.
-- na conta de pessoa física particular, o usuário entra com os seguintes dados: ... . 
-- na conta de pessoa física conjunta, o usuário entra com os seguintes dados: ... . nesse caso, pode-se ter mais de
-usuário acessando essa conta, tendo usuários e senha diferentes. esses usuários são diferenciados por seus cpfs, que
-não podem ser iguais. o primeiro usuário, que cria a conta, é considerado como o titular.
-- no caso da conta jurídica, o usuário entra com os seguintes dados: ... . nesse caso, o usuário pode ter mais de uma
-conta jurídica, sendo diferenciadas por seus cnpjs, que não podem ser iguais. o prim
-
-## Seleciona e realiza transações entre diferentes contas?
-- É possível transacionar entre diferentes bancos? Por exemplo, enviar do 
-banco A, B e C para o banco D?
-
-## Comunicação entre servidores
-- Os bancos estão se comunicando com o protocolo adequado?
-
-## Sincronzação em um único servidor
-- Como foi o tratamento da concorrencia num único servidor, quando 
-chegam mais de um pedido de transação a um único servidor?
-
-## Algoritmo da concorrência distribuída está teoricamente bem empregado?
-- Qual algoritmo foi utilizado? está correto para a solução?
-
-## Algoritmo está tratando o problema na prática?
-- A implementação do algoritmo funciona corretamente?
-
-## Tratamento da confiabilidade
-- Quando um dos bancos perde a conexão, o sistema continua a funcionar
-corretamente? E quando o banco retorna à conexão?
-
-Como resolver essa parte?
-- no dicionário, tem uma booleana se está online ou não
-- thread que fica mandando mensagem toda hora e se houver erro, pega e muda no dicionário
-- 
-
-## Pelo menos uma transação concorrente é realizada?
-- Como foi tratado o caso em que mais de duas transações ocorrem no mesmo
-banco de forma concorrente? O saldo fica correto? Os clientes conseguem 
-realizar as transações?
-
-## Docker 
-
-## Testes
-
-## Documentação
-
+</div> 
