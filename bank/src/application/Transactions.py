@@ -1,12 +1,11 @@
 '''
-Descrição: este código contém a classe Transactions, que é responsável por gerenciar as transações do usuário no sistema
+Descrição: este código contém a classe Transactions, responsável por gerenciar as transações do usuário no sistema
 bancário.
 '''
 
 # Importar a biblioteca necessária
 import ast
 import requests
-
 from os import system, name
 
 
@@ -19,18 +18,18 @@ class Transactions:
         self.type = None
         self.pix_key = None
         self.queue_transfer = []
-        self.banks = [
-                {"host": "172.16.103.1", "port": 5551, "active": False},
-                {"host": "172.16.103.2", "port": 5552, "active": False},
-                {"host": "172.16.103.4", "port": 5553, "active": False},
-                {"host": "172.16.103.5", "port": 5554, "active": False}
-            ]
         # self.banks = [
-        #         {"host": "192.168.0.111", "port": 5551, "active": False},
-        #         {"host": "192.168.0.111", "port": 5552, "active": False},
-        #         {"host": "192.168.0.111", "port": 5553, "active": False},
-        #         {"host": "192.168.0.111", "port": 5554, "active": False}
-        #     ]
+        #         {"host": "172.16.103.1", "port": 5551, "active": False},
+        #         {"host": "172.16.103.2", "port": 5552, "active": False},
+        #         {"host": "172.16.103.4", "port": 5553, "active": False},
+        #         {"host": "172.16.103.5", "port": 5554, "active": False}
+        # ]
+        self.banks = [
+                {"host": "172.22.208.1", "port": 5551, "active": False},
+                {"host": "172.22.208.1", "port": 5552, "active": False},
+                {"host": "172.22.208.1", "port": 5553, "active": False},
+                {"host": "172.22.208.1", "port": 5554, "active": False}
+        ]
 
     # Método para limpar a tela
     def clear(self):
@@ -112,7 +111,6 @@ class Transactions:
 
     # Método para criar apenas uma transferência
     def create_one_transfer(self):
-        # IDEIA: AO INVES DE PEDIR A PORTA, PROCURAR PELO CPF DO CLIENTE
         print("\n\t| De qual banco você deseja transferir?")
         for bank in self.banks:
             print(f"\tBanco {self.banks.index(bank) + 1}: Host: {bank['host']} - Porta: {bank['port']}")
@@ -158,55 +156,40 @@ class Transactions:
         try:
             response = requests.get(f"http://{host_send}:{port_send}/{self.cpf}/{type_account_send}/check_client")
         except requests.exceptions.ConnectionError:
+            self.clear()
             print("\n\t| Banco indisponível! Tente novamente mais tarde.")
             return None
 
         if response.status_code == 200:
             print("\n\t", "-" * 60)
-            print("\t| E para qual banco você deseja transferir?")
-            for bank in self.banks:
-                print(f"\tBanco {self.banks.index(bank) + 1}: Host: {bank['host']} - Porta: {bank['port']}")
-            type_bank = 0
-            while type_bank < 1 or type_bank > 4:
-                try:
-                    type_bank = int(input("\t> "))
-                except ValueError:
-                    print("\n\t| Opção inválida! Digite um número inteiro.")
-                except IndexError:
-                    print("\n\t| Opção inválida! Digite um número entre 1 e 4.")
-                except KeyboardInterrupt:
-                    print("\n\t| Saindo...")
-                    exit(0)
-
-            host_recp = self.banks[type_bank - 1]["host"]
-            port_recp = self.banks[type_bank - 1]["port"]
-
-            print("\n\t| Qual o tipo de conta do destinatário?")
-            print("\n\t[1] Conta física particular \n\t[2] Conta física conjunta \n\t[3] Conta jurídica")
-            type_recp = 0
-            while type_recp < 1 or type_recp > 3:
-                try:
-                    type_recp = int(input("\t> "))
-                except ValueError:
-                    print("\n\t| Opção inválida! Digite um número inteiro.")
-                except IndexError:
-                    print("\n\t| Opção inválida! Digite um número entre 1 e 3.")
-                except KeyboardInterrupt:
-                    print("\n\t| Saindo...")
-                    exit(0)
-            if type_recp == 1:
-                type_recp = "physical"
-            elif type_recp == 2:
-                type_recp = "physical_joint"
-            else:
-                type_recp = "juridic"
-
-            print("\n\t Digite o CPF do destinatário:")
-            cpf_recp = str(input("\t> "))
-            self.check_cpf(cpf_recp)
 
             print("\n\t Digite a chave PIX do destinatário:")
             key_recp = str(input("\t> "))
+
+            check_key = None
+            # Verificar se a chave pix existe em algum dos bancos
+            try:
+                for bank in self.banks:
+                    response = requests.get(f"http://{bank['host']}:{bank['port']}/{key_recp}/check_key"
+                                            f"")
+                    if response.status_code == 200:
+                        check_key = "OK"
+                        host_recp = bank['host']
+                        port_recp = bank['port']
+                        # Transforma em lista novamente
+                        response = ast.literal_eval(response.json())
+                        cpf_recp = response[0]
+                        type_recp = response[1]
+                        break
+            except requests.exceptions.ConnectionError:
+                self.clear()
+                print("\n\t| Banco indisponível! Tente novamente mais tarde.")
+                return None
+
+            if check_key is None:
+                self.clear()
+                print("\n\t| Chave PIX inválida! Tente novamente.")
+                return None
 
             print("\n\t Digite o valor da transferência:")
             value = float(input("\t> "))
@@ -214,28 +197,33 @@ class Transactions:
                 print("\n\t| Valor inválido! Digite um valor positivo.")
                 value = float(input("\t> "))
 
-            try:
-                response = requests.get(f"http://{host_send}:{port_send}/{self.cpf}/{type_account_send}/get_balance")
-            except requests.exceptions.ConnectionError:
-                print("\n\t| Banco indisponível! Tente novamente mais tarde.")
-                return None
+            # # Verificar se tem saldo suficiente
+            # try:
+            #     response = requests.get(f"http://{host_send}:{port_send}/{self.cpf}/{type_account_send}/get_balance")
+            # except requests.exceptions.ConnectionError:
+            #     self.clear()
+            #     print("\n\t| Banco indisponível! Tente novamente mais tarde.")
+            #     return None
+            #
+            # if response.status_code != 200:
+            #     self.clear()
+            #     print(f"\n\t| {response.status_code}, {response.json()}")
+            #     return None
+            #
+            # actual_balance = response.json()
+            # if value > actual_balance:
+            #     self.clear()
+            #     print("\n\t| Saldo insuficiente! Tente novamente.")
+            #     return None
 
-            if response.status_code == 200:
-                actual_balance = response.json()
-                if value > actual_balance:
-                    print("\n\t| Saldo insuficiente! Tente novamente.")
-                    return None
+            operation = {"host_recp": host_recp, "port_recp": port_recp, "cpf_recp": cpf_recp,
+                         "type_recp": type_recp, "key_recp": key_recp,
+                         "host_send": host_send, "port_send": port_send, "cpf_send": self.cpf,
+                         "type_send": type_account_send, "value": value, "operation": "transfer"}
+            return operation
 
-                operation = {"host_recp": host_recp, "port_recp": port_recp, "cpf_recp": cpf_recp,
-                             "type_recp": type_recp, "key_recp": key_recp,
-                             "host_send": host_send, "port_send": port_send, "cpf_send": self.cpf,
-                             "type_send": type_account_send, "value": value, "operation": "transfer"}
-                return operation
-
-            else:
-                print(f"\n\t| {response.status_code}, {response.json()}")
-                return None
         else:
+            self.clear()
             print(f"\n\t| {response.status_code}, {response.json()}")
             return None
 
