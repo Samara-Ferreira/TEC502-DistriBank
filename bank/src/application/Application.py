@@ -59,49 +59,57 @@ class Application:
         else:
             type_account = "juridic"
 
-
         print("\n\t Digite o seu usuário:")
         user = str(input("\t> "))
 
         print("\n\t Digite a sua senha:")
         password = str(input("\t> "))
 
-        response = requests.post(f"http://{self.host}:{self.port}/{type_account}/{user}/{password}/login")
-        if response.status_code == 200:
-            self.user = user
-            self.name, self.cpf, self.type = response.json().split(";")
+        try:
+            response = requests.post(f"http://{self.host}:{self.port}/{type_account}/{user}/{password}/login")
+            if response.status_code == 200:
+                self.user = user
+                self.name, self.cpf, self.type = response.json().split(";")
 
-            self.account_management.cpf = self.cpf
-            self.account_management.type = self.type
-            self.transactions.cpf = self.cpf
-            self.transactions.type = self.type
+                self.account_management.cpf = self.cpf
+                self.account_management.type = self.type
+                self.transactions.cpf = self.cpf
+                self.transactions.type = self.type
 
-            print(f"\n\t| Login realizado com sucesso para {self.name}\n")
-            return response
-        else:
-            print(f"\n\t| {response.status_code}, {response.json()}\n")
-            return response
+                print(f"\n\t| Login realizado com sucesso para {self.name}\n")
+                return response
+            else:
+                print(f"\n\t| {response.status_code}, {response.json()}\n")
+                return response
+        except requests.exceptions.ConnectionError:
+            print("\n\t| Erro de conexão! Verifique se o servidor está ativo.")
 
     # Método que faz a requisição de logout
     def logout(self):
-        response = requests.post(f"http://{self.host}:{self.port}/{self.user}/logout")
-        if response.status_code == 200:
-            print(f"\n\t| {response.json()}\n")
-        else:
-            print(f"\n\t| {response.status_code}, {response.json()}\n")
+        try:
+            response = requests.post(f"http://{self.host}:{self.port}/{self.user}/logout")
+            if response.status_code == 200:
+                print(f"\n\t| {response.json()}\n")
+            else:
+                print(f"\n\t| {response.status_code}, {response.json()}\n")
+        except requests.exceptions.ConnectionError:
+            print("\n\t| Erro de conexão! Verifique se o servidor está ativo.")
 
     # Método que faz requisição para obter a lista de clients
     def get_clients(self):
-        response = requests.get(f"http://{self.host}:{self.port}/get_clients")
-        if response.status_code == 200:
-            self.clear()
-            # Transformar a string em lista
-            list_clients = ast.literal_eval(response.json())
-            print("\t", "-"*60)
-            print("\t\t\tLista de clientes do banco")
-            print("\t", "-"*60)
+        try:
+            response = requests.get(f"http://{self.host}:{self.port}/get_clients")
+            if response.status_code == 200:
+                self.clear()
+                # Transformar a string em lista
+                list_clients = ast.literal_eval(response.json())
+                print("\t", "-"*60)
+                print("\t\t\tLista de clientes do banco")
+                print("\t", "-"*60)
 
-            for client in list_clients:
-                print(f"\t| {client}")
-        else:
-            print(f"\n\t| {response.status_code}, {response.json()}\n")
+                for client in list_clients:
+                    print(f"\t| {client}")
+            else:
+                print(f"\n\t| {response.status_code}, {response.json()}\n")
+        except requests.exceptions.ConnectionError:
+            print("\n\t| Erro de conexão! Verifique se o servidor está ativo.")

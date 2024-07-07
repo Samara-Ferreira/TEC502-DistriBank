@@ -46,14 +46,15 @@ class CreateAccount:
         balance = float(input("\t> "))
         balance = self.check_balance(balance, 100.00)
 
-        response = requests.post(f"http://{self.host}:{self.port}/{name}/{cpf}/{user}/{password}/{balance}"
-                                f"/create_physical_particular")
-        if response.status_code == 200:
-            print(f"\n\t| {response.json()}")
-            return response
-        else:
-            print(f"\n\t| {response.status_code}, {response.json()}")
-            return response
+        try:
+            response = requests.post(f"http://{self.host}:{self.port}/{name}/{cpf}/{user}/{password}/{balance}"
+                                    f"/create_physical_particular")
+            if response.status_code == 200:
+                print(f"\n\t| {response.json()}")
+            else:
+                print(f"\n\t| {response.status_code}, {response.json()}")
+        except requests.exceptions.ConnectionError:
+            print("\n\t| Servidor indisponível.")
 
     # Método que faz a requisição de criação de conta conjunta [admin]
     def create_account_joint(self):
@@ -82,12 +83,15 @@ class CreateAccount:
         balance = float(input("\t> "))
         balance = self.check_balance(balance, 200.00)
 
-        response = requests.post(f"http://{self.host}:{self.port}/{name}/{cpf}/{user}/{password}/{balance}"
-                                f"/create_physical_joint")
-        if response.status_code == 200:
-            print(f"\n\t| {response.json()}")
-        else:
-            print(f"\n\t| {response.status_code}, {response.json()}")
+        try:
+            response = requests.post(f"http://{self.host}:{self.port}/{name}/{cpf}/{user}/{password}/{balance}"
+                                    f"/create_physical_joint")
+            if response.status_code == 200:
+                print(f"\n\t| {response.json()}")
+            else:
+                print(f"\n\t| {response.status_code}, {response.json()}")
+        except requests.exceptions.ConnectionError:
+            print("\n\t| Servidor indisponível.")
 
     # Método que faz a requisição de criação de conta conjunta [complementar]
     def create_account_complementary(self):
@@ -116,12 +120,15 @@ class CreateAccount:
         password = str(input("\t> ")).lower()
         password = self.check_password(password).lower()
 
-        response = requests.post(f"http://{self.host}:{self.port}/{cpf_holder}/{name}/{cpf}/{user}/{password}"
-                                f"/create_joint_complementary")
-        if response.status_code == 200:
-            print(f"\n\t| {response.json()}")
-        else:
-            print(f"\n\t| {response.status_code}, {response.json()}")
+        try:
+            response = requests.post(f"http://{self.host}:{self.port}/{cpf_holder}/{name}/{cpf}/{user}/{password}"
+                                    f"/create_joint_complementary")
+            if response.status_code == 200:
+                print(f"\n\t| {response.json()}")
+            else:
+                print(f"\n\t| {response.status_code}, {response.json()}")
+        except requests.exceptions.ConnectionError:
+            print("\n\t| Servidor indisponível.")
 
     # Método que faz a requisição de criação de conta jurídica [admin]
     def create_account_juridic(self):
@@ -158,13 +165,15 @@ class CreateAccount:
         balance = float(input("\t> "))
         balance = self.check_balance(balance, 300.00)
 
-        response = requests.post(f"http://{self.host}:{self.port}/{name}/{cnpj}/{name_person}/{user}/{cpf}/{password}"
-                                f"/{balance}/create_juridic_account")
-
-        if response.status_code == 200:
-            print(f"\n\t| {response.json()}")
-        else:
-            print(f"\n\t| {response.status_code}, {response.json()}")
+        try:
+            response = requests.post(f"http://{self.host}:{self.port}/{name}/{cnpj}/{name_person}/{user}/{cpf}/{password}"
+                                    f"/{balance}/create_juridic_account")
+            if response.status_code == 200:
+                print(f"\n\t| {response.json()}")
+            else:
+                print(f"\n\t| {response.status_code}, {response.json()}")
+        except requests.exceptions.ConnectionError:
+            print("\n\t| Servidor indisponível.")
 
     # Método que faz a requisição de criação de conta jurídica [funcionário]
     def create_account_employee(self):
@@ -193,13 +202,15 @@ class CreateAccount:
         password = str(input("\t> ")).lower()
         password = self.check_password(password).lower()
 
-        response = requests.post(f"http://{self.host}:{self.port}/{cnpj}/{name}/{user}/{cpf}/{password}"
-                                f"/create_juridic_employee")
-
-        if response.status_code == 200:
-            print(f"\n\t| {response.json()}")
-        else:
-            print(f"\n\t| {response.status_code}, {response.json()}")
+        try:
+            response = requests.post(f"http://{self.host}:{self.port}/{cnpj}/{name}/{user}/{cpf}/{password}"
+                                    f"/create_juridic_employee")
+            if response.status_code == 200:
+                print(f"\n\t| {response.json()}")
+            else:
+                print(f"\n\t| {response.status_code}, {response.json()}")
+        except requests.exceptions.ConnectionError:
+            print("\n\t| Servidor indisponível.")
 
     # Aceitar somente letras e espaços
     def check_name(self, name):

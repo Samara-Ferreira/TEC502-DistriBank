@@ -5,7 +5,6 @@ bancário.
 
 # Importar a biblioteca necessária
 import requests
-
 from os import system, name
 
 
@@ -55,36 +54,47 @@ class AccountManagement:
         print("\n\t Digite o valor da chave:")
         value = str(input("\t> "))
 
-        response = requests.post(f"http://{self.host}:{self.port}/{self.cpf}/{self.type}/{type_key}/{value}"
-                                f"/create_pix_key")
-
-        if response.status_code == 200:
-            print(f"\n\t| {response.json()}")
-        else:
-            print(f"\n\t| {response.status_code}, {response.json()}")
+        try:
+            response = requests.post(f"http://{self.host}:{self.port}/{self.cpf}/{self.type}/{type_key}/{value}"
+                                    f"/create_pix_key")
+            if response.status_code == 200:
+                print(f"\n\t| {response.json()}")
+            else:
+                print(f"\n\t| {response.status_code}, {response.json()}")
+        except requests.exceptions.ConnectionError:
+            print("\n\t| Erro de conexão! Verifique se o servidor está ativo.")
 
     # Método que faz requisição para obter as chaves PIX
     def get_keys(self):
-        response = requests.get(f"http://{self.host}:{self.port}/{self.cpf}/{self.type}/get_keys")
-        if response.status_code == 200:
-            print(f"\n\t\t\t| Chaves PIX do usuário {self.cpf}, {self.type} |")
-            print(f"\t| {response.json()}")
-        else:
-            print(f"\n\t| {response.status_code}, {response.json()}")
+        try:
+            response = requests.get(f"http://{self.host}:{self.port}/{self.cpf}/{self.type}/get_keys")
+            if response.status_code == 200:
+                print(f"\n\t\t\t| Chaves PIX do usuário {self.cpf}, {self.type} |")
+                print(f"\t| {response.json()}")
+            else:
+                print(f"\n\t| {response.status_code}, {response.json()}")
+        except requests.exceptions.ConnectionError:
+            print("\n\t| Erro de conexão! Verifique se o servidor está ativo.")
 
     # Método que faz requisição para obter o saldo atual
     def get_balance(self):
-        response = requests.get(f"http://{self.host}:{self.port}/{self.cpf}/{self.type}/get_balance")
-        if response.status_code == 200:
-            return response.json()
-        else:
-            return response.status_code, response.json()
+        try:
+            response = requests.get(f"http://{self.host}:{self.port}/{self.cpf}/{self.type}/get_balance")
+            if response.status_code == 200:
+                return response.json()
+            else:
+                return response.status_code, response.json()
+        except requests.exceptions.ConnectionError:
+            return "Erro de conexão! Verifique se o servidor está ativo."
 
     # Método que faz requisição para obter o extrato banco (completo)
     def get_statment(self):
-        response = requests.get(f"http://{self.host}:{self.port}/get_bank_statement")
-        if response.status_code == 200:
-            print(f"\n\t\t\t| Fila de execução |")
-            print(f"\t{response.json()}")
-        else:
-            print(f"\n\t| {response.status_code}, {response.json()}")
+        try:
+            response = requests.get(f"http://{self.host}:{self.port}/get_bank_statement")
+            if response.status_code == 200:
+                print(f"\n\t\t\t| Fila de execução |")
+                print(f"\t{response.json()}")
+            else:
+                print(f"\n\t| {response.status_code}, {response.json()}")
+        except requests.exceptions.ConnectionError:
+            print("\n\t| Erro de conexão! Verifique se o servidor está ativo.")
