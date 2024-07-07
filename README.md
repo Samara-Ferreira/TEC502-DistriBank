@@ -26,7 +26,7 @@ computacionais distribuídos.
 - <A href = "#Introducao">Introdução</A><br>
 - <A href = "#descricao-projeto">Descrição do Projeto</A><br>
   - <A href = "#tecnologias">Tecnologias Utilizadas</A><br>
-  - <A href = "#requisitos-funcionalidades">Requisitos e Funcionalidades do Sistema</A><br>
+  - <A href = "#requisitos-funcionalidades">Requisitos e Funcionalidades</A><br>
 - <A href = "#componentes">Componentes Principais do Sistema</A><br>
   - <A href = "#aplicacao">Aplicação</A><br>
   - <A href = "#servidores">Servidores</A><br>
@@ -40,17 +40,15 @@ computacionais distribuídos.
     - <A href = "#ACKs">ACKs e Confirmação de Transações</A><br>
     - <A href = "#fila-execucao">Fila de Execução</A><br>
     - <A href = "#lock">Locks e Exclusão Mútua</A><br>
-  - <A href = "#exemplo-comunicacao">Exemplo de Comunicação</A><br>
+  - <A href = "#exemplo-comunicacao">Exemplo de Comunicação entre Bancos</A><br>
 - <A href = "#transacoes">Transações Bancárias</A><br>
   - <A href = "#transacoes-internas">Transações Bancárias Internas</A><br>
   - <A href = "#transacoes-externas">Transações Bancárias Externas</A><br>
   - <A href = "#transacoes-sequenciais">Transações Bancárias Sequenciais</A><br>
   - <A href = "#transacoes-concorrentes">Transações Bancárias Concorrentes</A><br>
 - <A href = "#confiabilidade">Tratamento de Erros e Confiabilidade</A><br>
-  - <A href = "#tratamento-erros">Tratamento de Erros</A><br>
-  - <A href = "#confiabilidade">Confiabilidade</A><br>
 - <A href = "#testes">Testes de Concorrência</A><br>
-- <A href = "execucao">Execução do Projeto</A><br>
+- <A href = "#execucao">Execução do Projeto</A><br>
 - <A href = "#conclusao">Conclusão</A><br>
 - <A href = "#referencias">Referências</A><br>
 
@@ -783,9 +781,7 @@ de forma distribuída e segura.
   - Método: POST
   - Rota: /<<string:cpf>>/<<string:type>>/<<string:key>>/<<float:value>>
   /deposit
-  - >Observação: Essa rota de depósito não é utilizada diretamente pela aplicação,
-  > pois antes de realizar um depósito é necessário criar uma operação desse tipo
-  > e adicionar na fila. 
+  - >Observação: Essa rota de depósito não é utilizada diretamente pela aplicação, pois antes de realizar um depósito é necessário criar uma operação desse tipo e adicionar na fila. 
   - Exemplo de requisição:
   ```json
   {
@@ -821,9 +817,7 @@ de forma distribuída e segura.
   - Método: POST
   - Rota: /<<string:cpf>>/<<string:type>>/<<string:key>>/<<float:value>>
   /withdraw
-  - >Observação: Essa rota de saque não é utilizada diretamente pela aplicação,
-  > pois antes de realizar um saque é necessário criar uma operação desse tipo
-  > e adicionar na fila.
+  - >Observação: Essa rota de saque não é utilizada diretamente pela aplicação, pois antes de realizar um saque é necessário criar uma operação desse tipo e adicionar na fila.
   - Exemplo de requisição:
   ```json
   {
@@ -1574,6 +1568,16 @@ mitigando erros e inconsistências nos saldos das contas.
 <div align="justify">
   <h2>Referências</h2>
 
-https://edisciplinas.usp.br/pluginfile.php/3609782/mod_resource/content/1/aula-12.pdf
+USP. Aula 12 - Tópicos em Computação Distribuída. 2023. Disponível em: 
+<https://edisciplinas.usp.br/pluginfile.php/3609782/mod_resource/content/1/aula-12.pdf/>. Último acesso em: 5 jul. 2024.
+
+MARCUS CARVALHO. Sistemas Distribuídos - 5.2 Relógios Lógicos. 2024. YouTube. Disponível em: <https://youtu.be/xK0K3RY5xco?si=X_3QDKMq1z2Qe5mK/>.
+Último acesso em: 1 jul. 2024.
+
+SIMONE. Aula 13 - Sistemas Distribuídos. Disponível em: <http://profs.ic.uff.br/~simone/sd/contaulas/aula13.pdf/>. 
+Último acesso em: 1 jul. 2024.
+
+SOBRAL, Bosco. Travas e Locks em Sistemas Distribuídos. Disponível em: <http://www.inf.ufsc.br/~bosco.sobral/ensino/ine5645/Travas-Locks.ppt/>. Último acesso em: 1 jul. 2024.
+
 
 </div> 
