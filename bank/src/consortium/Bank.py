@@ -28,24 +28,46 @@ class Bank:
         self.lock = Lock()
         self.queue_operations = Queue()
         self.unique_id = UniqueTwoDigitID()
-        self.banks = [
-            {"host": "172.16.103.1", "port": 5551, "active": True},
-            {"host": "172.16.103.2", "port": 5552, "active": True},
-            {"host": "172.16.103.4", "port": 5553, "active": True},
-            {"host": "172.16.103.5", "port": 5554, "active": True}
-        ]
         # self.banks = [
-        #     {"host": "192.168.0.111", "port": 5551, "active": True},
-        #     {"host": "192.168.0.111", "port": 5552, "active": True},
-        #     {"host": "192.168.0.111", "port": 5553, "active": True},
-        #     {"host": "192.168.0.111", "port": 5554, "active": True}
+        #     {"host": "172.16.103.1", "port": 5551, "active": True},
+        #     {"host": "172.16.103.2", "port": 5552, "active": True},
+        #     {"host": "172.16.103.4", "port": 5553, "active": True},
+        #     {"host": "172.16.103.5", "port": 5554, "active": True}
         # ]
+        self.banks = [
+            {"host": "172.22.208.1", "port": 5551, "active": True},
+            {"host": "172.22.208.1", "port": 5552, "active": True},
+            {"host": "172.22.208.1", "port": 5553, "active": True},
+            {"host": "172.22.208.1", "port": 5554, "active": True}
+        ]
         self.vector_clock = VectorialClock(len(self.banks), self.banks.index({"host": self.cnpj,
                                                                               "port": self.port, "active": True}))
         self.lock_exec = Lock()
         self.lock_create = Lock()
         self.receive_acks = {}
         self.thread_active = Thread(target=self.check_server, args=()).start()
+
+    # Método para checar se o servidor está ativo
+    def check_server(self):
+        while True:
+            for bank in self.banks:
+                try:
+                    timeout = 1
+                    # Cria um novo socket
+                    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                    # Define um tempo limite para a tentativa de conexão
+                    sock.settimeout(timeout)
+                    # Tenta se conectar ao servidor
+                    sock.connect((bank["host"], bank["port"]))
+                    # Fecha o socket
+                    sock.close()
+                    self.banks[self.banks.index(bank)]["active"] = True
+                except (socket.timeout, socket.error):
+                    self.banks[self.banks.index(bank)]["active"] = False
+
+            time.sleep(5)
+
+    # ---------------------------------------- Gerenciamento de Contas ---------------------------------------- #
 
     # Método para fazer login na conta
     def login(self, type, user, password):
@@ -154,18 +176,15 @@ class Bank:
     def generate_agency_account(self):
         return Utils.generate_agency_account(self.cnpj, len(self.clients_accounts))
 
-    # Método para verificar se a chave existe
-    def check_key(self, key):
-        for client in self.clients_accounts:
-            if self.clients_accounts[client].type_account == "juridic_company":
-                continue
-            if key in self.clients_accounts[client].pix.values():
-                return "True"
-        return "False"
-
     # Método para a criação de uma chave PIX
     def create_pix_key(self, cpf, type, type_key, key):
         with self.lock:
+            # Verificar se a chave já existe
+            for bank in self.banks:
+                response = requests.get(f"http://{bank['host']}:{bank['port']}/{key}/check_key")
+                if response.status_code == 200:
+                    raise Exceptions.KeyAlreadyExists
+
             if type == "physical":
                 if cpf+"phys" not in self.clients_accounts:
                     raise Exceptions.ClientNotFound
@@ -205,9 +224,7 @@ class Bank:
         if type == "random":
             key = Utils.generate_random_key()
         elif type == "cpf_cnpj":
-            if len(key) != 11:
-                raise Exceptions.InvalidKey
-            elif len(key) != 14:
+            if len(key) != 11 and len(key) != 14:
                 raise Exceptions.InvalidKey
         elif type == "email":
             if "@" not in key:
@@ -218,6 +235,18 @@ class Bank:
         else:
             raise Exceptions.InvalidKey
         return key
+
+    # Método para verificar se a chave existe
+    def check_key(self, key):
+        list = []
+        for client in self.clients_accounts:
+            if self.clients_accounts[client].type_account == "juridic_company":
+                continue
+            if key in self.clients_accounts[client].pix.values():
+                list.append(self.clients_accounts[client].cpf)
+                list.append(self.clients_accounts[client].type_account)
+                return str(list)
+        raise Exceptions.KeyNotFound
 
     # Método para retornar as chaves pix de um usuário específico
     def get_keys(self, cpf, type):
@@ -263,12 +292,20 @@ class Bank:
                                 self.clients_accounts[client].type_account])
         return str(clients)
 
-    # ------------------------------------------------------------------------------------------------------------ #
+    # Método para checar se o cliente existe
+    def check_client(self, cpf, type):
+        if type == "physical":
+            if cpf+"phys" in self.clients_accounts:
+                return True
+        elif type == "physical_joint":
+            if cpf+"join" in self.clients_accounts:
+                return True
+        elif type == "juridic":
+            if cpf+"juri" in self.clients_accounts:
+                return True
+        raise Exceptions.ClientNotFound
 
-    # Método para criar uma transferência
-    def create_transfer(self, operations):
-        return_transfer = self.add_new_operation(operations)
-        return return_transfer
+    # ---------------------------------------- Gerenciamento de Transações ---------------------------------------- #
 
     # Método para criar um depósito
     def create_deposit(self, host, port, cpf, type, value):
@@ -282,43 +319,48 @@ class Bank:
         return_withdraw = self.add_new_operation(str([op]))
         return return_withdraw
 
+    # Método para criar uma transferência
+    def create_transfer(self, operations):
+        return_transfer = self.add_new_operation(operations)
+        return return_transfer
+
     # Método para realizar um depósito
     def deposit(self, cpf_cnpj, type_account, key, value):
         if type_account == "physical":
-            if cpf_cnpj+"phys" not in self.clients_accounts:
+            if cpf_cnpj + "phys" not in self.clients_accounts:
                 raise Exceptions.ClientNotFound
 
-            elif key not in self.clients_accounts[cpf_cnpj+"phys"].pix.values():
+            elif key not in self.clients_accounts[cpf_cnpj + "phys"].pix.values():
                 raise Exceptions.KeyNotFound
 
-            self.clients_accounts[cpf_cnpj+"phys"].balance += value
+            self.clients_accounts[cpf_cnpj + "phys"].balance += value
             return (f"Deposito de R$ {value} realizado com sucesso para uma conta "
-                    f"{self.clients_accounts[cpf_cnpj+"phys"].name} "
-                    f"do tipo {self.clients_accounts[cpf_cnpj+"phys"].type_account}!")
+                    f"{self.clients_accounts[cpf_cnpj + "phys"].name} "
+                    f"do tipo {self.clients_accounts[cpf_cnpj + "phys"].type_account}!")
 
         elif type_account == "physical_joint":
-            if cpf_cnpj+"join" not in self.clients_accounts:
+            if cpf_cnpj + "join" not in self.clients_accounts:
                 raise Exceptions.ClientNotFound
 
-            elif key not in self.clients_accounts[cpf_cnpj+"join"].pix.values():
+            elif key not in self.clients_accounts[cpf_cnpj + "join"].pix.values():
                 raise Exceptions.KeyNotFound
 
-            self.clients_accounts[cpf_cnpj+"join"].unity.balance += value
+            self.clients_accounts[cpf_cnpj + "join"].unity.balance += value
             return (f"Deposito de R${value} realizado com sucesso para uma conta "
-                    f"{self.clients_accounts[cpf_cnpj+"join"].name} "
-                    f"do tipo {self.clients_accounts[cpf_cnpj+"join"].type_account}!")
+                    f"{self.clients_accounts[cpf_cnpj + "join"].name} "
+                    f"do tipo {self.clients_accounts[cpf_cnpj + "join"].type_account}!")
 
         elif type_account == "juridic":
-            if cpf_cnpj+"juri" not in self.clients_accounts:
+            if cpf_cnpj + "juri" not in self.clients_accounts:
                 raise Exceptions.ClientNotFound
 
-            elif key not in self.clients_accounts[cpf_cnpj+"juri"].pix.values():
+            elif key not in self.clients_accounts[cpf_cnpj + "juri"].pix.values():
                 raise Exceptions.KeyNotFound
 
-            self.clients_accounts[cpf_cnpj+"juri"].unity.balance += value
+            self.clients_accounts[cpf_cnpj + "juri"].unity.balance += value
             return (f"Deposito de R${value} realizado com sucesso para uma conta "
-                    f"{self.clients_accounts[cpf_cnpj+"juri"].name} "
-                    f"do tipo {self.clients_accounts[cpf_cnpj+"juri"].type_account}!")
+                    f"{self.clients_accounts[cpf_cnpj + "juri"].name} "
+                    f"do tipo {self.clients_accounts[cpf_cnpj + "juri"].type_account}!")
 
         elif type_account == "juridic_company":
             if cpf_cnpj not in self.clients_accounts:
@@ -459,7 +501,7 @@ class Bank:
             return f"Saque de R$ {value} realizado com sucesso!"
         raise Exceptions.ClientNotFound
 
-    # ------------------------------------------------------------------------#
+    # ---------------------------------------- Gerenciamento de Operações ---------------------------------------- #
 
     # Método para adicionar uma nova operação na fila de prioridade
     def add_new_operation(self, operation):
@@ -530,43 +572,22 @@ class Bank:
                                                          f"/{op['type_recp']}/{op['key_recp']}"
                                                          f"/{op['value']}/deposit")
 
+                        print(Utils.print_color("\t| Operação executada com sucesso!", "green"))
+
+                else:
+                    print(Utils.print_color("\t| Operação não foi executada!", "red"))
+
                 self.delete_operations()
 
             return "Operações executadas com sucesso!"
 
-    # Função para verificar quando o servidor for ativado, para limpar a fila dele
-    # def delete_queue_servers(self, port):
-    #     for bank in self.banks:
-    #         if bank["port"] == port:
-    #             continue
-    #         requests.get(f"http://{bank['host']}:{bank['port']}/delete_queue")
-    #
-    # def delete_queue_return(self, host, port):
-    #     requests.get(f"http://{host}:{port}/delete_queue")
-    #
-    # def try_delete_queue(self, index):
-    #     while True:
-    #         if self.banks[index]["active"] is True:
-    #             self.delete_queue_return(self.banks[index]["host"], self.banks[index]["port"])
-    #             break
-    #         time.sleep(1)
-    #
-    # def delete_queue(self):
-    #     if len(self.queue_operations.queue) > 0:
-    #         self.queue_operations.queue = []
-
     # Método para verificar se as operações podem ser executadas
     def semi_execute_operations(self, operations):
         for op in operations:
-            # Antes de executar, verifica se o banco está ativo
             if op["operation"] == "deposit":
                 for bank in self.banks:
                     if bank["active"] is False:
                         if bank["port"] == op["port"]:
-                            # self.delete_queue_servers(op["port"])
-                            # # Pega o índice como args da Thread
-                            # index = self.banks.index(bank)
-                            # Thread(target=self.try_delete_queue, args=(index,)).start()
                             return False
                 value = 0.0
                 response = requests.post(f"http://{op['host']}:{op['port']}/{op['cpf']}/{op['type']}"
@@ -578,10 +599,6 @@ class Bank:
                 for bank in self.banks:
                     if bank["active"] is False:
                         if bank["port"] == op["port"]:
-                            # self.delete_queue_servers(op["port"])
-                            # # Pega o índice como args da Thread
-                            # index = self.banks.index(bank)
-                            # Thread(target=self.try_delete_queue, args=(index,)).start()
                             return False
                 value = 0.0
                 response = requests.post(f"http://{op['host']}:{op['port']}/{op['cpf']}/{op['type']}"
@@ -593,24 +610,23 @@ class Bank:
                 for bank in self.banks:
                     if bank["active"] is False:
                         if bank["port"] == op["port_send"]:
-                            # self.delete_queue_servers(op["port"])
-                            # # Pega o índice como args da Thread
-                            # index = self.banks.index(bank)
-                            # Thread(target=self.try_delete_queue, args=(index,)).start()
                             return False
 
                 for bank in self.banks:
                     if bank["active"] is False:
                         if bank["port"] == op["port_recp"]:
-                            # self.delete_queue_servers(op["port"])
-                            # # Pega o índice como args da Thread
-                            # index = self.banks.index(bank)
-                            # Thread(target=self.try_delete_queue, args=(index,)).start()
                             return False
-                value = 0.0
 
+                # Verifica se o saldo é suficiente
+                actual_balance = requests.get(f"http://{op['host_send']}:{op['port_send']}/{op['cpf_send']}"
+                                              f"/{op['type_send']}/get_balance")
+                if actual_balance.json() < op["value"]:
+                    return False
+
+                value = 0.0
                 response = requests.post(f"http://{op['host_send']}:{op['port_send']}/{op['cpf_send']}"
                                          f"/{op['type_send']}/{value}/in_withdraw")
+
                 if response.status_code == 200:
                     value = 0.0
                     response = requests.post(f"http://{op['host_recp']}:{op['port_recp']}/{op['cpf_recp']}"
@@ -625,8 +641,6 @@ class Bank:
 
     # Método para deletar as operações executadas em cada um dos bancos
     def delete_operations(self):
-        # Quando retornar depois da execução...
-        # Excluir a operação da fila de prioridade
         for bank in self.banks:
             if bank["active"] is False:
                 continue
@@ -669,7 +683,6 @@ class Bank:
         for bank in self.banks:
             if bank["active"] is False:
                 continue
-
             if self.port == bank["port"]:
                 continue
             requests.get(f"http://{bank['host']}:{bank['port']}/{operation}/receive_new_operation")
@@ -752,36 +765,3 @@ class Bank:
         if len(self.queue_operations.queue_exec) == 0:
             raise Exceptions.QueueIsEmpty
         return self.queue_operations.queue_exec
-
-    # Método para checar se o cliente existe
-    def check_client(self, cpf, type):
-        if type == "physical":
-            if cpf+"phys" in self.clients_accounts:
-                return True
-        elif type == "physical_joint":
-            if cpf+"join" in self.clients_accounts:
-                return True
-        elif type == "juridic":
-            if cpf+"juri" in self.clients_accounts:
-                return True
-        raise Exceptions.ClientNotFound
-
-    # Método para checar se o servidor está ativo
-    def check_server(self):
-        while True:
-            for bank in self.banks:
-                try:
-                    timeout = 1
-                    # Cria um novo socket
-                    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                    # Define um tempo limite para a tentativa de conexão
-                    sock.settimeout(timeout)
-                    # Tenta se conectar ao servidor
-                    sock.connect((bank["host"], bank["port"]))
-                    # Fecha o socket
-                    sock.close()
-                    self.banks[self.banks.index(bank)]["active"] = True
-                except (socket.timeout, socket.error):
-                    self.banks[self.banks.index(bank)]["active"] = False
-
-            time.sleep(5)
