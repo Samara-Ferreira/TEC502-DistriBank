@@ -1,5 +1,6 @@
 '''
-Descrição: este código é o principal da aplicação do sistema bancário e contém as funções de menu.
+Descrição: este código é o principal da aplicação do sistema bancário e contém as funções de menu, e a inicialização da
+aplicação.
 '''
 
 # Importar as bibliotecas necessárias
@@ -7,19 +8,20 @@ from time import sleep
 from os import system, name
 from Application import Application
 
+# banks = [
+#     {"host": "172.16.103.1", "port": 5551, "active": False},
+#     {"host": "172.16.103.2", "port": 5552, "active": False},
+#     {"host": "172.16.103.4", "port": 5553, "active": False},
+#     {"host": "172.16.103.5", "port": 5554, "active": False}
+# ]
+
 banks = [
-    {"host": "172.16.103.1", "port": 5551, "active": False},
-    {"host": "172.16.103.2", "port": 5552, "active": False},
-    {"host": "172.16.103.4", "port": 5553, "active": False},
-    {"host": "172.16.103.5", "port": 5554, "active": False}
+    {"host": "172.22.208.1", "port": 5551, "active": False},
+    {"host": "172.22.208.1", "port": 5552, "active": False},
+    {"host": "172.22.208.1", "port": 5553, "active": False},
+    {"host": "172.22.208.1", "port": 5554, "active": False}
 ]
 
-# banks = [
-#     {"host": "192.168.0.111", "port": 5551, "active": False},
-#     {"host": "192.168.0.111", "port": 5552, "active": False},
-#     {"host": "192.168.0.111", "port": 5553, "active": False},
-#     {"host": "192.168.0.111", "port": 5554, "active": False}
-# ]
 
 # Limpar o terminal antes de iniciar
 def clear():
