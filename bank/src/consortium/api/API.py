@@ -15,8 +15,8 @@ from flask import Flask, jsonify, request
 
 
 # Definir o tipo e a porta do banco
-# PORT = 5551
-PORT = getenv("PORT")
+# PORT = getenv("PORT")
+PORT = 5551
 
 # Instanciar a classe do banco
 bank = Bank.Bank(int(PORT))
@@ -34,6 +34,8 @@ def get_cnpj():
 def get_bank():
     return bank
 
+
+# ---------------------------------------- Contas ---------------------------------------- #
 
 # Rota para fazer login na conta
 @app.route("/<string:type>/<string:user>/<string:password>/login", methods=["POST"])
@@ -118,7 +120,14 @@ def get_clients():
     except Exceptions.ClientNotFound:
         return jsonify({"error": "Não há clientes cadastrados!"}), 404
 
-# ------------------------------ Account Management ------------------------------
+
+# Rota para verificar se o cliente existe
+@app.route("/<string:cpf>/<string:type>/check_client", methods=["GET"])
+def check_client(cpf, type):
+    try:
+        return jsonify(bank.check_client(cpf, type))
+    except Exceptions.ClientNotFound:
+        return jsonify({"error": "Cliente não encontrado!"}), 404
 
 
 # Rota para criação de uma chave pix
@@ -146,6 +155,15 @@ def get_keys(cpf, type):
         return jsonify({"error": "Cliente não encontrado!"}), 404
 
 
+# Rota para checar se a chave existe
+@app.route("/<string:key>/check_key", methods=["GET"])
+def check_key(key):
+    try:
+        return jsonify(bank.check_key(key))
+    except Exceptions.KeyNotFound:
+        return jsonify({"error": "Chave não encontrada!"}), 404
+
+
 # Rota para obter o saldo de uma conta
 @app.route("/<string:cpf>/<string:type>/get_balance", methods=["GET"])
 def get_balance(cpf, type):
@@ -155,14 +173,7 @@ def get_balance(cpf, type):
         return jsonify({"error": "Cliente não encontrado!"}), 404
 
 
-# Rota para obter o extrato bancário
-@app.route("/get_bank_statement", methods=["GET"])
-def get_bank_statement():
-    try:
-        return jsonify(bank.get_queue_executed())
-    except Exceptions.QueueIsEmpty:
-        return jsonify({"error": "Fila vazia!"}), 404
-
+# ---------------------------------------- Transações ---------------------------------------- #
 
 # Rota para criar um depósito
 @app.route("/<string:host>/<string:port>/<string:cpf>/<string:type>/<float:value>/create_deposit",
@@ -229,8 +240,16 @@ def in_withdraw(cpf, type, value):
 def create_transfer(operations):
     return jsonify(bank.create_transfer(operations))
 
-# ------------------------------ Operations ------------------------------
 
+# Rota para obter o extrato bancário
+@app.route("/get_bank_statement", methods=["GET"])
+def get_bank_statement():
+    try:
+        return jsonify(bank.get_queue_executed())
+    except Exceptions.QueueIsEmpty:
+        return jsonify({"error": "Fila vazia!"}), 404
+
+# ---------------------------------------- Operações ---------------------------------------- #
 
 # Rota para deletar a primeira operação da fila de prioridade
 @app.route("/delete_first_operation", methods=["GET"])
@@ -268,17 +287,7 @@ def get_acks():
     return jsonify(bank.get_acks())
 
 
-# Rota para verificar se o cliente existe
-@app.route("/<string:cpf>/<string:type>/check_client", methods=["GET"])
-def check_client(cpf, type):
-    try:
-        return jsonify(bank.check_client(cpf, type))
-    except Exceptions.ClientNotFound:
-        return jsonify({"error": "Cliente não encontrado!"}), 404
-
-
 # Rota para limpar a fila de prioridade
 @app.route("/delete_queue", methods=["GET"])
 def delete_queue():
     return jsonify(bank.delete_queue())
-
