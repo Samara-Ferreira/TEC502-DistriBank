@@ -52,10 +52,11 @@ def menu_bank():
         print("\t[3] Depositar na conta")
         print("\t[4] Sacar da conta")
         print("\t[5] Transferir para outra conta")
+        print("\t[6] Atualizar dados da conta")
         print("\t[0] Sair\n")
 
         operation = -1
-        while operation < 0 or operation > 5:
+        while operation < 0 or operation > 6:
             try:
                 print("\n\t Digite o número correspondente à operação desejada:")
                 operation = int(input("\t> "))
@@ -93,6 +94,9 @@ def menu_bank():
             clear()
             app.transactions.create_transfer()
             input("\n\tPressione qualquer tecla para continuar...")
+
+        elif operation == 6:
+            clear()
 
         else:
             print("\n\t| Operação inválida!")
