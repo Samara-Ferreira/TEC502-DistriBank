@@ -18,18 +18,18 @@ class Transactions:
         self.type = None
         self.pix_key = None
         self.queue_transfer = []
-        # self.banks = [
-        #         {"host": "172.16.103.1", "port": 5551, "active": False},
-        #         {"host": "172.16.103.2", "port": 5552, "active": False},
-        #         {"host": "172.16.103.4", "port": 5553, "active": False},
-        #         {"host": "172.16.103.5", "port": 5554, "active": False}
-        # ]
         self.banks = [
-                {"host": "172.22.208.1", "port": 5551, "active": False},
-                {"host": "172.22.208.1", "port": 5552, "active": False},
-                {"host": "172.22.208.1", "port": 5553, "active": False},
-                {"host": "172.22.208.1", "port": 5554, "active": False}
+                {"host": "172.16.103.1", "port": 5551, "active": False},
+                {"host": "172.16.103.2", "port": 5552, "active": False},
+                {"host": "172.16.103.4", "port": 5553, "active": False},
+                {"host": "172.16.103.6", "port": 5554, "active": False}
         ]
+        # self.banks = [
+        #         {"host": "172.22.208.1", "port": 5551, "active": False},
+        #         {"host": "172.22.208.1", "port": 5552, "active": False},
+        #         {"host": "172.22.208.1", "port": 5553, "active": False},
+        #         {"host": "172.22.208.1", "port": 5554, "active": False}
+        # ]
 
     # Método para limpar a tela
     def clear(self):
