@@ -187,7 +187,7 @@ Adicionalmente, o sistema pode utilizar _scripts_ para simular transações
 bancárias concorrentes, representando um cenário real onde múltiplas transações
 ocorrem simultaneamente.
 
-A seguir, são detalhados os principais componentes do sistema DistriBank e
+A seguir, são detalhados os principais componentes do sistema _DistriBank_ e
 suas funções dentro da arquitetura distribuída de transações bancárias.
 
   <A name= "aplicacao"></A>
@@ -210,35 +210,36 @@ organizados da seguinte forma:
     ├── Dockerfile 
 
 Para cada um desses arquivos, as funções desempenham papéis específicos no 
-sistema DistriBank:
+sistema _DistriBank_:
 
 
-- **init.py:** Este arquivo inicializa o pacote da aplicação, preparando o
-ambiente para a execução dos módulos subsequentes;
+- **``init.py``:** Este arquivo inicializa o pacote da aplicação, preparando o
+ambiente para a execução dos módulos subsequentes e possibilita a importação 
+dos arquivos;
 
-- **main.py:** Como o arquivo principal da aplicação, é responsável por 
+- **``main.py``:** Como o arquivo principal da aplicação, é responsável por 
 iniciar o sistema e coordenar a comunicação entre os servidores bancários 
 distribuídos;
 
-- **AccountCreation.py:** Definição das classes e funções que facilitam a 
+- **``AccountCreation.py``:** Definição das classes e funções que facilitam a 
 criação de novas contas bancárias dentro do sistema. Ele suporta tanto contas 
 de pessoas físicas quanto jurídicas;
 
-- **AccountManagement.py:** Responsável pela gestão e administração das 
+- **``AccountManagement.py``:** Responsável pela gestão e administração das 
 contas bancárias dentro do sistema;
 
-- **Application.py:** Encarregado de facilitar a comunicação entre os 
+- **``Application.py``:** Encarregado de facilitar a comunicação entre os 
 diferentes servidores bancários distribuídos;
 
-- **Transactions.py:** Responsável pela implementação das operações de 
+- **``Transactions.py``:** Responsável pela implementação das operações de 
 transações bancárias dentro do sistema _DistriBank_;
 
-- **Dockerfile:** Este arquivo é utilizado para definir e construir a 
+- **``Dockerfile``:** Este arquivo é utilizado para definir e construir a 
 imagem do Docker que encapsula todo o ambiente de execução do sistema
-DistriBank. Ele facilita a implantação e execução do sistema em diferentes 
+_DistriBank_. Ele facilita a implantação e execução do sistema em diferentes 
 ambientes de maneira consistente e confiável.
 
-O DistriBank foi projetado com uma interface de linha de comando (CLI) 
+O _DistriBank_ foi projetado com uma interface de linha de comando (CLI) 
 intuitiva, permitindo aos usuários interagir facilmente com o sistema para 
 realizar operações bancárias distribuídas entre diferentes bancos consorciados.
 Abaixo, são apresentadas as principais telas e funcionalidades da CLI:
@@ -246,7 +247,7 @@ Abaixo, são apresentadas as principais telas e funcionalidades da CLI:
 1. **Tela de Escolha de Banco**:
     - Na tela inicial, o usuário pode selecionar com qual banco deseja 
    interagir. As opções disponíveis incluem os bancos 1, 2, 3 e 4, cada um
-   representando uma instância do servidor DistriBank.
+   representando uma instância do servidor _DistriBank_.
 
 <div align="center">
   <img src="/images/cli1.jpg">
@@ -279,8 +280,8 @@ especializados para implementar transações bancárias concorrentes. Essa
 abordagem permite simular situações reais onde múltiplas transações são 
 processadas simultaneamente, testando a capacidade do sistema em lidar com uma
 alta carga de operações de forma resiliente e eficaz. Esses _scripts_, 
-disponíveis no diretório ``tests``, são fundamentais para garantir a robustez do
-sistema sob condições de alta demanda. Detalhes sobre esses _scripts_ serão 
+disponíveis no diretório ``tests``, são fundamentais para garantir que o
+sistema funcione sob condições de alta demanda. Detalhes sobre esses _scripts_ serão 
 abordados na seção de testes.
 
 
@@ -325,61 +326,61 @@ estrutura:
 Os principais arquivos e suas funções dentro da arquitetura do _DistriBank_
 são detalhados a seguir:
 
-- **main.py:** Este é o arquivo central do servidor, responsável por 
+- **``main.py``:** Este é o arquivo central do servidor, responsável por 
 iniciar e coordenar todas as operações bancárias críticas. Ele garante que
 o servidor esteja preparado para receber e processar requisições, mantendo a
 integridade e a fluidez das transações bancárias;
 
-- **Bank.py:** Serve como o repositório central de todas as informações das
+- **``Bank.py``:** Serve como o repositório central de todas as informações das
 contas bancárias. Este arquivo implementa as operações bancárias essenciais,
 assegurando que os dados sejam consistentes e seguros durante todas as 
 transações realizadas no sistema;
 
-- **Queue.py:** Gerencia a fila de execução das transações, garantindo que 
+- **``Queue.py``:** Gerencia a fila de execução das transações, garantindo que 
 sejam realizadas de forma ordenada e correta. Esta estrutura é fundamental 
 para minimizar erros e inconsistências nos saldos das contas, coordenando a
 execução das operações bancárias de maneira sequencial e organizada;
 
-- **UniqueTwoDigitID.py:** Responsável pela geração de IDs únicos de dois 
+- **``UniqueTwoDigitID.py``:** Responsável pela geração de IDs únicos de dois 
 dígitos, este arquivo é crucial para a identificação e confirmação das 
 transações entre os bancos participantes. Ele garante que cada transação
 seja identificada de forma única e possa ser rastreada com precisão dentro
 do sistema distribuído;
 
-- **VectorialClock.py:** Implementa o relógio vetorial, usado para ordenar
+- **``VectorialClock.py``:** Implementa o relógio vetorial, usado para ordenar
 as transações na fila de execução com base no tempo vetorial associado a cada
 operação. Esse mecanismo é crucial para garantir a precisão temporal e a 
 correta execução das transações distribuídas;
 
-- **Dockerfile:** Define os passos necessários para a criação da imagem Docker,
+- **``Dockerfile``:** Define os passos necessários para a criação da imagem Docker,
 encapsulando todo o ambiente de desenvolvimento e produção do _DistriBank_. 
 Este arquivo simplifica o processo de implantação e escalabilidade do sistema
 em diferentes ambientes de execução;
 
-- **api/API.py:** Gerencia a comunicação entre os servidores, facilitando a 
+- **``api/API.py``:** Gerencia a comunicação entre os servidores, facilitando a 
 troca de informações para a realização das transações bancárias
 distribuídas. Este componente assegura uma integração eficiente e segura
 entre os diferentes nós do sistema _DistriBank_;
 
-- **api/FloatConverter.py:** Converte os valores das transações, garantindo 
+- **``api/FloatConverter.py``:** Converte os valores das transações, garantindo 
 a consistência e precisão dos dados financeiros manipulados pelo **DistriBank**.
 Este arquivo é essencial para assegurar que todas as transações sejam
 realizadas com exatidão matemática, evitando imprecisões nos cálculos
 financeiros;
 
-- **clients/JointClient.py**, **clients/JuridicClient.py**, 
-**clients/PhysicalClient.py:** Implementam operações específicas para 
+- **``clients/JointClient.py``**, **``clients/JuridicClient.py``**, 
+**``clients/PhysicalClient.py``:** Implementam operações específicas para 
 diferentes tipos de clientes bancários, como contas conjuntas, jurídicas e
 físicas. Cada arquivo oferece funcionalidades adaptadas às necessidades e
 exigências de cada categoria de conta dentro do ecossistema do _DistriBank_;
 
-- **exceptions/Exceptions.py:**  Este módulo é responsável por gerenciar e 
+- **``exceptions/Exceptions.py``:**  Este módulo é responsável por gerenciar e 
 tratar as exceções que podem ocorrer durante a execução das operações 
 bancárias. Através do tratamento adequado de situações inesperadas, ele
 assegura a estabilidade e confiabilidade do sistema, mesmo em cenários 
 adversos;
 
-- **utils/Utils.py:** Este módulo oferece uma variedade de funções utilitárias 
+- **``utils/Utils.py``:** Este módulo oferece uma variedade de funções utilitárias 
 usadas no sistema.
 
 </div>
@@ -1492,9 +1493,16 @@ diretórios da aplicação e do consórcio:
 Após a instalação das dependências, o projeto pode ser executado 
 utilizando o comando abaixo, nos diretórios da aplicação e do consórcio:
 
-```
-  python __main__.py
-```
+[//]: # (```)
+
+[//]: # (  python3 __main__.py)
+
+[//]: # (```)
+
+``
+  python3 application
+``
+
 
   <A name= "execucao-com-docker"></A>
   <h3>Execução com o Docker</h3>
