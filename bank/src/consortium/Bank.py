@@ -28,18 +28,18 @@ class Bank:
         self.lock = Lock()
         self.queue_operations = Queue()
         self.unique_id = UniqueTwoDigitID()
-        # self.banks = [
-        #     {"host": "172.16.103.1", "port": 5551, "active": True},
-        #     {"host": "172.16.103.2", "port": 5552, "active": True},
-        #     {"host": "172.16.103.4", "port": 5553, "active": True},
-        #     {"host": "172.16.103.5", "port": 5554, "active": True}
-        # ]
         self.banks = [
-            {"host": "172.22.208.1", "port": 5551, "active": True},
-            {"host": "172.22.208.1", "port": 5552, "active": True},
-            {"host": "172.22.208.1", "port": 5553, "active": True},
-            {"host": "172.22.208.1", "port": 5554, "active": True}
+            {"host": "172.16.103.1", "port": 5551, "active": True},
+            {"host": "172.16.103.2", "port": 5552, "active": True},
+            {"host": "172.16.103.4", "port": 5553, "active": True},
+            {"host": "172.16.103.6", "port": 5554, "active": True}
         ]
+        # self.banks = [
+        #     {"host": "172.22.208.1", "port": 5551, "active": True},
+        #     {"host": "172.22.208.1", "port": 5552, "active": True},
+        #     {"host": "172.22.208.1", "port": 5553, "active": True},
+        #     {"host": "172.22.208.1", "port": 5554, "active": True}
+        # ]
         self.vector_clock = VectorialClock(len(self.banks), self.banks.index({"host": self.cnpj,
                                                                               "port": self.port, "active": True}))
         self.lock_exec = Lock()
