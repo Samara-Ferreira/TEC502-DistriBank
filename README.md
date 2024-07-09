@@ -625,7 +625,7 @@ de forma distribuída e segura.
 
 - Requisição para adicionar um usuário à conta jurídica:
   - Método: POST
-  - Rota: /<<string:cnpj>>/<<string:cpf>>/<<string:name>>/<<string:user>>
+  - Rota: /<<string:cnpj>>/<<string:name>>/<<string:user>>/<<string:cpf>>
   /<<string:password>>/create_juridic_employee
   - Exemplo de requisição:
   ```json
