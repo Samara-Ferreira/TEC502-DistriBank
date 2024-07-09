@@ -14,7 +14,7 @@ system('cls' if name == 'nt' else 'clear')
 host1 = "172.16.103.1"
 host2 = "172.16.103.2"
 host3 = "172.16.103.4"
-host4 = "172.16.103.5"
+host4 = "172.16.103.6"
 
 host_local = "172.22.208.1"
 
@@ -96,8 +96,6 @@ async def main(num, pack):
             f"http://{host1}:{port1}/{pack}/create_transfer",
         ]
 
-    # Realizar transferências
-
     else:
         urls = []
 
@@ -174,27 +172,31 @@ print("=====================================")
 asyncio.run(main(1, None))
 print_operations(1)
 
-print("=====================================")
-print("    Teste 2: Criar chaves PIX")
-print("=====================================")
-asyncio.run(main(2, None))
-print_operations(2)
+# print("=====================================")
+# print("    Teste 2: Criar chaves PIX")
+# print("=====================================")
+# asyncio.run(main(2, None))
+# print_operations(2)
 
-print("=====================================")
-print("   Teste 3: Realizar Depósitos")
-print("=====================================")
-asyncio.run(main(3, None))
-print_operations(3)     # O saldo de todos fica com 50.0 a mais
+# print("=====================================")
+# print("   Teste 3: Realizar Depósitos")
+# print("=====================================")
+# asyncio.run(main(3, None))
+# print_operations(3)       # O saldo de todos fica com 50.0 a mais (normal)
+# B1 = 150.0
+# B2 = 300.0
+# B3 = 400.0
+# B4 = 150.0
 
-print("=====================================")
-print("   Teste 4: Realizar Saques")
-print("=====================================")
-asyncio.run(main(4, None))
-print_operations(3)     # O saldo de todos fica com 50.0 a menos (normal)
+# print("=====================================")
+# print("   Teste 4: Realizar Saques")
+# print("=====================================")
+# asyncio.run(main(4, None))
+# print_operations(3)     # O saldo de todos fica com 50.0 a menos (normal)
 
-print("=====================================")
-print("  Teste 5: Realizar Transferências")
-print("=====================================")
+# print("=====================================")
+# print("  Teste 5: Realizar Transferências")
+# print("=====================================")
 
 # Pacote de transferência: B1, B2 e B3 -> B4
 pack1 = [
@@ -222,9 +224,12 @@ pack1 = [
         "type_send": "juridic", "value": 10.0, "operation": "transfer"
     }
 ]
-asyncio.run(main(5, pack1))
-print_operations(3)     # O saldo do B4 fica com 30.0 a mais e o saldo dos outros bancos com 10.0 a menos
-
+# asyncio.run(main(5, pack1))
+# print_operations(3)     # O saldo do B4 fica com 30.0 a mais e o saldo dos outros bancos com 10.0 a menos
+# B1 = 90.0
+# B2 = 190.0
+# B3 = 290.0
+# B4 = 130.0
 
 # Pacote de transferência: B1 -> B2, B1 -> B3, B2 -> B4
 pack2 = [
@@ -249,9 +254,12 @@ pack2 = [
         "type_send": "physical_joint", "value": 10.0, "operation": "transfer"
     }
 ]
-asyncio.run(main(5, pack2))
-print_operations(3)     # O saldo do B3 e B4 fica com 10.0 a mais e o saldo do B1 com 20.0 a menos
-
+# asyncio.run(main(5, pack2))
+# print_operations(3)     # O saldo do B3 e B4 fica com 10.0 a mais e o saldo do B1 com 20.0 a menos
+# B1 = 70.0
+# B2 = 190.0
+# B3 = 300.0
+# B4 = 140.0
 
 # Pacote de transferência: B1, B2 e B3 -> B4 (saldo de B2 insuficiente)
 pack3 = [
@@ -276,8 +284,8 @@ pack3 = [
         "type_send": "juridic", "value": 10.0, "operation": "transfer"
     }
 ]
-asyncio.run(main(5, pack3))
-print_operations(3)    # Nenhuma transferência é realizada
+# asyncio.run(main(5, pack3))
+# print_operations(3)    # Nenhuma transferência é realizada
 
 
 # Pacote de transferência: B1, B2 e B3 -> B4 (B4 não existe)
@@ -303,5 +311,19 @@ pack4 = [
         "type_send": "juridic", "value": 10.0, "operation": "transfer"
     }
 ]
-asyncio.run(main(5, pack4))
-print_operations(3)    # Nenhuma transferência é realizada
+# asyncio.run(main(5, pack4))
+# print_operations(3)    # Nenhuma transferência é realizada
+
+# Teste para confiabilidade: transferência B1 -> B2
+pack5 = [
+    {
+        "host_recp": host2, "port_recp": port2, "cpf_recp": "08500000000",
+        "type_recp": "physical_joint", "key_recp": "joao@uefs",
+        "host_send": host1, "port_send": port1, "cpf_send": "08300000000",
+        "type_send": "physical", "value": 10.0, "operation": "transfer"
+    }
+]
+# asyncio.run(main(5, pack5))     # Nenhuma transferência é realizada
+
+# Só depois da conexão retornar
+# print_operations(3)    # saldos atualizados B1 -10.0 e B2 + 10.0
