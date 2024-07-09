@@ -15,8 +15,8 @@ from flask import Flask, jsonify, request
 
 
 # Definir o tipo e a porta do banco
-# PORT = getenv("PORT")
-PORT = 5551
+PORT = getenv("PORT")
+# PORT = 5551
 
 # Instanciar a classe do banco
 bank = Bank.Bank(int(PORT))
