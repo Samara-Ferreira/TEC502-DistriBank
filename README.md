@@ -7,9 +7,9 @@
 <div align="justify">
 
 >Este projeto, intitulado "DistriBank", foi desenvolvido como parte 
-da disciplina MI - Concorrência e Conectividade do curso de Engenharia
+da disciplina MI — Concorrência e Conectividade do curso de Engenharia
 de Computação da Universidade Estadual de Feira de Santana (UEFS).
-Ele representa um sistema de transações bancárias distribuído, criado
+Ele representa um sistema de transações bancárias, criado
 para explorar conceitos de concorrência e conectividade em ambientes
 computacionais distribuídos.
 
@@ -62,19 +62,13 @@ computacionais distribuídos.
 <div align="justify">
   <h2>Introdução</h2>
 
-No cenário atual, a tecnologia desempenha um papel fundamental
-na vida das pessoas, e o setor financeiro não é exceção. Com os 
-avanços tecnológicos, os bancos têm procurado inovações para melhor 
-atender às necessidades de seus clientes. Uma das soluções encontradas 
-foi a criação de sistemas de transações bancárias distribuídos. Esses 
-sistemas permitem que transações sejam realizadas entre contas de 
-diferentes bancos sem a necessidade de um intermediário central, como 
-o Banco Central.
+No cenário atual, a tecnologia desempenha um papel fundamental na vida das pessoas, e o setor financeiro não é exceção. 
+Com os avanços tecnológicos, os bancos têm procurado inovações para melhor atender às necessidades de seus clientes. 
+Uma das soluções encontradas foi a criação de sistemas bancários distribuídos. Esses sistemas permitem que as transações
+sejam realizadas entre contas de diferentes bancos sem a necessidade de um intermediário central, como o Banco Central.
 
-O projeto _DistriBank_ foi desenvolvido para atender a essa demanda, 
-sendo um sistema de transações bancárias distribuído que possibilita 
-a execução rápida e segura de transações entre contas de diferentes 
-bancos.
+O projeto _DistriBank_ foi desenvolvido para atender a essa demanda, sendo um sistema de transações bancárias 
+distribuído que possibilita a execução rápida e segura de transações entre contas de diferentes bancos.
 
 </div>
 
@@ -89,21 +83,19 @@ bancos.
   <h2>Descrição do Projeto</h2>
 
 
-O sistema _DistriBank_ é uma solução de transações bancárias distribuídas que 
-facilita transações entre contas de diferentes bancos sem a necessidade de um
-intermediário central, como o Banco Central. O sistema é composto por múltiplos
-servidores, cada um representando um banco do consórcio, que se comunicam entre
-si para realizar as transações de forma eficiente e segura.
+O sistema _DistriBank_ é composto por múltiplos servidores, cada um representando um banco do consórcio, que se 
+comunicam entre si para realizar as transações de forma eficiente e segura.
 
-Nos testes realizados, foram criadas quatro instâncias de servidores, cada uma
-configurada com uma porta específica para facilitar a comunicação entre eles.
-A arquitetura do sistema permite a expansão para incluir mais servidores, desde
-que a configuração adequada para a comunicação entre eles seja implementada 
-corretamente.
+Nos testes realizados, foram criadas quatro instâncias de servidores, cada uma configurada com uma porta específica 
+para facilitar a comunicação entre eles. A arquitetura do sistema permite a expansão para incluir mais servidores, 
+desde que a configuração adequada para a comunicação entre eles seja implementada corretamente. 
 
-A seguir, é apresentada a arquitetura geral do sistema, exemplificando a
-configuração para quatro bancos e quatro aplicações, juntamente com as 
-possíveis conexões entre eles:
+Para fazer a alteração dos servidores do consórcio, basta adicionar as informações do novo servidor, ou modificar as 
+informações dos servidores existentes, nos arquivos `__main__.py` e `Transaction.py`, no diretório `application`, e 
+`__main__.py`, no diretório `consortium`.
+
+A seguir, é apresentada a arquitetura geral do sistema, exemplificando a configuração para quatro bancos e quatro 
+aplicações, em conjunto com as possíveis conexões entre eles:
 
 <div align="center">
   <img src="/images/arquitetura.png">
@@ -118,14 +110,12 @@ intermediários centralizados.
   <A name= "tecnologias"></A>
   <h3>Tecnologias Utilizadas</h3>
 
-Para o desenvolvimento do projeto _DistriBank_, foi utilizada a linguagem de 
-programação Python em conjunto com o _framework_ _Flask_. O _Flask_ facilitou a 
-criação de Interfaces de Programação de Aplicações (APIs) simples e eficientes 
-para o sistema de transações bancárias distribuídas. Além disso, foram
-empregadas várias bibliotecas para aprimorar a comunicação e garantir a
-eficiência do sistema.
+Para o desenvolvimento do projeto _DistriBank_, foi utilizada a linguagem de programação Python em conjunto com o
+_framework_ _Flask_. O _Flask_ facilita a criação de Interfaces de Programação de Aplicações (APIs) simples e 
+eficientes para o sistema de transações bancárias distribuídas. Além disso, foram empregadas várias bibliotecas para
+aprimorar a comunicação do sistema.
 
-As principais tecnologias utilizadas no projeto foram:
+De forma geral, as principais tecnologias utilizadas no projeto foram:
 
 - _**Flask:**_ _Framework_ utilizado para criar APIs de maneira simples e 
 eficiente;
@@ -139,11 +129,10 @@ conexões simultaneamente;
 - _**Docker:**_ Ferramenta utilizada para criar contêineres que facilitam a 
 implementação, execução e escalabilidade do sistema.
 
-O ambiente de desenvolvimento principal foi o PyCharm, que oferece uma 
-_‘interface’_ robusta e ferramentas integradas para codificação, depuração e testes
-do projeto. No entanto, o DistriBank é compatível com qualquer Ambiente de
-Desenvolvimento Integrado (IDE) de preferência do usuário e pode também ser
-executado diretamente no terminal, sem a necessidade de uma IDE específica.
+O ambiente de desenvolvimento principal foi o PyCharm, que oferece uma interface robusta e ferramentas integradas 
+para codificação, depuração e testes do projeto. No entanto, o DistriBank é compatível com qualquer Ambiente de 
+Desenvolvimento Integrado (IDE) de preferência do usuário e pode também ser executado diretamente no terminal, sem a
+necessidade de uma IDE específica.
 
   <A name= "requisitos-funcionalidades"></A>
   <h3>Requisitos e Funcionalidades</h3>
@@ -165,14 +154,14 @@ concorrentes, simulando cenários de alta demanda e testando a resiliência do
 sistema;
 5. **Verificação de Conexão:** Implementação de verificações regulares entre 
 os servidores para garantir a disponibilidade e a comunicação adequada;
-6. **Tratamento de Erros:** Mecanismos robustos para lidar com erros e retornar
+6. **Tratamento de Erros:** Mecanismos para lidar com erros e retornar
 conexões de forma adequada, garantindo a estabilidade do sistema em situações
 inesperadas;
 7. **Execução em Contêineres Docker:** Utilização de contêineres _Docker_ para
 facilitar a implantação e manutenção do ambiente de desenvolvimento, 
 assegurando consistência e portabilidade.
 
-Esses requisitos e funcionalidades tornam o DistriBank um sistema completo 
+Esses requisitos e funcionalidades tornam o _DistriBank_ um sistema completo 
 para a realização de transações bancárias distribuídas, proporcionando
 segurança para os bancos e seus clientes.
 
