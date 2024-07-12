@@ -542,8 +542,7 @@ de forma distribuída e segura.
 
 - Requisição para criar conta jurídica:
   - Método: POST
-  - Rota: 
-  /<<string:company>>/<<string:cnpj>>/<<string:name>>/<<string:cpf>>/<<string:user>>/<<string:password>>/<<float:balance>>/create_juridic_account
+  - Rota: /<<string:company>>/<<string:cnpj>>/<<string:name>>/<<string:cpf>>/<<string:user>>/<<string:password>>/<<float:balance>>/create_juridic_account
   - Exemplo de requisição:
   ```json
   {
