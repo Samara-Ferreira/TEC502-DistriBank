@@ -514,8 +514,7 @@ de forma distribuída e segura.
 
 - Requisição para criar conta física conjunta:
   - Método: POST
-  - Rota: /<<string:name>>/<<string:cpf>>/<<string:user>>/<<string:password>>
-  /<<float:balance>>/create_physical_joint
+  - Rota: /<<string:name>>/<<string:cpf>>/<<string:user>>/<<string:password>>/<<float:balance>>/create_physical_joint
   - Exemplo de requisição:
   ```json
   {
@@ -543,8 +542,7 @@ de forma distribuída e segura.
 
 - Requisição para criar conta jurídica:
   - Método: POST
-  - Rota: /<<string:company>>/<<string:cnpj>>/<<string:name>>/<<string:cpf>>
-  /<<string:user>>/<<string:password>>/<<float:balance>>/create_juridic_account
+  - Rota: /<<string:company>>/<<string:cnpj>>/<<string:name>>/<<string:cpf>>/<<string:user>>/<<string:password>>/<<float:balance>>/create_juridic_account
   - Exemplo de requisição:
   ```json
   {
@@ -574,8 +572,7 @@ de forma distribuída e segura.
 
 - Requisição para adicionar um usuário à conta física conjunta:
   - Método: POST
-  - Rota: /<<string:cpf_holder>>/<<string:name>>/<<string:cpf>>/<<string:user>>
-  /<<string:password>>/create_joint_complementary
+  - Rota: /<<string:cpf_holder>>/<<string:name>>/<<string:cpf>>/<<string:user>>/<<string:password>>/create_joint_complementary
   - Exemplo de requisição:
   ```json
   {
@@ -610,8 +607,7 @@ de forma distribuída e segura.
 
 - Requisição para adicionar um usuário à conta jurídica:
   - Método: POST
-  - Rota: /<<string:cnpj>>/<<string:name>>/<<string:user>>/<<string:cpf>>
-  /<<string:password>>/create_juridic_employee
+  - Rota: /<<string:cnpj>>/<<string:name>>/<<string:user>>/<<string:cpf>>/<<string:password>>/create_juridic_employee
   - Exemplo de requisição:
   ```json
   {
@@ -646,8 +642,7 @@ de forma distribuída e segura.
 
 - Requisição para criar uma chave pix:
   - Método: POST
-  - Rota: /<<string:cpf>>/<<string:type>>/<<string:type_key>>/<<string:pix>>
-  /create_pix_key
+  - Rota: /<<string:cpf>>/<<string:type>>/<<string:type_key>>/<<string:pix>>/create_pix_key
   - Exemplo de requisição:
   ```json
   {
@@ -688,8 +683,7 @@ de forma distribuída e segura.
   
 - Requisição para criar um depósito:
   - Método: POST
-  - Rota: /<<string:host>>/<<string:port>>/<<string:cpf>>/<<string:type>>
-  /<<float:value>>/create_deposit
+  - Rota: /<<string:host>>/<<string:port>>/<<string:cpf>>/<<string:type>>/<<float:value>>/create_deposit
   - Exemplo de requisição:
   ```json
   {
@@ -742,8 +736,7 @@ de forma distribuída e segura.
 
 - Requisição para fazer um saque:
   - Método: POST
-  - Rota: /<<string:host>>/<<string:port>>/<<string:cpf>>/<<string:type>>
-  /<<float:value>>/create_withdraw
+  - Rota: /<<string:host>>/<<string:port>>/<<string:cpf>>/<<string:type>>/<<float:value>>/create_withdraw
   - Exemplo de requisição:
   ```json
   {
@@ -764,8 +757,7 @@ de forma distribuída e segura.
 
 - Requisição para fazer um depósito:
   - Método: POST
-  - Rota: /<<string:cpf>>/<<string:type>>/<<string:key>>/<<float:value>>
-  /deposit
+  - Rota: /<<string:cpf>>/<<string:type>>/<<string:key>>/<<float:value>>/deposit
   - >Observação: Essa rota de depósito não é utilizada diretamente pela aplicação, pois antes de realizar um depósito é necessário criar uma operação desse tipo e adicionar na fila. 
   - Exemplo de requisição:
   ```json
@@ -800,8 +792,7 @@ de forma distribuída e segura.
   
 - Requisição para fazer um saque:
   - Método: POST
-  - Rota: /<<string:cpf>>/<<string:type>>/<<string:key>>/<<float:value>>
-  /withdraw
+  - Rota: /<<string:cpf>>/<<string:type>>/<<string:key>>/<<float:value>>/withdraw
   - >Observação: Essa rota de saque não é utilizada diretamente pela aplicação, pois antes de realizar um saque é necessário criar uma operação desse tipo e adicionar na fila.
   - Exemplo de requisição:
   ```json
