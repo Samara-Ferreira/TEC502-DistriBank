@@ -486,8 +486,7 @@ de forma distribuída e segura.
 
 - Requisição para criar conta física particular:
   - Método: POST
-  - Rota: /<<string:name>>/<<string:cpf>>/<<string:user>>/<<string:password>>
-  /<<float:balance>>/create_physical_particular
+  - Rota: /<<string:name>>/<<string:cpf>>/<<string:user>>/<<string:password>>/<<float:balance>>/create_physical_particular
   - Exemplo de requisição:
   ```json
   {
