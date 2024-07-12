@@ -1535,6 +1535,6 @@ SIMONE. Aula 13 - Sistemas Distribuídos. Disponível em: <http://profs.ic.uff.b
 
 SOBRAL, Bosco. Travas e Locks em Sistemas Distribuídos. Disponível em: <http://www.inf.ufsc.br/~bosco.sobral/ensino/ine5645/Travas-Locks.ppt/>. Último acesso em: 1 jul. 2024.
 
-São Paulo: Pearson, 2014. TANENBAUM, Andrew S. Redes de computadores. 5a.
+TANENBAUM, Andrew S. Redes de computadores. 5. ed. São Paulo: Pearson, 2014.
 
 </div> 
