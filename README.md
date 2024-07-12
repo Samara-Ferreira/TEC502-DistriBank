@@ -758,7 +758,7 @@ de forma distribuída e segura.
 - Requisição para fazer um depósito:
   - Método: POST
   - Rota: /<<string:cpf>>/<<string:type>>/<<string:key>>/<<float:value>>/deposit
-  - >Observação: Essa rota de depósito não é utilizada diretamente pela aplicação, pois antes de realizar um depósito é necessário criar uma operação desse tipo e adicionar na fila. 
+  >Observação: Essa rota de depósito não é utilizada diretamente pela aplicação, pois antes de realizar um depósito é necessário criar uma operação desse tipo e adicionar na fila. 
   - Exemplo de requisição:
   ```json
   {
@@ -793,7 +793,7 @@ de forma distribuída e segura.
 - Requisição para fazer um saque:
   - Método: POST
   - Rota: /<<string:cpf>>/<<string:type>>/<<string:key>>/<<float:value>>/withdraw
-  - >Observação: Essa rota de saque não é utilizada diretamente pela aplicação, pois antes de realizar um saque é necessário criar uma operação desse tipo e adicionar na fila.
+  >Observação: Essa rota de saque não é utilizada diretamente pela aplicação, pois antes de realizar um saque é necessário criar uma operação desse tipo e adicionar na fila.
   - Exemplo de requisição:
   ```json
   {
