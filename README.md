@@ -249,7 +249,7 @@ Abaixo, são apresentadas as principais telas e funcionalidades da CLI:
    representando uma instância do servidor _DistriBank_.
 
 <div align="center">
-  <img src="/images/cli1.png" width="400">
+  <img src="/images/cli1.png" width="500">
 </div>
 <p align="center"><strong>Figura 2: Tela de escolha de banco </strong></p>
 
@@ -259,7 +259,7 @@ Abaixo, são apresentadas as principais telas e funcionalidades da CLI:
    sua conta bancária.
 
 <div align="center">
-  <img src="/images/cli2.png" width="400">
+  <img src="/images/cli2.png" width="500">
 </div>
 <p align="center"><strong>Figura 3: Tela de operações bancárias </strong></p>
 
@@ -269,7 +269,7 @@ Abaixo, são apresentadas as principais telas e funcionalidades da CLI:
    operações.
 
 <div align="center">
-    <img src="/images/cli3.png" width="400">
+    <img src="/images/cli3.png" width="500">
 </div>
 <p align="center"><strong>Figura 4: Tela de operações da conta </strong></p>
 
