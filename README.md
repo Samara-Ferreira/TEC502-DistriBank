@@ -30,6 +30,7 @@ computacionais distribuídos.
     <ul>
       <li>Dr. José Amancio Macedo Santos</li>
       <li>Departamento de Tecnologia (DTEC) — UEFS</li>
+    </ul>
 </div>
 
 
