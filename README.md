@@ -95,7 +95,7 @@ informações dos servidores existentes, nos arquivos `__main__.py` e `Transacti
 `__main__.py`, no diretório `consortium`.
 
 A seguir, é apresentada a arquitetura geral do sistema, exemplificando a configuração para quatro bancos e quatro 
-aplicações, em conjunto com as possíveis conexões entre eles:
+aplicações, em conjunto com as possíveis conexões entre eles.
 
 <div align="center">
   <img src="/images/arquitetura.png">
@@ -111,8 +111,8 @@ intermediários centralizados.
   <h3>Tecnologias Utilizadas</h3>
 
 Para o desenvolvimento do projeto _DistriBank_, foi utilizada a linguagem de programação Python em conjunto com o
-_framework_ _Flask_. O _Flask_ facilita a criação de Interfaces de Programação de Aplicações (APIs) simples e 
-eficientes para o sistema de transações bancárias distribuídas. Além disso, foram empregadas várias bibliotecas para
+_framework_ _Flask_. O _Flask_ facilita a criação de Interfaces de Programação de Aplicações (APIs) para o sistema de 
+transações bancárias distribuídas. Além disso, foram empregadas várias bibliotecas para
 aprimorar a comunicação do sistema.
 
 De forma geral, as principais tecnologias utilizadas no projeto foram:
@@ -129,8 +129,8 @@ conexões simultaneamente;
 - _**Docker:**_ Ferramenta utilizada para criar contêineres que facilitam a 
 implementação, execução e escalabilidade do sistema.
 
-O ambiente de desenvolvimento principal foi o PyCharm, que oferece uma interface robusta e ferramentas integradas 
-para codificação, depuração e testes do projeto. No entanto, o DistriBank é compatível com qualquer Ambiente de 
+O ambiente de desenvolvimento principal foi o PyCharm, que oferece uma interface robusta e ferramentas integradas 
+para codificação, depuração e testes do projeto. No entanto, o _DistriBank_ é compatível com qualquer Ambiente de 
 Desenvolvimento Integrado (IDE) de preferência do usuário e pode também ser executado diretamente no terminal, sem a
 necessidade de uma IDE específica.
 
@@ -145,7 +145,7 @@ distribuídas. As principais características incluem:
 física e jurídica, permitindo uma ampla gama de clientes;
 2. **Transações Bancárias Entre Bancos:** Capacidade de realizar transações 
 entre contas de diferentes bancos, eliminando a necessidade de intermediários
-centrais como o Banco Central;
+centrais;
 3. **Transações Sequenciais:** Execução de transações de forma sequencial
 para garantir a ordem e a consistência das operações, essencial para a
 integridade dos dados financeiros;
@@ -236,8 +236,7 @@ transações bancárias dentro do sistema _DistriBank_;
 
 - **``Dockerfile``:** Este arquivo é utilizado para definir e construir a 
 imagem do Docker que encapsula todo o ambiente de execução do sistema
-_DistriBank_. Ele facilita a implantação e execução do sistema em diferentes 
-ambientes de maneira consistente e confiável.
+_DistriBank_.
 
 O _DistriBank_ foi projetado com uma interface de linha de comando (CLI) 
 intuitiva, permitindo aos usuários interagir facilmente com o sistema para 
@@ -250,7 +249,7 @@ Abaixo, são apresentadas as principais telas e funcionalidades da CLI:
    representando uma instância do servidor _DistriBank_.
 
 <div align="center">
-  <img src="/images/cli1.jpg">
+  <img src="/images/cli1.png">
 </div>
 <p align="center"><strong>Figura 2: Tela de escolha de banco </strong></p>
 
@@ -260,7 +259,7 @@ Abaixo, são apresentadas as principais telas e funcionalidades da CLI:
    sua conta bancária.
 
 <div align="center">
-  <img src="/images/cli2.jpg">
+  <img src="/images/cli2.png">
 </div>
 <p align="center"><strong>Figura 3: Tela de operações bancárias </strong></p>
 
@@ -270,7 +269,7 @@ Abaixo, são apresentadas as principais telas e funcionalidades da CLI:
    operações.
 
 <div align="center">
-    <img src="/images/cli3.jpg">
+    <img src="/images/cli3.png">
 </div>
 <p align="center"><strong>Figura 4: Tela de operações da conta </strong></p>
 
@@ -353,9 +352,7 @@ operação. Esse mecanismo é crucial para garantir a precisão temporal e a
 correta execução das transações distribuídas;
 
 - **``Dockerfile``:** Define os passos necessários para a criação da imagem Docker,
-encapsulando todo o ambiente de desenvolvimento e produção do _DistriBank_. 
-Este arquivo simplifica o processo de implantação e escalabilidade do sistema
-em diferentes ambientes de execução;
+encapsulando todo o ambiente de desenvolvimento e produção do _DistriBank_;
 
 - **``api/API.py``:** Gerencia a comunicação entre os servidores, facilitando a 
 troca de informações para a realização das transações bancárias
@@ -363,16 +360,15 @@ distribuídas. Este componente assegura uma integração eficiente e segura
 entre os diferentes nós do sistema _DistriBank_;
 
 - **``api/FloatConverter.py``:** Converte os valores das transações, garantindo 
-a consistência e precisão dos dados financeiros manipulados pelo **DistriBank**.
+a consistência e precisão dos dados financeiros manipulados pelo _DistriBank_.
 Este arquivo é essencial para assegurar que todas as transações sejam
 realizadas com exatidão matemática, evitando imprecisões nos cálculos
 financeiros;
 
 - **``clients/JointClient.py``**, **``clients/JuridicClient.py``**, 
-**``clients/PhysicalClient.py``:** Implementam operações específicas para 
+**``clients/PhysicalClient.py``:** Implementam as classes para os 
 diferentes tipos de clientes bancários, como contas conjuntas, jurídicas e
-físicas. Cada arquivo oferece funcionalidades adaptadas às necessidades e
-exigências de cada categoria de conta dentro do ecossistema do _DistriBank_;
+físicas;
 
 - **``exceptions/Exceptions.py``:**  Este módulo é responsável por gerenciar e 
 tratar as exceções que podem ocorrer durante a execução das operações 
@@ -402,7 +398,7 @@ configurar essas rotas, são utilizados métodos HTTP padrão, como GET, POST,
 PUT e DELETE, que correspondem às operações de leitura, criação, atualização
 e exclusão de dados, respectivamente.
 
-A comunicação entre os servidores no sistema DistriBank é facilitada por um
+A comunicação entre os servidores no sistema _DistriBank_ é facilitada por um
 protocolo de comunicação, essencial para a transferência eficiente de
 informações entre os nós do sistema. Já a interoperabilidade, que é a 
 capacidade de diferentes sistemas e organizações trabalharem juntos, é
@@ -425,7 +421,7 @@ mensagens entre os servidores distribuídos.
   <A name="rotas-comunicacao"></A>
   <h3>Rotas de Comunicação</h3>
 
-Cada função da API REST do projeto DistriBank é projetada para retornar um
+Cada função da API REST do projeto _DistriBank_ é projetada para retornar um
 JSON estruturado com os dados solicitados. Essa abordagem garante que a 
 comunicação entre os componentes do sistema seja clara, eficiente e segura.
 A seguir, são apresentados exemplos detalhados de requisições para as 
@@ -585,16 +581,16 @@ de forma distribuída e segura.
   ```json
   {
     "cpf_holder": "08300000000",
-    "name": "Silvio",
-    "cpf": "08100000000",
-    "user": "silvio11",
-    "password": "silvio123"
+    "name": "João",
+    "cpf": "08500000000",
+    "user": "joao25",
+    "password": "joao123"
   }
   ```
   - Exemplo de resposta:
   ```json
   {
-    "message": "Usuário Silvio adicionado à conta conjunta com sucesso!",
+    "message": "Usuário João adicionado à conta conjunta com sucesso!",
     "status": 200
   }
   ```
@@ -915,9 +911,9 @@ Algumas vantagens do uso do relógio vetorial são:
 o relógio vetorial assegura que todas as transações sejam ordenadas 
 corretamente, mesmo quando ocorrem simultaneamente em diferentes servidores;
 
-2. **Consistência dos Dados:** A atualização contínua dos relógios entre os
-bancos garante que todos os servidores tenham uma visão consistente dos 
-saldos das contas, evitando discrepâncias e erros;
+2. **Consistência dos Dados:** A atualização contínua dos relógios entre os bancos
+garante que todos os servidores fiquem sincronizados, evitando discrepâncias
+e erros;
 
 3. **Coordenação Eficiente:** O relógio vetorial facilita a coordenação das
 operações distribuídas, garantindo que as transações sejam processadas de 
@@ -943,7 +939,7 @@ que a ordem das operações seja mantida;
 2. **Entrega Ordenada das Mensagens:** O algoritmo de _multicast_ totalmente
 ordenado garante que todas as operações relacionadas a uma transação sejam 
 processadas na ordem correta em todos os servidores envolvidos. Isso significa
-que cada servidor recebe e processa as mensagens de transação na mesma 
+que cada servidor processa as mensagens de transação na mesma 
 sequência, independentemente da ordem em que as mensagens são recebidas;
 
 3. **Sincronização entre Servidores:** Esse processo assegura que todas as
@@ -953,15 +949,13 @@ integridade e consistência dos dados em todo o sistema distribuído.
 Quando uma transação é iniciada e seu tempo é registrado pelo relógio
 vetorial, o algoritmo de multicast totalmente ordenado entra em ação para 
 garantir que todas as operações relacionadas a essa transação sejam processadas
-na ordem correta em todos os servidores envolvidos. Isso significa que cada
-servidor recebe e processa as mensagens de transação na mesma sequência,
-independentemente da ordem em que as mensagens são recebidas.
+na ordem correta em todos os servidores envolvidos. y7
 
   <A name= "busca-binaria"></A>
   <h4>Busca Binária e Ordenação</h4>
 
 No sistema _DistriBank_, para determinar a posição correta de uma nova
-transação na fila de execução com base em seu tempo vetorial, utiliza-se um
+transação na fila de execução, com base em seu tempo vetorial, utiliza-se um
 método de busca binária. Esse algoritmo de divisão e conquista divide a lista
 de transações em duas metades e verifica se o elemento a ser inserido deve 
 ser colocado antes ou depois do elemento do meio. Esse processo é repetido 
@@ -1076,7 +1070,7 @@ execução daquela operação que está na primeira posição da fila.
 
 Essa abordagem assegura que todas as partes do sistema estejam em acordo 
 antes de executar qualquer transação, evitando conflitos e garantindo a 
-consistência das operações no sistema distribuído do DistriBank. Se alguma
+consistência das operações no sistema distribuído do _DistriBank_. Se alguma
 das condições não for atendida, significa que ainda há transações pendentes
 na fila, e a operação atual deve aguardar até que as condições sejam todas 
 satisfeitas.
@@ -1095,8 +1089,7 @@ O funcionamento dessas travas dá-se da seguinte forma:
 
 1. **Acionamento do Lock:** Quando um banco recebe uma transação, um _lock_
 é acionado para travar a operação associada à transação. Isso significa que
-o recurso necessário para processar a transação é bloqueado para outros 
-bancos ou processos durante o tempo necessário para completar a operação;
+o recurso necessário para processar a transação é bloqueado para outros processos durante o tempo necessário para completar a operação;
 
 2. **Garantia de Execução Segura:** Ao travar a operação, o banco assegura
 que ela seja processada de forma segura e completa. Isso impede que outras
@@ -1114,18 +1107,14 @@ suporte do relógio vetorial. Nessa integração entre os bancos B1 e B2,
 é feito o gerenciamento descrito abaixo.
 
 Cada banco (B1, B2, B3, B4) possui um relógio vetorial de tamanho 4 para 
-manter o registro do tempo associado a cada um deles. O relógio vetorial 
-é crucial para determinar a ordem das transações e garantir que todas as 
-operações sejam executadas de forma consistente em todos os bancos.
-
-Os bancos B1 e B2 recebem transações simultâneas com o mesmo tempo vetorial,
+manter o registro do tempo associado a cada um deles. Os bancos B1 e B2 recebem transações simultâneas com o mesmo tempo vetorial,
 o que indica que ambas as transações são vistas como ocorrendo simultaneamente
 de acordo com o relógio vetorial. Para lidar com transações concorrentes que
 acessam e modificam os mesmos recursos, como atualizações de saldo em uma
 conta bancária, são utilizados _locks_. Esses locks são acionados e, assim, 
 cada banco processa uma transação por vez.
 
-Na Figura abaixo, tem-se um exemplo simplificado simplificado dessa primeira
+Na Figura abaixo, tem-se um exemplo simplificado dessa primeira
 etapa de comunicação entre os bancos B1 e B2. 
 
 <div align="center">
@@ -1180,7 +1169,7 @@ os demais bancos do consórcio, ele segue os passos descritos anteriormente.
 </div>
 <p align="center"><strong>Figura 10: Envio da operação 2 para os demais bancos </strong></p>
 
-Após receber o número correto de ACKs e verificar que a operação 2 é a
+Recebido o número correto de ACKs e verificar que a operação 2 é a
 primeira na fila de todos os bancos, o banco 2 pode ser eleito como líder
 para iniciar a execução das operações.
 
@@ -1241,16 +1230,13 @@ processo.
 </div>
 <p align="center"><strong>Figura 12: Semiexecução das operações </strong></p>
 
-No caso registrado abaixo, tem-se o exemplo de que a operação de transferencia do banco 1
-para o banco 4 não foi bem sucedida, por motivos que podem ser: saldo insuficiente, conta
-inexistente, entre outros. Nesse caso, a toda operação é cancelada e retirada da fila de 
-execução, como pode ser visto, que mesmo as outras que não houve inconsistencias, foram 
+No caso registrado abaixo, tem-se o exemplo de que a operação de transferência do banco 1 para o banco 4 não foi bem 
+sucedida, por motivos que podem ser: saldo insuficiente, conta inexistente, entre outros. Nesse caso, a toda operação é
+cancelada e retirada da fila de execução, como pode ser visto, que mesmo as outras que não houve inconsistências, foram
 canceladas de serem executadas.
 
 No exemplo registrado abaixo, é possível observar que a operação de
-transferência do Banco 1 para o Banco 4 não foi concluída com sucesso.
-Isso ocorreu devido a possíveis razões, como saldo insuficiente ou conta
-inexistente. Como resultado, todas as operações foram canceladas e removidas 
+transferência do Banco 1 para o Banco 4 não foi concluída com sucesso. Como resultado, todas as operações foram canceladas e removidas 
 da fila de execução, mesmo aquelas que não apresentavam inconsistências.
 
 <div align="center">
@@ -1283,48 +1269,40 @@ O sistema permite a realização de transações bancárias externas, facilitand
 transferências para contas em diferentes bancos. Para iniciar uma transação 
 bancária externa, o usuário deve fornecer os seguintes dados:
 
-- Dados do remetente: O usuário deve fornecer informações detalhadas para garantir que 
+- **Dados do remetente:** O usuário deve fornecer informações detalhadas para garantir que 
 a transação seja iniciada corretamente, incluindo:
-  - Banco de origem: Escolha do banco no qual o remetente está registrado.
+  - **Banco de origem:** Escolha do banco no qual o remetente está registrado.
   Pode ser o banco atual que está sendo utilizado ou outro banco onde o usuário possua 
   conta;
-  - Tipo de conta: Especificar se a conta do remetente é de pessoa física particular, 
+  - **Tipo de conta:** Especificar se a conta do remetente é de pessoa física particular, 
   pessoa física conjunta ou pessoa jurídica. Isso ajuda a verificar se o usuário,
   através do seu CPF, está cadastrado no banco, considerando que ele pode ter mais de
   um tipo de conta;
-  - Valor da transferência: O montante exato que o usuário deseja transferir. 
+  - **Valor da transferência:** O montante exato que o usuário deseja transferir. 
 
-- Dados do destinatário: O usuário deve fornecer as seguintes informações 
-para garantir a execução correta da transação:
-  - Chave Pix: Identificador único (como CPF, e-mail, número de telefone ou 
-  chave aleatória) associado à conta do destinatário. Com a chave pix, as
-  demais informações necessárias para a transferencia, como o CPF, tipo
+- **Dados do destinatário:** O usuário deve fornecer a seguinte informação:
+  - **Chave Pix:** Identificador único (como CPF, e-mail, número de telefone ou 
+  chave aleatória) associado à conta do destinatário. Com a chave Pix, as
+  demais informações necessárias para a transferência, como o CPF, tipo
   de conta e o banco são obtidas de forma automática;
 
 Ao fornecer esses dados, o sistema processa a transação bancária externa
 de forma precisa e eficiente, assegurando que os fundos sejam transferidos
-para o destinatário correto e que a operação seja concluída com sucesso.
+para o destinatário correto e a operação seja concluída com sucesso.
 
 Após inserir os dados necessários, o usuário pode optar por adicionar uma 
 nova operação ou finalizar a transação. As operações adicionadas são 
 acumuladas em uma lista e, quando completa, são enviadas para a fila de
 execução.
 
-Antes de serem colocadas na fila de execução, as operações passam por uma
-fase de pré-execução. Durante esta fase, todas as operações na lista são 
-executadas com um valor nulo para garantir a verificação de possíveis erros.
-Caso algum erro seja identificado, a lista específica de transações é
-cancelada e removida da fila de operações.
-
 Se não houver erros durante a pré-execução, as operações são executadas 
-normalmente. Após a conclusão, são removidas da lista, garantindo que a fila
-de operações seja processada de forma eficiente e segura.
+normalmente. Após a conclusão, são removidas da lista.
 
 
   <A name="transacoes-sequenciais"></A>
   <h3>Transações Bancárias Sequenciais</h3>
 
-No sistema, as transações são executadas de forma sequencial. Isso significa
+No sistema, as transações são executadas sequencialmente. Isso significa
 que cada transação é processada uma após a outra, garantindo a ausência de 
 erros ou inconsistências nos saldos das contas. Esse método sequencial 
 assegura a execução correta de cada operação, preservando a integridade e a
@@ -1339,7 +1317,7 @@ meio de _scripts_. Para isso, foi implementada a seguinte função:
 ```
   async def create_request(url):
       async with aiohttp.ClientSession() as session:
-          async with session.get(url) as response:
+          async with session.post(url) as response:
               return await response.text()
   
   async def main():
@@ -1355,10 +1333,7 @@ meio de _scripts_. Para isso, foi implementada a seguinte função:
 Assim, as transações podem ser enviadas de forma simultânea para o sistema
 bancário, desde que as URLs corretas sejam adicionadas. Esse método de 
 execução paralela simula um ambiente real onde múltiplas transações ocorrem
-simultaneamente. O sistema é projetado para gerenciar essas transações de 
-maneira precisa, assegurando a integridade e consistência dos saldos das 
-contas sem erros ou inconsistências.
-
+simultaneamente. 
 </div>
 
 
@@ -1382,16 +1357,13 @@ criada uma _thread_ que verifica continuamente, a cada 5 segundos, se os
 servidores do consórcio estão ativos ou não. Essa verificação é feita por
 meio de uma conexão via _socket_ com cada servidor. 
 
-Caso haja um erro na conexão, a _thread_ muda o status do servidor no 
+Caso haja um erro na conexão, a _thread_ muda a situação do servidor no 
 dicionário de servidores para inativo. Dessa forma, caso um banco esteja
 inativo, o sistema não poderá realizar transações até que o banco volte a
 ficar _online_. Esse sistema simula uma trava de segurança para garantir
 que todas as operações sejam realizadas de forma correta e segura, e
-tratando-se de um consórcio de bancos, para que não haja erros ou 
-inconsistências nas filas de operações, é necessário que todos os bancos 
-estejam ativos.
-
-Após o retorno da conexão, o sistema poderá continuar a realizar transações 
+tratando-se de um consórcio de bancos, para não haver erros ou 
+inconsistências nas filas de operações. Após o retorno da conexão, o sistema poderá continuar a realizar transações 
 normalmente. 
 
 Esse mecanismo pode ser visto na imagem abaixo:
@@ -1404,16 +1376,13 @@ Esse mecanismo pode ser visto na imagem abaixo:
 Nessa imagem, o Banco 1 inicia criando uma operação. Em seguida, ele empacota
 a transação e realiza uma verificação para garantir que o Banco 2, Banco 3 e 
 Banco 4 estejam todos ativos. Se qualquer um deles estiver inativo, a 
-operação é imediatamente cancelada e não é adicionada à fila de execução.
+operação é cancelada.
 Nesse caso, uma mensagem é emitida informando que a transação não pode ser
 realizada devido à inatividade de um dos bancos.
 
-Por outro lado, se todos os bancos estiverem ativos, a operação é colocada
-na fila de execução e processada posteriormente.
-
 Além disso, o sistema utiliza exceções para lidar com erros durante a 
 execução das operações. Caso ocorra algum problema, as exceções são 
-lançadas e capturadas para que o sistema possa tratá-las adequadamente.
+lançadas e capturadas para o sistema poder tratá-las adequadamente.
 
 </div>
 
@@ -1427,10 +1396,8 @@ lançadas e capturadas para que o sistema possa tratá-las adequadamente.
 <div align="justify">
   <h2>Testes de Concorrência</h2>
 
-Para assegurar a qualidade e eficiência do sistema, foram realizados testes 
-unitários e de integração. Os testes unitários validam o funcionamento 
-correto de cada função e módulo isoladamente, enquanto os testes de 
-integração verificam a interação entre os diferentes componentes do sistema.
+Para assegurar a qualidade e eficiência do sistema, foram realizados testes que validam o funcionamento 
+correto de cada função e módulo isoladamente, e também verificam a interação entre os diferentes componentes do sistema.
 
 Os testes estão organizados nos seguintes arquivos:
 
@@ -1440,7 +1407,7 @@ como criação de contas e chaves Pix;
 - ``tests\Transaction.py``: Contém testes unitários para a classe 
 Transaction, que cobrem funcionalidades relacionadas às transações bancárias.
 
-Para executar os testes, utilize-se os seguintes comandos:
+Para executar os testes, utilizem-se os seguintes comandos:
 
 ```
 python tests\Account.py
@@ -1448,9 +1415,9 @@ python tests\Transaction.py
 ```
 
 Esses testes são essenciais para garantir que todas as partes do sistema 
-funcionem conforme esperado e que as interações entre os módulos ocorram 
+funcionem conforme esperado e as interações entre os módulos ocorram 
 sem problemas, contribuindo para a robustez e confiabilidade do sistema 
-como um todo.
+na totalidade.
 
 
 <div align="center">
@@ -1481,17 +1448,16 @@ pré-requisitos:
 
 - Python 3.8 ou superior;
 - Pip, para instalação das dependências do projeto;
-- Bibliotecas do Python, como o Flask e a requests.
+- Bibliotecas do Python, como o _Flask_ e a _requests_.
 
-Para instalar as dependências do projeto, execute o seguinte comando nos
-diretórios da aplicação e do consórcio:
+Para instalar as dependências do projeto, execute o seguinte comando no diretório principal:
 
 ```
   pip install -r requirements.txt
 ```
 
 Após a instalação das dependências, o projeto pode ser executado 
-utilizando o comando abaixo, nos diretórios da aplicação e do consórcio:
+utilizando o comando abaixo para a aplicação e para o banco, respectivamente:
 
 [//]: # (```)
 
@@ -1501,6 +1467,9 @@ utilizando o comando abaixo, nos diretórios da aplicação e do consórcio:
 
 ``
   python3 application
+``
+``
+  python3 consortium
 ``
 
 
@@ -1531,7 +1500,7 @@ utilizando o comando abaixo, nos diretórios da aplicação e do consórcio:
   docker run --network=host -it -e PORT=555x samarasf/bank
 ```
 
-Estes comandos configuram e iniciam os containers Docker necessários para 
+Estes comandos configuram e iniciam os contêineres Docker necessários para 
 executar o projeto, garantindo que os componentes estejam corretamente 
 interconectados e operacionais.
 
@@ -1576,5 +1545,6 @@ SIMONE. Aula 13 - Sistemas Distribuídos. Disponível em: <http://profs.ic.uff.b
 
 SOBRAL, Bosco. Travas e Locks em Sistemas Distribuídos. Disponível em: <http://www.inf.ufsc.br/~bosco.sobral/ensino/ine5645/Travas-Locks.ppt/>. Último acesso em: 1 jul. 2024.
 
+São Paulo: Pearson, 2014. TANENBAUM, Andrew S. Redes de computadores. 5a.
 
 </div> 
