@@ -19,6 +19,24 @@ computacionais distribuídos.
   <img src="/images/divisor.jpg" width="1280" height="5">
 </div>
 
+<div align="justify">
+  <h2>Autora</h2>
+    <uL>
+      <li><a href="https://github.com/Samara-Ferreira">Samara dos Santos Ferreira</a></li>
+      <li>Engenharia de Computação — UEFS</li>
+    </ul>
+
+  <h2>Tutor</h2>
+    <ul>
+      <li>Dr. José Amancio Macedo Santos</li>
+      <li>Departamento de Tecnologia (DTEC) — UEFS</li>
+</div>
+
+
+<div align="center">
+  <img src="/images/divisor.jpg" width="1280" height="5">
+</div>
+
 
 <h2>Sumário</h2>
 <div id="sumario">
@@ -1524,11 +1542,11 @@ mitigando erros e inconsistências nos saldos das contas.
 <div align="justify">
   <h2>Referências</h2>
 
-> USP. Aula 12 - Tópicos em Computação Distribuída. 2023. Disponível em: <https://edisciplinas.usp.br/pluginfile.php/3609782/mod_resource/content/1/aula-12.pdf/>. Último acesso em: 5 jul. 2024.
+> USP. Aula 12 — Tópicos em Computação Distribuída. 2023. Disponível em: <https://edisciplinas.usp.br/pluginfile.php/3609782/mod_resource/content/1/aula-12.pdf/>. Último acesso em: 5 jul. 2024.
 
-> MARCUS CARVALHO. Sistemas Distribuídos - 5.2 Relógios Lógicos. 2024. YouTube. Disponível em: <https://youtu.be/xK0K3RY5xco?si=X_3QDKMq1z2Qe5mK/>. Último acesso em: 1 jul. 2024.
+> MARCUS CARVALHO. Sistemas Distribuídos — 5.2 Relógios Lógicos. 2024. YouTube. Disponível em: <https://youtu.be/xK0K3RY5xco?si=X_3QDKMq1z2Qe5mK/>. Último acesso em: 1 jul. 2024.
 
-> SIMONE. Aula 13 - Sistemas Distribuídos. Disponível em: <http://profs.ic.uff.br/~simone/sd/contaulas/aula13.pdf/>. Último acesso em: 1 jul. 2024.
+> SIMONE. Aula 13 — Sistemas Distribuídos. Disponível em: <http://profs.ic.uff.br/~simone/sd/contaulas/aula13.pdf/>. Último acesso em: 1 jul. 2024.
 
 > SOBRAL, Bosco. Travas e Locks em Sistemas Distribuídos. Disponível em: <http://www.inf.ufsc.br/~bosco.sobral/ensino/ine5645/Travas-Locks.ppt/>. Último acesso em: 1 jul. 2024.
 
